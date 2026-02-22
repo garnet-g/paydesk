@@ -1,7 +1,7 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { compare } from 'bcryptjs'
-import { prisma } from './prisma'
+import { prisma } from '@/lib/prisma'
 
 export const authOptions: NextAuthOptions = {
     session: {
@@ -43,11 +43,11 @@ export const authOptions: NextAuthOptions = {
                         name: `${user.firstName} ${user.lastName}`,
                         role: user.role,
                         schoolId: user.schoolId,
-                        schoolName: user.school?.name,
-                        phoneNumber: user.phoneNumber,
-                        requiresPasswordChange: (user as any).requiresPasswordChange,
-                        logoUrl: user.school?.logoUrl && user.school.logoUrl.length < 2000 ? user.school.logoUrl : null,
-                        planTier: (user.school as any)?.planTier,
+                        schoolName: user.school?.name || 'System',
+                        phoneNumber: user.phoneNumber || '',
+                        requiresPasswordChange: user.requiresPasswordChange,
+                        logoUrl: user.school?.logoUrl || null,
+                        planTier: (user.school as any)?.planTier || 'FREE',
                     } as any
                 }
 
@@ -93,11 +93,11 @@ export const authOptions: NextAuthOptions = {
                     name: `${user.firstName} ${user.lastName}`,
                     role: user.role,
                     schoolId: user.schoolId,
-                    schoolName: user.school?.name,
-                    phoneNumber: user.phoneNumber,
-                    requiresPasswordChange: (user as any).requiresPasswordChange,
-                    logoUrl: user.school?.logoUrl && user.school.logoUrl.length < 2000 ? user.school.logoUrl : null,
-                    planTier: (user.school as any)?.planTier,
+                    schoolName: user.school?.name || 'System',
+                    phoneNumber: user.phoneNumber || '',
+                    requiresPasswordChange: user.requiresPasswordChange,
+                    logoUrl: user.school?.logoUrl || null,
+                    planTier: (user.school as any)?.planTier || 'FREE',
                 } as any
             },
         }),
@@ -119,9 +119,7 @@ export const authOptions: NextAuthOptions = {
                     token.requiresPasswordChange = session.requiresPasswordChange
                 }
                 if (session?.user?.logoUrl !== undefined) {
-                    token.logoUrl = session.user.logoUrl && session.user.logoUrl.length < 2000
-                        ? session.user.logoUrl
-                        : null
+                    token.logoUrl = session.user.logoUrl
                 }
             }
 
@@ -132,11 +130,11 @@ export const authOptions: NextAuthOptions = {
                 session.user.id = token.sub!
                 session.user.role = token.role as string
                 session.user.schoolId = token.schoolId as string | null
-                session.user.schoolName = token.schoolName as string | undefined
-                session.user.phoneNumber = token.phoneNumber as string | undefined
-                session.user.requiresPasswordChange = token.requiresPasswordChange as boolean
-                session.user.logoUrl = token.logoUrl as string | null
-                session.user.planTier = token.planTier as string
+                session.user.schoolName = (token.schoolName as string) || 'System'
+                session.user.phoneNumber = (token.phoneNumber as string) || ''
+                session.user.requiresPasswordChange = !!token.requiresPasswordChange
+                session.user.logoUrl = (token.logoUrl as string) || null
+                session.user.planTier = (token.planTier as string) || 'FREE'
             }
             return session
         },

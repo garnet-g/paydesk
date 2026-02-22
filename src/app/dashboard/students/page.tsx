@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import DashboardLayout from '@/components/DashboardLayout'
-import { GraduationCap, Plus, Search, Filter, MoreVertical, Edit, Trash2, FileText } from 'lucide-react'
+import { GraduationCap, Plus, Search, Filter, MoreVertical, Edit, Trash2, FileText, Download } from 'lucide-react'
 import StudentForm from '@/components/forms/StudentForm'
+import Link from 'next/link'
 
 export default function StudentsPage() {
     const { data: session } = useSession()
@@ -80,14 +81,25 @@ export default function StudentsPage() {
                         <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Students</h2>
                         <p className="text-muted">Manage student records for {session?.user?.schoolName}</p>
                     </div>
-                    <button
-                        className={`btn ${isLimitReached ? 'btn-secondary' : 'btn-primary'}`}
-                        onClick={handleAddStudent}
-                        style={isLimitReached ? { opacity: 0.7 } : {}}
-                    >
-                        <Plus size={18} />
-                        {isLimitReached ? 'Limit Reached (Upgrade)' : 'Add New Student'}
-                    </button>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+                        {session?.user?.role !== 'SUPER_ADMIN' && (
+                            <Link
+                                href="/dashboard/settings/import"
+                                className="btn btn-secondary"
+                            >
+                                <Download size={18} />
+                                Batch Upload
+                            </Link>
+                        )}
+                        <button
+                            className={`btn ${isLimitReached ? 'btn-secondary' : 'btn-primary'}`}
+                            onClick={handleAddStudent}
+                            style={isLimitReached ? { opacity: 0.7 } : {}}
+                        >
+                            <Plus size={18} />
+                            {isLimitReached ? 'Limit Reached (Upgrade)' : 'Add New Student'}
+                        </button>
+                    </div>
                 </div>
 
                 <div className="card" style={{ marginBottom: 'var(--spacing-lg)' }}>

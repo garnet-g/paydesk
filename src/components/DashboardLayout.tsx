@@ -72,7 +72,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: 'Reports', href: '/dashboard/reports', icon: BarChart3, roles: ['PRINCIPAL', 'FINANCE_MANAGER'], requiresPro: true },
         { name: 'Inquiries', href: '/dashboard/inquiries', icon: MessageSquare, roles: ['PRINCIPAL', 'PARENT'] },
         { name: 'Broadcasts', href: '/dashboard/broadcast', icon: Megaphone, roles: ['SUPER_ADMIN', 'PRINCIPAL'], requiresPro: true },
-        { name: 'Batch Uploads', href: '/dashboard/settings/import', icon: Download, roles: ['SUPER_ADMIN', 'PRINCIPAL', 'FINANCE_MANAGER'] },
         { name: 'System Logs', href: '/dashboard/logs', icon: FileText, roles: ['SUPER_ADMIN'] },
         { name: 'App Users', href: '/dashboard/users', icon: Users, roles: ['SUPER_ADMIN'] },
 
