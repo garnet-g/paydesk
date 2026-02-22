@@ -84,6 +84,46 @@ export async function GET() {
             _sum: { balance: true }
         })
 
+        // 5. Performance by Class
+        const classes = await prisma.class.findMany({
+            where: { schoolId },
+            include: {
+                students: {
+                    select: {
+                        invoices: {
+                            select: {
+                                totalAmount: true,
+                                balance: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        const classPerformance = classes.map(c => {
+            let totalBilled = 0
+            let totalBalance = 0
+
+            c.students.forEach(s => {
+                s.invoices.forEach(inv => {
+                    totalBilled += Number(inv.totalAmount)
+                    totalBalance += Number(inv.balance)
+                })
+            })
+
+            const collected = totalBilled - totalBalance
+            const rate = totalBilled > 0 ? (collected / totalBilled) * 100 : 0
+
+            return {
+                id: c.id,
+                name: c.name,
+                stream: c.stream,
+                rate: rate.toFixed(1),
+                outstanding: totalBalance
+            }
+        }).sort((a, b) => Number(b.rate) - Number(a.rate))
+
         return NextResponse.json({
             collectionRate: collectionRate.toFixed(1),
             totalInvoiced,
@@ -92,7 +132,8 @@ export async function GET() {
             forecast: {
                 next30: Number(forecast30Agg._sum?.balance || 0),
                 next60: Number(forecast60Agg._sum?.balance || 0)
-            }
+            },
+            classPerformance: classPerformance.slice(0, 5) // Top 5 classes
         })
 
     } catch (error) {
