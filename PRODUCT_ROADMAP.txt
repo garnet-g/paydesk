@@ -1,0 +1,97 @@
+========================================================================
+SCHOOL BILLING SYSTEM - PRODUCT ROADMAP & VISION (MVP PHASE 2 & BEYOND)
+========================================================================
+
+Author: Antigravity AI
+Date: February 14, 2026
+
+------------------------------------------------------------------------
+OVERVIEW
+------------------------------------------------------------------------
+This document outlines the strategic growth of the School Billing platform, 
+focusing on transforming it from a manual billing tool into a fully 
+automated, intelligent financial ecosystem for Kenyan schools.
+
+------------------------------------------------------------------------
+MVP PHASE 2: AUTOMATION & SCALING (Current Priority)
+------------------------------------------------------------------------
+The goal of this phase is to eliminate manual data entry and "magic-ify" 
+the user experience.
+
+[1] AUTOMATED M-PESA RECONCILIATION
+    - Feature: Integration with M-Pesa C2B and STK Push.
+    - Implementation: 
+        a. Set up a Webhook listener for Daraja API notifications.
+        b. Match 'TransactionRef' or 'BillManager Account Number' to 
+           existing Invoices automatically.
+        c. Instantly move Invoice status from PENDING to PAID.
+        d. Auto-generate and email/SMS the receipt to the parent.
+
+[2] COMMUNICATION ENGINE (SMS & EMAIL)
+    - Feature: Automatic alerts for all financial events.
+    - Implementation:
+        a. Integrate an SMS gateway (e.g., Africa's Talking) for Kenya.
+        b. Trigger 1: "Invoice Generated" (Sent immediately after billing run).
+        c. Trigger 2: "Payment Received" (Instant confirmation for parents).
+        d. Trigger 3: "Overdue Reminder" (Sent 2 days before/after due date).
+
+[3] BULK DATA MANAGEMENT (CSV/EXCEL UPLOADER)
+    - Feature: Rapid migration for new schools.
+    - Implementation:
+        a. Create a 'Data Import' center in settings.
+        b. Support bulk student, parent, and historical balance imports via Excel template.
+        c. Implement field mapping and validation (to prevent duplicate Adm Nos).
+
+[4] SERVER-SIDE PDF BATCHING
+    - Feature: Robust document generation.
+    - Implementation:
+        a. Move PDF logic to a serverless function (Puppeteer or Playwright).
+        b. Allow Principals to click "Download All Invoices for Form 1 East" 
+           resulting in a single merged PDF or a ZIP file.
+
+------------------------------------------------------------------------
+PHASE 3: FINANCIAL INTELLIGENCE
+------------------------------------------------------------------------
+Transforming raw data into actionable insights for school leadership.
+
+[1] EXECUTIVE ANALYTICS DASHBOARD
+    - Collection Rate tracking (Target vs. Actual).
+    - "Aging Reports" showing how many days fees have been outstanding.
+    - Revenue forecasting based on academic calendar.
+
+[2] MULTI-ROLE APPROVAL WORKFLOWS
+    - Add a 'Finance Manager' or 'Treasurer' role.
+    - Large adjustments or invoice cancellations require dual-authorization.
+
+[3] INSTALLMENT TRACKING & COMMITMENTS
+    - Allow parents to sign up for "Payment Plans" (e.g., KES 2000 per week).
+    - Dashboard tracks compliance with the plan vs. the total bill.
+
+------------------------------------------------------------------------
+PHASE 4: FULL ECOSYSTEM VISION
+------------------------------------------------------------------------
+Connecting every stakeholder into a single unified platform.
+
+[1] PARENT PORTAL (MOBILE-FIRST)
+    - A dedicated Progressive Web App (PWA) for parents.
+    - Features: Real-time fee balance, result slips, and attendance tracking.
+
+[2] STAFF PAYROLL & HR INTEGRATION
+    - Use the collected revenue to manage staff salaries.
+    - Automated deductions for PAYE, NHIF, NSSF, and Housing Levy.
+
+[3] AUDIT & COMPLIANCE
+    - Immutable audit logs for KRA compliance.
+    - Digital archiving of all historical receipts for 7 years.
+
+------------------------------------------------------------------------
+THE POLISH PROTOCOL (NEXT STEPS)
+------------------------------------------------------------------------
+1. SECURITY: Implement JWT Refresh Tokens and rate limiting on M-Pesa endpoints.
+2. UX: Add "Skeleton Screens" and Framer-Motion transitions for a premium feel.
+3. ERROR HANDLING: Build custom "Offline" states and improved 404/500 dashboards.
+4. BRANDING: Allow schools to upload "Letterheads" for different types of docs.
+
+========================================================================
+GOAL: 0 MANUAL TASKS. 100% TRANSPARENCY.
+========================================================================

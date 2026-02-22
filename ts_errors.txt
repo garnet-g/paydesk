@@ -1,0 +1,16 @@
+.next/dev/types/validator.ts(432,31): error TS2344: Type 'typeof import("C:/Users/gar/Desktop/school_billing/src/app/api/exams/[id]/results/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/exams/[id]/results">'.
+  Types of property 'GET' are incompatible.
+    Type '(req: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<unknown>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+src/app/api/dashboard/payments/route.ts(16,13): error TS7034: Variable 'payments' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/app/api/dashboard/payments/route.ts(29,26): error TS2322: Type 'string | null' is not assignable to type 'string | StringFilter<"Payment"> | undefined'.
+  Type 'null' is not assignable to type 'string | StringFilter<"Payment"> | undefined'.
+src/app/api/dashboard/payments/route.ts(56,34): error TS7005: Variable 'payments' implicitly has an 'any[]' type.
+src/app/api/reports/route.ts(38,28): error TS2365: Operator '+' cannot be applied to types 'number' and 'Decimal'.
+src/app/api/reports/route.ts(39,27): error TS2365: Operator '+' cannot be applied to types 'number' and 'Decimal'.
+src/app/api/reports/route.ts(40,30): error TS2365: Operator '+' cannot be applied to types 'number' and 'Decimal'.
+src/app/api/reports/route.ts(89,60): error TS2365: Operator '+' cannot be applied to types 'number' and 'Decimal'.
+src/app/api/schools/by-code/[code]/route.ts(15,17): error TS2353: Object literal may only specify known properties, and 'logo' does not exist in type 'SchoolSelect<DefaultArgs>'.

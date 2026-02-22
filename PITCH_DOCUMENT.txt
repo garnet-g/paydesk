@@ -1,0 +1,454 @@
+================================================================================
+                    SCHOOL FEE MANAGEMENT PLATFORM
+                         PITCH DOCUMENT
+================================================================================
+
+Dear Principal,
+
+You already know the headache: chasing fee balances, counting cash,
+printing receipts, tracking defaulters, fielding "how much do I owe?"
+calls from parents. This platform replaces all of that with one system
+that works for you, your bursar, and your parents — 24/7.
+
+Below is everything you need to know.
+
+
+================================================================================
+  1. THE PROBLEM WE SOLVE
+================================================================================
+
+Every term, Kenyan schools deal with the same issues:
+
+  ❌  Manual fee collection — cash in envelopes, handwritten receipts,
+     exercise books used as ledgers. Money gets lost, miscounted, or
+     unaccounted for.
+
+  ❌  No real-time visibility — "How much have we collected this term?"
+     requires the bursar to manually add up figures, sometimes taking days.
+
+  ❌  Chasing defaulters — the school has no easy way to know who owes
+     what. Staff spend hours calling parents or sending letters.
+
+  ❌  Parents in the dark — parents don't know their exact balance,
+     what fees apply, or whether their last payment was recorded.
+
+  ❌  No audit trail — if a payment is disputed, there's no reliable
+     record. If a receipt is lost, it's gone.
+
+  ❌  Reporting is painful — end-of-term reports, board reports, and
+     government submissions require manually compiling data from
+     multiple sources.
+
+  ❌  Cash handling risk — large amounts of cash moving through the
+     school creates security and accountability concerns.
+
+
+================================================================================
+  2. WHAT THE PLATFORM DOES
+================================================================================
+
+One system that handles fee collection from start to finish:
+
+  ✅  SET UP your school once — classes, streams, fee structures, terms
+  ✅  GENERATE invoices for every student in one click
+  ✅  COLLECT payments via M-Pesa (straight to school account)
+  ✅  TRACK every shilling in real time
+  ✅  REPORT on collections, defaulters, and aging debt instantly
+  ✅  GIVE PARENTS their own portal to check balances and pay
+
+
+================================================================================
+  3. FEATURE BREAKDOWN
+================================================================================
+
+─────────────────────────────────────────────────
+  3.1  FEE SETUP & CLASS MANAGEMENT
+─────────────────────────────────────────────────
+
+  •  Create classes with grades and streams (e.g. Form 1 East, Form 1 West)
+  •  Define fee structures per class:
+     - Tuition, Boarding, Transport, Meals, Uniform, Exam Fees,
+       Activities/Clubs, and custom categories
+  •  Set amounts per fee item — different classes can have different fees
+  •  Manage academic terms/periods — activate the current term,
+     archive past ones
+  •  Apply fee changes across all streams of a grade in one action
+
+  → WHAT THIS REPLACES: Spreadsheets, handwritten fee schedules,
+    and the confusion that comes with inconsistent fee structures
+    across streams.
+
+
+─────────────────────────────────────────────────
+  3.2  STUDENT & PARENT MANAGEMENT
+─────────────────────────────────────────────────
+
+  •  Register students with admission numbers, class assignments,
+     and parent linkage
+  •  Register parents/guardians with email and phone number
+  •  Each parent gets their own login to the platform
+  •  Link multiple children to one parent account
+  •  Search, filter, and manage records easily
+  •  Activate/deactivate students (e.g. when a student transfers)
+
+  → WHAT THIS REPLACES: Paper admission files, phone lists in
+    exercise books, and no reliable way to contact all parents.
+
+
+─────────────────────────────────────────────────
+  3.3  INVOICE GENERATION (Billing Runs)
+─────────────────────────────────────────────────
+
+  •  Generate invoices for ALL active students in one click
+  •  Each invoice automatically pulls the correct fee structure
+     for the student's class
+  •  Invoices show itemised fees (tuition, boarding, transport, etc.)
+  •  Track invoice status: Unpaid → Partially Paid → Paid
+  •  Print individual invoices as professional PDFs
+  •  Export all invoices to CSV for your records
+  •  Parents can dismiss optional fee items (e.g. transport if they
+     don't use school transport)
+
+  → WHAT THIS REPLACES: Manually writing fee sheets for each student,
+    calculating balances by hand, and printing generic fee lists that
+    don't show individual balances.
+
+
+─────────────────────────────────────────────────
+  3.4  M-PESA PAYMENTS (Mobile Money)
+─────────────────────────────────────────────────
+
+  •  Parents pay directly from the app via M-Pesa STK Push
+  •  Payment prompt sent straight to the parent's phone
+  •  Money goes directly to the school's M-Pesa account
+  •  Every payment is automatically matched to the correct invoice
+  •  Balance updates instantly — no manual reconciliation
+  •  Full transaction history with timestamps
+  •  Printable receipts generated automatically
+
+  → WHAT THIS REPLACES: Cash payments at the school office,
+    manual M-Pesa confirmation via text messages, and the bursar
+    manually updating records after each payment.
+
+
+─────────────────────────────────────────────────
+  3.5  PAYMENT PLANS (Instalments)
+─────────────────────────────────────────────────
+
+  •  Parents can set up a payment plan if they can't pay in full
+  •  Choose instalment frequency: Weekly, Bi-weekly, or Monthly
+  •  Set their own instalment amount and start date
+  •  The system tracks their progress and compliance
+  •  Principal can see which parents are on plans and whether
+     they're keeping up
+
+  → WHAT THIS REPLACES: Verbal promises from parents ("I'll pay
+    next week"), handshake agreements with no tracking, and
+    the school having no visibility into who intends to pay when.
+
+
+─────────────────────────────────────────────────
+  3.6  REPORTS & ANALYTICS
+─────────────────────────────────────────────────
+
+  •  COLLECTION RATE — see what percentage of billed fees have
+     been collected, with a progress bar and target tracking
+
+  •  AGING REPORT — outstanding debt broken down by age:
+     0–30 days, 31–60 days, 61–90 days, 90+ days
+     (shows you which debts are becoming problematic)
+
+  •  REVENUE FORECAST — predicted collections for the next
+     30 and 60 days based on pending invoices
+
+  •  FEE DEFAULTERS LIST — instantly generate a list of all
+     students with outstanding balances, with:
+     - Student name, class, parent contact
+     - Amount owed and how overdue it is
+     - Print-ready report for board meetings or parent conferences
+
+  •  DAILY COLLECTIONS REPORT — see exactly how much was
+     collected on any given day, broken down by payment method
+
+  •  CSV EXPORTS — download any report as a spreadsheet for
+     further analysis or government submissions
+
+  → WHAT THIS REPLACES: The bursar spending days compiling
+    end-of-term reports, guessing at collection rates, and
+    presenting incomplete data to the board.
+
+
+─────────────────────────────────────────────────
+  3.7  APPROVAL WORKFLOW (Dual Authorization)
+─────────────────────────────────────────────────
+
+  •  Invoice cancellations and adjustments require approval
+     from a second administrator
+  •  Prevents unauthorized changes to financial records
+  •  Full audit trail: who requested, who approved, when, and why
+  •  Pending approvals surfaced on the dashboard so nothing
+     gets missed
+
+  → WHAT THIS REPLACES: One person having unchecked control
+    over financial records, with no accountability mechanism.
+
+
+─────────────────────────────────────────────────
+  3.8  PARENT PORTAL
+─────────────────────────────────────────────────
+
+  •  Parents log in with their own account
+  •  See all their children's fee balances at a glance
+  •  View itemised invoices
+  •  Make payments via M-Pesa without visiting the school
+  •  Set up payment plans
+  •  Track payment history and download receipts
+  •  Submit inquiries or disputes to the school
+  •  Get responses from the principal directly in the portal
+
+  → WHAT THIS REPLACES: Parents calling the school to ask
+    their balance, travelling to school to make payments,
+    and losing paper receipts.
+
+
+─────────────────────────────────────────────────
+  3.9  INQUIRIES & COMMUNICATION
+─────────────────────────────────────────────────
+
+  •  Parents can submit questions or concerns through the app
+  •  Principal/admin sees all inquiries in one place
+  •  Reply directly — parent gets the response in their portal
+  •  Track status: Open → Resolved
+  •  Keeps communication documented and organised
+
+  → WHAT THIS REPLACES: Phone calls, WhatsApp messages, and
+    verbal conversations that have no record.
+
+
+─────────────────────────────────────────────────
+  3.10  SCHOOL BRANDING
+─────────────────────────────────────────────────
+
+  •  Upload your school logo — appears on the dashboard,
+     invoices, and receipts
+  •  Set your school tagline
+  •  Choose your brand colour
+  •  Professional appearance on all printed documents
+
+  → Makes the platform feel like YOUR school's system,
+    not a generic third-party tool.
+
+
+================================================================================
+  4. WHAT WE AIM TO REDUCE
+================================================================================
+
+  📉  TIME SPENT ON FEE ADMINISTRATION
+     Currently: Bursar spends 2–3 hours daily on manual
+     reconciliation, receipt writing, and parent follow-ups.
+     Target: Reduce to under 15 minutes per day.
+
+  📉  CASH HANDLING
+     Currently: Large volumes of cash pass through the office
+     with limited accountability.
+     Target: Shift 80%+ of payments to M-Pesa — money goes
+     straight to the school account, fully tracked.
+
+  📉  DEFAULTER FOLLOW-UP TIME
+     Currently: Staff manually identify and contact defaulters,
+     often weeks after fees are overdue.
+     Target: Instant defaulter reports. Parents proactively
+     see their balances and can set up payment plans.
+
+  📉  REPORTING TIME
+     Currently: End-of-term reports take days to compile.
+     Target: Real-time dashboards and one-click reports.
+
+  📉  PARENT COMPLAINTS & DISPUTES
+     Currently: "I paid but it wasn't recorded" disputes are
+     common and hard to resolve without documentation.
+     Target: Every payment has a digital receipt and audit trail.
+     Disputes resolved in the portal, not over the phone.
+
+  📉  REVENUE LEAKAGE
+     Currently: Fees go uncollected because there's no systematic
+     follow-up and parents don't know their exact balance.
+     Target: Transparent balances, automated invoicing, and
+     payment plans increase collection rates.
+
+
+================================================================================
+  5. STRONG POINTS TO EMPHASISE IN THE PITCH
+================================================================================
+
+  1.  "YOU'LL KNOW YOUR NUMBERS INSTANTLY"
+      No more waiting for the bursar to compile figures.
+      Open your dashboard — collection rate, outstanding fees,
+      and revenue forecast are right there.
+
+  2.  "PARENTS PAY FROM THEIR PHONE"
+      M-Pesa integration means parents don't need to visit
+      the school to pay. They open the app, tap "Pay", and
+      the money hits your account in seconds.
+
+  3.  "EVERY SHILLING IS TRACKED"
+      Full audit trail for every payment, every invoice edit,
+      every cancellation. No more "the money went missing"
+      situations.
+
+  4.  "ONE CLICK TO BILL THE WHOLE SCHOOL"
+      Set up your fee structures once. At the start of term,
+      click "Generate Invoices" — every student gets their
+      personalised invoice automatically.
+
+  5.  "PARENTS STOP CALLING TO ASK THEIR BALANCE"
+      Parents have their own portal. They can see their
+      balance, payment history, and receipts 24/7.
+
+  6.  "DEFAULTERS LIST IN 3 SECONDS, NOT 3 DAYS"
+      Click "Fee Defaulters" → instant list with names,
+      amounts, and contact details. Print it for your
+      board meeting.
+
+  7.  "NO UPFRONT HARDWARE COST"
+      It's a web application — works on any computer, tablet,
+      or phone with a browser. No special equipment needed.
+
+  8.  "YOUR SCHOOL, YOUR BRAND"
+      Your logo, your colours, your tagline — on every
+      invoice, receipt, and the parent portal.
+
+  9.  "TWO PEOPLE TO CANCEL AN INVOICE"
+      Built-in dual-authorization means one person can't
+      quietly write off fees. Every adjustment needs a
+      second approval.
+
+  10. "PARENTS CAN PAY IN INSTALMENTS"
+      Instead of turning away students whose parents can't
+      pay in full, offer structured payment plans that the
+      system tracks automatically.
+
+
+================================================================================
+  6. HOW TO STRUCTURE THE MEETING
+================================================================================
+
+  STEP 1: ASK THE PAIN QUESTIONS (5 minutes)
+  ──────────────────────────────────────────
+  Start by asking these — let THEM tell you the problem exists:
+
+  •  "How does your bursar currently track fee payments?"
+  •  "How long does it take to compile a defaulters list?"
+  •  "How do parents find out their balance?"
+  •  "Have you ever had a disputed payment where you couldn't
+     find the receipt?"
+  •  "How much cash passes through the school office on a
+     given day?"
+
+  STEP 2: LIVE DEMO (10 minutes)
+  ──────────────────────────────────────────
+  Show the dashboard → generate an invoice → show the parent
+  portal → pull up the defaulters report → show the collection
+  rate in real time. Let them see it working.
+
+  Demo flow:
+  1. Log in as Principal → show the dashboard stats
+  2. Go to Classes → show fee structures
+  3. Go to Invoices → show "Generate Invoices" button
+  4. Open a student's invoice → print it as PDF
+  5. Switch to Parent view → show balance, "Pay via M-Pesa"
+  6. Go to Reports → show collection rate and defaulters list
+  7. Show the approval workflow for cancellations
+  8. Show the school branding (logo on receipts)
+
+  STEP 3: ANCHOR ON OUTCOMES (5 minutes)
+  ──────────────────────────────────────────
+  Don't sell features — sell outcomes:
+
+  •  "Your bursar gets 2 hours back every day"
+  •  "Parents pay without visiting the school"
+  •  "You'll never lose track of a payment again"
+  •  "Your board gets professional reports, on demand"
+  •  "Your collection rate goes up because parents
+     know exactly what they owe and can pay instantly"
+
+  STEP 4: HANDLE OBJECTIONS
+  ──────────────────────────────────────────
+
+  "Our parents aren't tech-savvy"
+  → They use M-Pesa every day. If they can send money,
+    they can use this. The parent portal is simple —
+    log in, see balance, tap pay.
+
+  "We don't have good internet"
+  → The system works on any connection. M-Pesa works over
+    USSD, not internet. The parent pays like a normal
+    M-Pesa transaction.
+
+  "We've used systems before and they were complicated"
+  → This was built specifically for Kenyan schools.
+    No accounting jargon, no complicated setup.
+    A principal can learn it in one sitting.
+
+  "What if M-Pesa goes down?"
+  → Payments are recorded with timestamps. If there's a
+    delay from Safaricom, the system reconciles
+    automatically when it comes back.
+
+  "How secure is our data?"
+  → Password-protected accounts, role-based access
+    (principal sees everything, parents see only their
+    children), dual authorization for sensitive actions.
+
+
+================================================================================
+  7. PRICING TALKING POINTS
+================================================================================
+
+  When discussing pricing, emphasise value over cost:
+
+  •  "How much does the school lose each term in uncollected
+     fees? Even recovering 5% more pays for this many times over."
+
+  •  "How many hours does your bursar spend on manual work?
+     That's salary you're paying for work a system can do."
+
+  •  "What's the cost of a disputed payment that you can't
+     resolve? One prevented dispute justifies the investment."
+
+  (Set your actual pricing based on school size and what
+  the market can bear. Consider per-student-per-term or
+  flat monthly fee models.)
+
+
+================================================================================
+  8. WHAT'S COMING NEXT (Roadmap Teasers)
+================================================================================
+
+  You can mention these as "coming soon" to show the platform
+  is growing:
+
+  •  SMS notifications — automatic reminders to parents when
+     fees are due or overdue
+  •  Bulk data import — upload student lists from spreadsheets
+  •  Bank payment support — for parents who prefer bank transfers
+  •  Multi-term analytics — year-over-year comparison of
+     collection performance
+  •  Student report cards — academic integration (optional)
+
+  These show you're building a long-term platform, not a
+  one-time project.
+
+
+================================================================================
+
+  BOTTOM LINE:
+
+  This platform turns fee collection from a manual, error-prone,
+  time-consuming process into something that runs itself.
+
+  The principal gets visibility. The bursar gets time back.
+  Parents get convenience. The school gets more money collected,
+  faster, with a full audit trail.
+
+================================================================================
