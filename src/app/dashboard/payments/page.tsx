@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import DashboardLayout from '@/components/DashboardLayout'
-import { DollarSign, CreditCard, Smartphone, CheckCircle, ArrowRight, Search, Download, ShieldAlert, X, Loader2, TrendingUp, RefreshCw, Calendar } from 'lucide-react'
+import { DollarSign, CreditCard, Smartphone, CheckCircle, ArrowRight, Search, Download, ShieldAlert, X, Loader2, TrendingUp, RefreshCw, Calendar, Plus } from 'lucide-react'
 import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils'
 import { generateReceiptPDF } from '@/lib/pdf-utils'
 
@@ -43,6 +43,16 @@ export default function PaymentsPage() {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [isProcessing, setIsProcessing] = useState(false)
     const [paymentSuccess, setPaymentSuccess] = useState(false)
+    const [students, setStudents] = useState<any[]>([])
+    const [showManualModal, setShowManualModal] = useState(false)
+    const [manualForm, setManualForm] = useState({
+        studentId: '',
+        amount: '',
+        method: 'CASH',
+        transactionRef: '',
+        description: '',
+        date: new Date().toISOString().split('T')[0]
+    })
 
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN'
     const isPrincipal = session?.user?.role === 'PRINCIPAL'
@@ -60,9 +70,24 @@ export default function PaymentsPage() {
                 fetchCommitments()
             }
             if (isSuperAdmin) fetchSchools()
-            if (isPrincipal || isFinanceManager) fetchApprovals()
+            if (isPrincipal || isFinanceManager) {
+                fetchApprovals()
+                fetchStudents()
+            }
         }
     }, [session, filters])
+
+    const fetchStudents = async () => {
+        try {
+            const res = await fetch('/api/students')
+            if (res.ok) {
+                const data = await res.json()
+                setStudents(data)
+            }
+        } catch (error) {
+            console.error('Failed to fetch students:', error)
+        }
+    }
 
     const fetchCommitments = async () => {
         try {
@@ -280,6 +305,45 @@ export default function PaymentsPage() {
 
     const pendingApprovalCount = approvalRequests.filter(r => r.status === 'PENDING').length
 
+    const handleRecordManualPayment = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!manualForm.studentId || !manualForm.amount) {
+            alert('Please select a student and enter an amount')
+            return
+        }
+
+        setIsProcessing(true)
+        try {
+            const res = await fetch('/api/payments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(manualForm)
+            })
+
+            if (res.ok) {
+                alert('Payment recorded successfully!')
+                setShowManualModal(false)
+                setManualForm({
+                    studentId: '',
+                    amount: '',
+                    method: 'CASH',
+                    transactionRef: '',
+                    description: '',
+                    date: new Date().toISOString().split('T')[0]
+                })
+                fetchPayments()
+            } else {
+                const err = await res.text()
+                alert(`Error: ${err}`)
+            }
+        } catch (error) {
+            console.error('Manual payment error:', error)
+            alert('Failed to record payment')
+        } finally {
+            setIsProcessing(false)
+        }
+    }
+
     return (
         <DashboardLayout>
             <div className="animate-fade-in">
@@ -293,6 +357,15 @@ export default function PaymentsPage() {
                     </div>
 
                     <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center' }}>
+                        {isAdmin && (
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => setShowManualModal(true)}
+                            >
+                                <Plus size={18} />
+                                Record Manual Payment
+                            </button>
+                        )}
                         {(isAdmin) && (
                             <div style={{ display: 'flex', background: 'var(--neutral-100)', padding: '4px', borderRadius: 'var(--radius-lg)', gap: '2px' }}>
                                 <button
@@ -920,6 +993,105 @@ export default function PaymentsPage() {
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    </div>
+                )}
+
+                {/* =================== MANUAL PAYMENT MODAL =================== */}
+                {showManualModal && (
+                    <div className="modal-overlay" onClick={() => setShowManualModal(false)}>
+                        <div className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h3 className="modal-title">Record Manual Payment</h3>
+                                <button className="btn btn-ghost btn-sm" onClick={() => setShowManualModal(false)}>
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <form onSubmit={handleRecordManualPayment}>
+                                <div className="modal-body">
+                                    <div className="form-group">
+                                        <label className="form-label">Select Student</label>
+                                        <select
+                                            className="form-select"
+                                            required
+                                            value={manualForm.studentId}
+                                            onChange={(e) => setManualForm({ ...manualForm, studentId: e.target.value })}
+                                        >
+                                            <option value="">Choose a student...</option>
+                                            {students.map(s => (
+                                                <option key={s.id} value={s.id}>
+                                                    {s.firstName} {s.lastName} (Adm: {s.admissionNumber})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-md">
+                                        <div className="form-group">
+                                            <label className="form-label">Amount (KES)</label>
+                                            <input
+                                                type="number"
+                                                className="form-input"
+                                                required
+                                                min="1"
+                                                value={manualForm.amount}
+                                                onChange={(e) => setManualForm({ ...manualForm, amount: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">Date</label>
+                                            <input
+                                                type="date"
+                                                className="form-input"
+                                                required
+                                                value={manualForm.date}
+                                                onChange={(e) => setManualForm({ ...manualForm, date: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="form-label">Payment Method</label>
+                                        <select
+                                            className="form-select"
+                                            value={manualForm.method}
+                                            onChange={(e) => setManualForm({ ...manualForm, method: e.target.value })}
+                                        >
+                                            <option value="CASH">Cash</option>
+                                            <option value="BANK_TRANSFER">Bank Deposit</option>
+                                            <option value="MPESA">M-Pesa (Direct)</option>
+                                            <option value="CHEQUE">Cheque</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="form-label">Transaction Reference (Optional)</label>
+                                        <input
+                                            type="text"
+                                            className="form-input"
+                                            placeholder="Bank Ref, Cheque No, etc."
+                                            value={manualForm.transactionRef}
+                                            onChange={(e) => setManualForm({ ...manualForm, transactionRef: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="form-label">Notes/Description</label>
+                                        <textarea
+                                            className="form-textarea"
+                                            placeholder="Details about the payment..."
+                                            value={manualForm.description}
+                                            onChange={(e) => setManualForm({ ...manualForm, description: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowManualModal(false)}>Cancel</button>
+                                    <button type="submit" className="btn btn-primary" disabled={isProcessing}>
+                                        {isProcessing ? 'Recording...' : 'Save Payment Record'}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 )}

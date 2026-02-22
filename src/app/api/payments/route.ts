@@ -95,7 +95,20 @@ export async function POST(req: Request) {
             return new NextResponse('Missing required fields', { status: 400 })
         }
 
-        const schoolId = session.user.schoolId!
+        let schoolId: string | null = session.user.schoolId || null
+
+        if (!schoolId && session.user.role === 'SUPER_ADMIN') {
+            const student = await prisma.student.findUnique({
+                where: { id: studentId },
+                select: { schoolId: true }
+            })
+            schoolId = student?.schoolId || null
+        }
+
+        if (!schoolId) {
+            return new NextResponse('School context missing', { status: 400 })
+        }
+
         const paymentAmount = parseFloat(amount)
 
         // Generate receipt number (Manual/Serial)
