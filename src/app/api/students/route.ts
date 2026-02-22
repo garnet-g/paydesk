@@ -26,6 +26,7 @@ export async function GET() {
         where,
         include: {
             class: true,
+            school: true,
             guardians: {
                 include: {
                     user: true
