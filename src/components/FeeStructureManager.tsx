@@ -186,7 +186,9 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
         const key = fee.classId || 'general'
         if (!acc[key]) {
             acc[key] = {
-                className: fee.class?.name || (fee.classId ? 'Loading Class...' : 'General / All Classes'),
+                className: fee.class
+                    ? `${fee.class.name} ${fee.class.stream || ''}`.trim()
+                    : (fee.classId ? 'Loading Class...' : 'General / All Classes'),
                 fees: []
             }
         }
