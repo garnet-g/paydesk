@@ -100,14 +100,7 @@ export default function ChildrenPage() {
                                         <FileText size={14} />
                                         Statement
                                     </Link>
-                                    <Link href={`/dashboard/children/${child.id}/attendance`} className="btn btn-outline btn-sm">
-                                        <Users size={14} />
-                                        Attendance
-                                    </Link>
-                                    <Link href={`/dashboard/children/${child.id}/results`} className="btn btn-secondary btn-sm">
-                                        <GraduationCap size={14} />
-                                        Results
-                                    </Link>
+
                                 </div>
                             </div>
                         ))}

@@ -141,45 +141,7 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div style={{
-                    marginTop: 'var(--spacing-xl)',
-                    paddingTop: 'var(--spacing-xl)',
-                    borderTop: '1px solid var(--border)',
-                }}>
-                    <p className="text-sm text-muted text-center mb-md">
-                        Quick Login (Demo Purposes)
-                    </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 'var(--spacing-sm)' }}>
-                        <button
-                            type="button"
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => { setEmail('admin@schoolbilling.ke'); setPassword('admin123'); }}
-                        >
-                            Log as Admin
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => { setEmail('principal@demoschool.ac.ke'); setPassword('principal123'); }}
-                        >
-                            Log as Principal
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => { setEmail('finance@demoschool.ac.ke'); setPassword('password123'); }}
-                        >
-                            Log as Finance
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => { setEmail('parent@example.com'); setPassword('parent123'); }}
-                        >
-                            Log as Parent
-                        </button>
-                    </div>
-                </div>
+
 
                 <div style={{
                     marginTop: 'var(--spacing-xl)',
