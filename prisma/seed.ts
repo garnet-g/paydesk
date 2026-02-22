@@ -38,8 +38,14 @@ async function main() {
 
     // Create Principal
     const principal = await prisma.user.upsert({
-        where: { email: 'principal@demoschool.ac.ke' },
-        update: {},
+        where: { email: 'paul@goodlife.ac.ke' },
+        update: {
+            firstName: 'Paul',
+            lastName: 'Githinji',
+            phoneNumber: '254711111111',
+            role: 'PRINCIPAL',
+            schoolId: school.id,
+        },
         create: {
             email: 'paul@goodlife.ac.ke',
             password: await hash('paul123', 12),
@@ -129,7 +135,10 @@ async function main() {
 
     await prisma.studentGuardian.upsert({
         where: { studentId_userId: { studentId: student1.id, userId: parent.id } },
-        update: {},
+        update: {
+            relationship: 'Mother',
+            isPrimary: true
+        },
         create: {
             studentId: student1.id,
             userId: parent.id,
@@ -160,7 +169,10 @@ async function main() {
 
     await prisma.studentGuardian.upsert({
         where: { studentId_userId: { studentId: student2.id, userId: parent.id } },
-        update: {},
+        update: {
+            relationship: 'Father',
+            isPrimary: true
+        },
         create: {
             studentId: student2.id,
             userId: parent.id,
