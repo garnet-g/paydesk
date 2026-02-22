@@ -114,7 +114,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}
             >
                 {/* School Profile Section */}
-                <div style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--neutral-100)' }}>
+                <div style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
                         <div style={{
                             width: '48px',
@@ -180,17 +180,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         const Icon = item.icon
                         const isActive = pathname === item.href
 
-                        // Categories for PRINCIPAL to help with spacing and hierarchy
-                        const categories: any = {
-                            '/dashboard': { label: 'Main', icon: null },
-                            '/dashboard/schools': { label: 'Management', icon: null },
-                            '/dashboard/parents': { label: 'People', icon: null },
-                            '/dashboard/students': { label: 'School', icon: null },
-                            '/dashboard/payments': { label: 'Financials', icon: null },
-                            '/dashboard/reports': { label: 'Insights', icon: null },
+                        // Categories for better hierarchy
+                        const principalCategories: any = {
+                            '/dashboard': { label: 'Main' },
+                            '/dashboard/parents': { label: 'People' },
+                            '/dashboard/students': { label: 'School' },
+                            '/dashboard/payments': { label: 'Financials' },
+                            '/dashboard/reports': { label: 'Insights' },
                         }
 
-                        const showCategory = userRole === 'PRINCIPAL' && categories[item.href]
+                        const adminCategories: any = {
+                            '/dashboard': { label: 'Overview' },
+                            '/dashboard/schools': { label: 'Ecosystem' },
+                            '/dashboard/platform-billing': { label: 'Economics' },
+                            '/dashboard/broadcast': { label: 'Engagement' },
+                            '/dashboard/logs': { label: 'Governance' },
+                            '/dashboard/settings': { label: 'Preferences' },
+                        }
+
+                        const categories = userRole === 'SUPER_ADMIN' ? adminCategories : principalCategories
+                        const showCategory = (userRole === 'PRINCIPAL' || userRole === 'SUPER_ADMIN') && categories[item.href]
                         const isLocked = item.requiresPro && !isPro
 
                         return (
@@ -272,8 +281,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 {/* Sidebar Footer */}
                 <div style={{
                     padding: 'var(--spacing-lg) var(--spacing-xl)',
-                    borderTop: '1px solid var(--neutral-100)',
-                    background: 'var(--neutral-50)/30'
+                    borderTop: '1px solid var(--border)',
+                    background: 'var(--background)'
                 }}>
                     <div style={{ marginBottom: 'var(--spacing-lg)', minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', marginBottom: '8px' }}>
