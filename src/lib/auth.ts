@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
                         schoolName: user.school?.name,
                         phoneNumber: user.phoneNumber,
                         requiresPasswordChange: (user as any).requiresPasswordChange,
-                        logoUrl: user.school?.logoUrl,
+                        logoUrl: user.school?.logoUrl && user.school.logoUrl.length < 2000 ? user.school.logoUrl : null,
                         planTier: (user.school as any)?.planTier,
                     } as any
                 }
@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
                     schoolName: user.school?.name,
                     phoneNumber: user.phoneNumber,
                     requiresPasswordChange: (user as any).requiresPasswordChange,
-                    logoUrl: user.school?.logoUrl,
+                    logoUrl: user.school?.logoUrl && user.school.logoUrl.length < 2000 ? user.school.logoUrl : null,
                     planTier: (user.school as any)?.planTier,
                 } as any
             },
@@ -119,7 +119,9 @@ export const authOptions: NextAuthOptions = {
                     token.requiresPasswordChange = session.requiresPasswordChange
                 }
                 if (session?.user?.logoUrl !== undefined) {
-                    token.logoUrl = session.user.logoUrl
+                    token.logoUrl = session.user.logoUrl && session.user.logoUrl.length < 2000
+                        ? session.user.logoUrl
+                        : null
                 }
             }
 
