@@ -8,15 +8,15 @@ async function main() {
 
     // Create Super Admin
     const superAdmin = await prisma.user.upsert({
-        where: { email: 'admin@schoolbilling.ke' },
+        where: { email: 'garnet@paydesk.co.ke' },
         update: {},
         create: {
-            email: 'admin@schoolbilling.ke',
-            password: await hash('admin123', 12),
+            email: 'garnet@paydesk.co.ke',
+            password: await hash('garnet123', 12),
             role: 'SUPER_ADMIN',
             firstName: 'System',
             lastName: 'Administrator',
-            phoneNumber: '254712345678',
+            phoneNumber: '254748938887',
             requiresPasswordChange: false,
         } as any,
     })
@@ -41,11 +41,11 @@ async function main() {
         where: { email: 'principal@demoschool.ac.ke' },
         update: {},
         create: {
-            email: 'principal@demoschool.ac.ke',
-            password: await hash('principal123', 12),
+            email: 'paul@goodlife.ac.ke',
+            password: await hash('paul123', 12),
             role: 'PRINCIPAL',
-            firstName: 'Jane',
-            lastName: 'Mwangi',
+            firstName: 'Paul',
+            lastName: 'Githinji',
             phoneNumber: '254711111111',
             schoolId: school.id,
             requiresPasswordChange: false,
@@ -55,14 +55,14 @@ async function main() {
 
     // Create Parent
     const parent = await prisma.user.upsert({
-        where: { email: 'parent@example.com' },
+        where: { email: 'carol@gmail.com' },
         update: {},
         create: {
-            email: 'parent@example.com',
-            password: await hash('parent123', 12),
+            email: 'carol@gmail.com',
+            password: await hash('carol123', 12),
             role: 'PARENT',
-            firstName: 'John',
-            lastName: 'Kamau',
+            firstName: 'Carol',
+            lastName: 'Githinji',
             phoneNumber: '254722222222',
             schoolId: school.id,
             requiresPasswordChange: false,
@@ -118,10 +118,10 @@ async function main() {
         update: {},
         create: {
             admissionNumber: 'STD001',
-            firstName: 'Alice',
-            lastName: 'Njeri',
+            firstName: 'Deborah',
+            lastName: 'Githinji',
             gender: 'Female',
-            dateOfBirth: new Date('2010-05-15'),
+            dateOfBirth: new Date('2003-04-24'),
             schoolId: school.id,
             classId: form1.id,
         },
@@ -149,10 +149,10 @@ async function main() {
         update: {},
         create: {
             admissionNumber: 'STD002',
-            firstName: 'Brian',
-            lastName: 'Kamau',
+            firstName: 'Marcus',
+            lastName: 'Micwe',
             gender: 'Male',
-            dateOfBirth: new Date('2010-08-22'),
+            dateOfBirth: new Date('1999-07-31'),
             schoolId: school.id,
             classId: form1.id,
         },
@@ -287,14 +287,14 @@ async function main() {
     console.log('\n📝 Login Credentials:')
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
     console.log('Super Admin:')
-    console.log('  Email: admin@schoolbilling.ke')
-    console.log('  Password: admin123')
+    console.log('  Email: garnet@paydesk.co.ke')
+    console.log('  Password: garnet123')
     console.log('\nPrincipal:')
-    console.log('  Email: principal@demoschool.ac.ke')
-    console.log('  Password: principal123')
+    console.log('  Email: paul@goodlife.ac.ke')
+    console.log('  Password: paul123')
     console.log('\nParent:')
-    console.log('  Email: parent@example.com')
-    console.log('  Password: parent123')
+    console.log('  Email: carol@gmail.com')
+    console.log('  Password: carol123')
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
 }
 
