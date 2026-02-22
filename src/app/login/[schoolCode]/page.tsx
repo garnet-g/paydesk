@@ -177,7 +177,7 @@ export default function SchoolLoginPage() {
                 textAlign: 'center',
                 width: '100%'
             }}>
-                Powered by PayDesk © 2026
+                Powered by PayDesk © 2026 <span style={{ opacity: 0.5 }}>v1.0.1</span>
             </div>
         </div>
     )

@@ -166,7 +166,7 @@ export default function LoginPage() {
                 width: '100%',
                 textAlign: 'center'
             }}>
-                © 2026 PayDesk.
+                © 2026 PayDesk. <span style={{ opacity: 0.5 }}>v1.0.1</span>
             </div>
 
             <style jsx>{`
