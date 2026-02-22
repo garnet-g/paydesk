@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { uploadLogo } from '@/lib/storage'
 
 export async function PATCH(
     req: Request,
@@ -22,10 +23,22 @@ export async function PATCH(
     try {
         const { logoUrl, primaryColor, secondaryColor, tagline } = await req.json()
 
+        let finalLogoUrl = logoUrl
+
+        // If it's a new base64 logo, upload it to Supabase
+        if (logoUrl && logoUrl.startsWith('data:image')) {
+            try {
+                finalLogoUrl = await uploadLogo(id, logoUrl)
+            } catch (uploadError) {
+                console.error('Logo upload failed, falling back to original:', uploadError)
+                // If upload fails, we'll keep the base64 for now or let the validator handle it
+            }
+        }
+
         const school = await prisma.school.update({
             where: { id },
             data: {
-                logoUrl,
+                logoUrl: finalLogoUrl,
                 primaryColor,
                 secondaryColor,
                 tagline

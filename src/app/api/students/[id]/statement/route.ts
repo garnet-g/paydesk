@@ -108,7 +108,8 @@ export async function GET(
             student: {
                 name: `${student.firstName} ${student.lastName}`,
                 admissionNumber: student.admissionNumber,
-                schoolName: student.school.name
+                schoolName: student.school.name,
+                school: student.school
             },
             statement
         })

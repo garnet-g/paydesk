@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Download, Printer, Plus, X } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 interface StudentStatementProps {
     studentId: string
@@ -107,6 +109,84 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
         }
     }
 
+    const handleDownloadPDF = () => {
+        if (!student || !statement) return
+
+        const doc = new jsPDF()
+        const primaryColor = student.school?.primaryColor || '#4f46e5'
+        const hexToRgb = (hex: string) => {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+            return result ? [
+                parseInt(result[1], 16),
+                parseInt(result[2], 16),
+                parseInt(result[3], 16)
+            ] : [79, 70, 229]
+        }
+        const rgb = hexToRgb(primaryColor)
+
+        // Header Rect
+        doc.setFillColor(rgb[0], rgb[1], rgb[2])
+        doc.rect(0, 0, 210, 40, 'F')
+
+        // School Name & Contact
+        doc.setTextColor(255, 255, 255)
+        doc.setFontSize(22)
+        doc.setFont('helvetica', 'bold')
+        doc.text(student.schoolName || 'School Statement', 20, 25)
+
+        doc.setFontSize(10)
+        doc.setFont('helvetica', 'normal')
+        if (student.school?.tagline) {
+            doc.text(student.school.tagline, 20, 32)
+        }
+
+        // Statement Title
+        doc.setTextColor(0, 0, 0)
+        doc.setFontSize(18)
+        doc.text('Financial Statement', 20, 55)
+
+        // Student Info Box
+        doc.setDrawColor(200, 200, 200)
+        doc.line(20, 60, 190, 60)
+
+        doc.setFontSize(10)
+        doc.text(`Student: ${student.name}`, 20, 70)
+        doc.text(`Admission No: ${student.admissionNumber}`, 20, 75)
+        doc.text(`Class: ${student.class?.name || 'N/A'} ${student.class?.stream || ''}`, 20, 80)
+
+        // Date generated
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 140, 70)
+        const balance = statement[statement.length - 1]?.runningBalance || 0
+        doc.setFont('helvetica', 'bold')
+        doc.text(`Net Balance: KES ${balance.toLocaleString()}`, 140, 80)
+
+        // Table
+        const tableData = statement.map(tx => [
+            formatDate(tx.date),
+            tx.description + (tx.details ? ` - ${tx.details}` : ''),
+            tx.type === 'INVOICE' ? formatCurrency(Math.abs(tx.amount)) : '-',
+            tx.type === 'PAYMENT' ? formatCurrency(Math.abs(tx.amount)) : '-',
+            formatCurrency(tx.runningBalance)
+        ])
+
+        autoTable(doc, {
+            startY: 90,
+            head: [['Date', 'Description', 'Debit (+)', 'Credit (-)', 'Balance']],
+            body: tableData,
+            headStyles: { fillColor: rgb as any },
+            alternateRowStyles: { fillColor: [245, 247, 255] },
+            margin: { left: 20, right: 20 }
+        })
+
+        // Footer
+        const finalY = (doc as any).lastAutoTable.cursor.y + 20
+        doc.setFontSize(8)
+        doc.setTextColor(150, 150, 150)
+        doc.text(`Thank you for choosing PayDesk. This is a computer generated statement.`, 105, finalY, { align: 'center' })
+
+        doc.save(`${student.admissionNumber}_statement.pdf`)
+    }
+
     if (loading) return (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-2xl)' }}>
             <div className="spinner"></div>
@@ -162,7 +242,7 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
                     <button className="btn btn-secondary btn-sm" onClick={() => window.print()}>
                         <Printer size={16} /> Print
                     </button>
-                    <button className="btn btn-ghost btn-sm">
+                    <button className="btn btn-ghost btn-sm" onClick={handleDownloadPDF}>
                         <Download size={16} /> PDF
                     </button>
                 </div>

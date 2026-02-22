@@ -55,11 +55,20 @@ export async function GET() {
                 })
             ])
 
+            const totalCollected = Number(collectionsAgg._sum.amount || 0)
+            const totalOutstanding = Number(balanceAgg._sum.balance || 0)
+            const totalExpected = totalCollected + totalOutstanding
+            const collectionRate = totalExpected > 0
+                ? Math.round((totalCollected / totalExpected) * 100)
+                : 0
+
             return NextResponse.json({
                 totalStudents,
-                totalCollections: Number(collectionsAgg._sum.amount || 0),
-                outstanding: `KES ${Number(balanceAgg._sum.balance || 0).toLocaleString()}`,
-                thisMonth: `KES ${Number(thisMonthAgg._sum.amount || 0).toLocaleString()}`
+                totalCollections: totalCollected,
+                outstanding: `KES ${totalOutstanding.toLocaleString()}`,
+                thisMonth: `KES ${Number(thisMonthAgg._sum.amount || 0).toLocaleString()}`,
+                totalExpected: `KES ${totalExpected.toLocaleString()}`,
+                collectionRate
             })
         }
 

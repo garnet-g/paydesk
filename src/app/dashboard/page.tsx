@@ -144,6 +144,71 @@ export default function DashboardPage() {
                         zIndex: 0
                     }} />
                 </div>
+                {/* Pulse Stats Board (Principal Only) */}
+                {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && dashboardStats && (
+                    <div className="card" style={{
+                        marginBottom: 'var(--spacing-xl)',
+                        background: 'var(--background)',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                        gap: 'var(--spacing-xl)',
+                        border: '1px solid var(--border)',
+                        padding: 'var(--spacing-xl)'
+                    }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                            <span className="text-xs font-bold text-muted uppercase tracking-wider">Total Term Billing</span>
+                            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0 }}>{dashboardStats.totalExpected}</h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', color: 'var(--primary-600)' }}>
+                                <Activity size={12} />
+                                <span className="text-xs font-semibold">Projected Revenue</span>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                            <span className="text-xs font-bold text-muted uppercase tracking-wider">Collections</span>
+                            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: 'var(--success-600)' }}>
+                                KES {dashboardStats.totalCollections?.toLocaleString()}
+                            </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', color: 'var(--success-600)' }}>
+                                <TrendingUp size={12} />
+                                <span className="text-xs font-semibold">Cash in Hand</span>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', borderLeft: '1px solid var(--border)', paddingLeft: 'var(--spacing-xl)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span className="text-xs font-bold text-muted uppercase tracking-wider">Collection Rate</span>
+                                <span className="badge badge-success">{dashboardStats.collectionRate}%</span>
+                            </div>
+                            <div style={{ width: '100%', height: '8px', background: 'var(--neutral-100)', borderRadius: '4px', overflow: 'hidden', marginTop: '4px' }}>
+                                <div style={{
+                                    height: '100%',
+                                    width: `${dashboardStats.collectionRate}%`,
+                                    background: 'linear-gradient(90deg, var(--success-500), var(--success-600))',
+                                    borderRadius: '4px',
+                                    transition: 'width 1s ease'
+                                }} />
+                            </div>
+                            <p className="text-xs text-muted" style={{ margin: 0 }}>
+                                Goal: 100% by end of term
+                            </p>
+                            <button
+                                onClick={async () => {
+                                    if (confirm('This will send SMS reminders to all parents with overdue balances. Proceed?')) {
+                                        const res = await fetch('/api/communication/reminders', { method: 'POST' });
+                                        const data = await res.json();
+                                        alert(data.message || 'Reminders sent!');
+                                    }
+                                }}
+                                className="btn btn-secondary btn-sm"
+                                style={{ marginTop: 'var(--spacing-md)', fontSize: '0.7rem' }}
+                            >
+                                Send Auto-Reminders
+                            </button>
+                        </div>
+                    </div>
+                )}
+
 
                 {/* Pending Approvals Banner */}
                 {pendingApprovals.length > 0 && (role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && (
@@ -293,6 +358,41 @@ export default function DashboardPage() {
                             <div>
                                 <div className="font-semibold text-sm">View Reports</div>
                                 <div className="text-xs text-muted">Collections & defaulters</div>
+                            </div>
+                        </Link>
+                    </div>
+                )}
+
+                {/* Parent Quick Actions */}
+                {role === 'PARENT' && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--spacing-xl)', marginBottom: 'var(--spacing-xl)' }}>
+                        <Link href="/dashboard/receipts" className="card hover-card" style={{ padding: 'var(--spacing-xl)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)', textDecoration: 'none', color: 'inherit', border: '1px solid var(--border)' }}>
+                            <div style={{ padding: '16px', background: 'var(--success-100)', color: 'var(--success-600)', borderRadius: 'var(--radius-lg)' }}>
+                                <FileText size={28} />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <div className="font-semibold" style={{ fontSize: '1.125rem' }}>Receipt Wallet</div>
+                                <div className="text-sm text-muted">Download official fee payment slips</div>
+                            </div>
+                        </Link>
+
+                        <Link href="/dashboard/payments" className="card hover-card" style={{ padding: 'var(--spacing-xl)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)', textDecoration: 'none', color: 'inherit', border: '1px solid var(--border)' }}>
+                            <div style={{ padding: '16px', background: 'var(--primary-100)', color: 'var(--primary-600)', borderRadius: 'var(--radius-lg)' }}>
+                                <DollarSign size={28} />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <div className="font-semibold" style={{ fontSize: '1.125rem' }}>Pay Fees</div>
+                                <div className="text-sm text-muted">Make direct payments via M-Pesa</div>
+                            </div>
+                        </Link>
+
+                        <Link href="/dashboard/children" className="card hover-card" style={{ padding: 'var(--spacing-xl)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)', textDecoration: 'none', color: 'inherit', border: '1px solid var(--border)' }}>
+                            <div style={{ padding: '16px', background: 'var(--secondary-100)', color: 'var(--secondary-600)', borderRadius: 'var(--radius-lg)' }}>
+                                <Users size={28} />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <div className="font-semibold" style={{ fontSize: '1.125rem' }}>My Children</div>
+                                <div className="text-sm text-muted">View academic and fee statements</div>
                             </div>
                         </Link>
                     </div>
@@ -482,6 +582,6 @@ export default function DashboardPage() {
                     }
                 }
             `}</style>
-        </DashboardLayout>
+        </DashboardLayout >
     )
 }

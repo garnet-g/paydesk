@@ -60,7 +60,11 @@ export async function GET(req: Request) {
                 },
                 school: {
                     select: {
-                        name: true
+                        name: true,
+                        logoUrl: true,
+                        primaryColor: true,
+                        secondaryColor: true,
+                        tagline: true
                     }
                 },
                 invoice: {

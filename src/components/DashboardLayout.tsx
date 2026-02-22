@@ -67,6 +67,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: 'Classes', href: '/dashboard/classes', icon: Layers, roles: ['PRINCIPAL'] },
         { name: 'Fee Setup', href: '/dashboard/fee-setup', icon: BookOpen, roles: ['PRINCIPAL'] },
         { name: 'My Children', href: '/dashboard/children', icon: Users, roles: ['PARENT'] },
+        { name: 'Receipt Wallet', href: '/dashboard/receipts', icon: FileText, roles: ['PARENT'] },
         { name: 'Payments', href: '/dashboard/payments', icon: DollarSign, roles: ['SUPER_ADMIN', 'PRINCIPAL', 'PARENT', 'FINANCE_MANAGER'] },
         { name: 'Invoices', href: '/dashboard/invoices', icon: FileText, roles: ['PRINCIPAL', 'PARENT', 'FINANCE_MANAGER'] },
         { name: 'Reports', href: '/dashboard/reports', icon: BarChart3, roles: ['PRINCIPAL', 'FINANCE_MANAGER'], requiresPro: true },
