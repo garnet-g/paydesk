@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
 export default function SettingsPage() {
     const { data: session, update } = useSession()
@@ -36,7 +37,8 @@ export default function SettingsPage() {
     const [confirmPassword, setConfirmPassword] = useState('')
 
     // Branding States
-    const [logoUrl, setLogoUrl] = useState(session?.user?.logoUrl || '')
+    const [logoPreview, setLogoPreview] = useState(session?.user?.logoUrl || '')
+    const [logoFile, setLogoFile] = useState<File | null>(null)
     const [primaryColor, setPrimaryColor] = useState('#4f46e5')
     const [tagline, setTagline] = useState('')
 
@@ -50,7 +52,9 @@ export default function SettingsPage() {
                     const res = await fetch(`/api/schools/${session.user.schoolId}`)
                     if (res.ok) {
                         const data = await res.json()
-                        if (data.logoUrl) setLogoUrl(data.logoUrl)
+                        if (data.logoUrl) {
+                            setLogoPreview(data.logoUrl)
+                        }
                         if (data.primaryColor) setPrimaryColor(data.primaryColor)
                         if (data.tagline) setTagline(data.tagline)
                     }
@@ -147,11 +151,35 @@ export default function SettingsPage() {
             return
         }
 
+        setLogoFile(file)
         const reader = new FileReader()
         reader.onloadend = () => {
-            setLogoUrl(reader.result as string)
+            setLogoPreview(reader.result as string)
         }
         reader.readAsDataURL(file)
+    }
+
+    const uploadToSupabase = async (file: File): Promise<string | null> => {
+        if (!session?.user?.schoolId) return null
+
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${session.user.schoolId}-${Math.random()}.${fileExt}`
+        const filePath = `logos/${fileName}`
+
+        const { data, error } = await supabase.storage
+            .from('school-assets')
+            .upload(filePath, file, { cacheControl: '3600', upsert: true })
+
+        if (error) {
+            console.error('Supabase Upload Error:', error)
+            throw new Error('Failed to upload image to storage')
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+            .from('school-assets')
+            .getPublicUrl(filePath)
+
+        return publicUrl
     }
 
     const handleUpdateBranding = async () => {
@@ -162,10 +190,17 @@ export default function SettingsPage() {
         setSuccess('')
 
         try {
+            let finalLogoUrl = logoPreview
+
+            if (logoFile) {
+                const uploadedUrl = await uploadToSupabase(logoFile)
+                if (uploadedUrl) finalLogoUrl = uploadedUrl
+            }
+
             const res = await fetch(`/api/schools/${session.user.schoolId}/branding`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ logoUrl, primaryColor, tagline })
+                body: JSON.stringify({ logoUrl: finalLogoUrl, primaryColor, tagline })
             })
 
             if (res.ok) {
@@ -174,7 +209,7 @@ export default function SettingsPage() {
                 await update({
                     user: {
                         ...session?.user,
-                        logoUrl: logoUrl
+                        logoUrl: finalLogoUrl
                     }
                 })
                 // Refresh the page to ensure all components (Sidebar, etc) pick up the change
@@ -191,7 +226,8 @@ export default function SettingsPage() {
     }
 
     const removeLogo = () => {
-        setLogoUrl('')
+        setLogoPreview('')
+        setLogoFile(null)
     }
 
     const isPrincipalOrAdmin = ['PRINCIPAL', 'SUPER_ADMIN'].includes(session?.user?.role || '')
@@ -246,8 +282,8 @@ export default function SettingsPage() {
                                             background: 'var(--neutral-50)',
                                             position: 'relative'
                                         }}>
-                                            {logoUrl ? (
-                                                <img src={logoUrl} alt="Logo Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                            {logoPreview ? (
+                                                <img src={logoPreview} alt="Logo Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                             ) : (
                                                 <SchoolIcon size={40} className="text-muted" opacity={0.3} />
                                             )}
@@ -257,7 +293,7 @@ export default function SettingsPage() {
                                                 <Camera size={14} /> Upload
                                                 <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
                                             </label>
-                                            {logoUrl && (
+                                            {logoPreview && (
                                                 <button className="btn btn-ghost btn-xs text-error" onClick={removeLogo}>
                                                     <Trash2 size={14} /> Remove
                                                 </button>
