@@ -9,10 +9,16 @@ export default function ClassManager() {
     const [classes, setClasses] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [showAddModal, setShowAddModal] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false)
     const [submitting, setSubmitting] = useState(false)
 
-    // Add Class Form State
+    // Forms State
     const [formData, setFormData] = useState({
+        name: '',
+        stream: ''
+    })
+    const [editData, setEditData] = useState({
+        id: '',
         name: '',
         stream: ''
     })
@@ -72,6 +78,42 @@ export default function ClassManager() {
         }
     }
 
+    const handleEditSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setSubmitting(true)
+        try {
+            const res = await fetch(`/api/classes/${editData.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: editData.name,
+                    stream: editData.stream
+                })
+            })
+
+            if (res.ok) {
+                fetchClasses()
+                setShowEditModal(false)
+            } else {
+                const err = await res.text()
+                alert('Error: ' + err)
+            }
+        } catch (error) {
+            alert('Failed to update class')
+        } finally {
+            setSubmitting(false)
+        }
+    }
+
+    const openEditModal = (cls: any) => {
+        setEditData({
+            id: cls.id,
+            name: cls.name,
+            stream: cls.stream || ''
+        })
+        setShowEditModal(true)
+    }
+
     const openFeeModal = async (cls: any) => {
         setSelectedClass(cls)
         setShowFeeModal(true)
@@ -117,6 +159,24 @@ export default function ClassManager() {
             alert('Failed to add fee')
         } finally {
             setSubmitting(false)
+        }
+    }
+
+    const handleRemoveFee = async (feeId: string) => {
+        if (!confirm('Are you sure you want to remove this fee? It will be removed from all pending invoices.')) return
+
+        try {
+            const res = await fetch(`/api/fee-structures/${feeId}`, {
+                method: 'DELETE'
+            })
+
+            if (res.ok) {
+                if (selectedClass) fetchClassFees(selectedClass.id)
+            } else {
+                alert('Failed to remove fee')
+            }
+        } catch (error) {
+            alert('Error removing fee')
         }
     }
 
@@ -218,6 +278,7 @@ export default function ClassManager() {
                                                     className="btn btn-ghost btn-sm"
                                                     title="Edit Class"
                                                     style={{ padding: '6px' }}
+                                                    onClick={() => openEditModal(cls)}
                                                 >
                                                     <Edit2 size={14} />
                                                 </button>
@@ -277,9 +338,18 @@ export default function ClassManager() {
                                                     <div className="font-semibold text-sm">{fee.name}</div>
                                                     <span className="badge badge-neutral" style={{ fontSize: '0.625rem' }}>{fee.category}</span>
                                                 </div>
-                                                <div style={{ textAlign: 'right' }}>
-                                                    <div className="font-semibold">{formatCurrency(fee.amount)}</div>
-                                                    <div className="text-xs text-muted">per term</div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
+                                                    <div style={{ textAlign: 'right' }}>
+                                                        <div className="font-semibold">{formatCurrency(fee.amount)}</div>
+                                                        <div className="text-xs text-muted">per term</div>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleRemoveFee(fee.id)}
+                                                        className="btn btn-ghost btn-xs text-error"
+                                                        style={{ padding: '4px' }}
+                                                    >
+                                                        <X size={14} />
+                                                    </button>
                                                 </div>
                                             </div>
                                         ))}
@@ -424,6 +494,67 @@ export default function ClassManager() {
                                     disabled={submitting}
                                 >
                                     {submitting ? <Loader2 className="animate-spin" size={18} /> : 'Create Class'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Class Modal */}
+            {showEditModal && (
+                <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+                    <div className="modal-content" style={{ maxWidth: '460px', padding: 0 }} onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3 className="modal-title">Edit Class</h3>
+                            <button onClick={() => setShowEditModal(false)} className="btn btn-ghost btn-sm">
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleEditSubmit}>
+                            <div className="modal-body">
+                                <div className="form-group" style={{ marginBottom: 'var(--spacing-lg)' }}>
+                                    <label className="form-label">Class Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        required
+                                        placeholder="e.g. Grade 1"
+                                        value={editData.name}
+                                        onChange={e => setEditData({ ...editData, name: e.target.value })}
+                                        autoFocus
+                                    />
+                                    <p className="text-xs text-muted" style={{ marginTop: '4px' }}>The name students and parents will see</p>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Stream (Optional)</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        placeholder="e.g. East, Blue, A"
+                                        value={editData.stream}
+                                        onChange={e => setEditData({ ...editData, stream: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() => setShowEditModal(false)}
+                                    disabled={submitting}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    disabled={submitting}
+                                >
+                                    {submitting ? <Loader2 className="animate-spin" size={18} /> : 'Save Changes'}
                                 </button>
                             </div>
                         </form>
