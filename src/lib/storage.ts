@@ -1,19 +1,31 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+// Lazy client initialization
+let supabaseAdmin: any = null
 
-// Use service role key for administrative tasks like creating buckets
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+function getSupabaseAdmin() {
+    if (!supabaseAdmin) {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+        if (!supabaseUrl || !supabaseServiceKey) {
+            throw new Error('Supabase credentials missing')
+        }
+
+        supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+    }
+    return supabaseAdmin
+}
 
 export async function uploadLogo(schoolId: string, base64Data: string): Promise<string> {
+    const admin = getSupabaseAdmin()
     // 1. Ensure bucket exists
-    const { data: buckets } = await supabaseAdmin.storage.listBuckets()
+    const { data: buckets } = await admin.storage.listBuckets()
     const bucketName = 'logos'
 
-    if (!buckets?.find(b => b.name === bucketName)) {
-        await supabaseAdmin.storage.createBucket(bucketName, {
+    if (!buckets?.find((b: any) => b.name === bucketName)) {
+        await admin.storage.createBucket(bucketName, {
             public: true,
             allowedMimeTypes: ['image/png', 'image/jpeg', 'image/svg+xml'],
             fileSizeLimit: 2 * 1024 * 1024 // 2MB
@@ -32,7 +44,7 @@ export async function uploadLogo(schoolId: string, base64Data: string): Promise<
 
     // 3. Upload
     const fileName = `${schoolId}-${Date.now()}.png`
-    const { data, error } = await supabaseAdmin.storage
+    const { data, error } = await admin.storage
         .from(bucketName)
         .upload(fileName, blob, {
             contentType: mimeString,
@@ -45,7 +57,7 @@ export async function uploadLogo(schoolId: string, base64Data: string): Promise<
     }
 
     // 4. Get Public URL
-    const { data: urlData } = supabaseAdmin.storage
+    const { data: urlData } = admin.storage
         .from(bucketName)
         .getPublicUrl(data.path)
 
