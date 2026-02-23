@@ -113,8 +113,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     flexDirection: 'column',
                     transition: 'transform var(--transition-base)',
                     zIndex: 50,
-                    backdropFilter: 'blur(10px)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(12px)',
+                    backgroundColor: 'rgba(250, 250, 249, 0.85)', /* Stone-50 with transparency */
                 }}
                 className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}
             >
