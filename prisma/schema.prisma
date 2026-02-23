@@ -51,6 +51,10 @@ model School {
   secondaryColor     String?
   accentColor        String?
   tagline            String?
+  motto              String?
+  mpesaPaybill       String?
+  currentTerm        String?             @default("Term 1")
+  currentYear        String?
   emailFooter        String?
   billingCycle       String              @default("MONTHLY")
   nextBillingDate    DateTime?

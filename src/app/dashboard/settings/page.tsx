@@ -11,60 +11,92 @@ import {
     Bell,
     CheckCircle2,
     AlertCircle,
-    Calendar,
-    Plus,
     Check,
-    School as SchoolIcon,
+    Building2,
+    CreditCard,
+    Crown,
     Camera,
     Trash2,
-    Palette
+    Palette,
+    ArrowRight
 } from 'lucide-react'
-import { formatDate } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+
+const plans = [
+    { id: "FREE", name: "Starter", price: "KES 2,500/mo", students: "Up to 200 students", features: ["Fee collection", "Basic reports", "SMS receipts"] },
+    { id: "PRO", name: "Growth", price: "KES 5,000/mo", students: "Up to 500 students", features: ["Everything in Starter", "M-Pesa STK Push", "Email receipts", "Analytics"] },
+    { id: "ENTERPRISE", name: "Premium", price: "KES 10,000/mo", students: "Unlimited students", features: ["Everything in Growth", "API access", "Priority support", "Custom branding"] },
+]
 
 export default function SettingsPage() {
     const { data: session, update } = useSession()
     const router = useRouter()
-    const [loading, setLoading] = useState(false)
-    const [brandingLoading, setBrandingLoading] = useState(false)
+
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
     const [success, setSuccess] = useState('')
     const [error, setError] = useState('')
+
+    // Form Stats
+    const [form, setForm] = useState({
+        school_name: "",
+        school_motto: "",
+        phone: "",
+        email: "",
+        address: "",
+        current_term: "Term 1",
+        current_year: new Date().getFullYear().toString(),
+        mpesa_paybill: "",
+        subscription_plan: "FREE",
+    })
 
     // Password States
     const [currentPassword, setCurrentPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [passwordLoading, setPasswordLoading] = useState(false)
 
     // Branding States
     const [logoPreview, setLogoPreview] = useState(session?.user?.logoUrl || '')
     const [logoFile, setLogoFile] = useState<File | null>(null)
     const [primaryColor, setPrimaryColor] = useState('#4f46e5')
     const [tagline, setTagline] = useState('')
+    const [brandingLoading, setBrandingLoading] = useState(false)
 
+    // Maintenance
     const [maintenanceMode, setMaintenanceMode] = useState(false)
     const [maintenanceLoading, setMaintenanceLoading] = useState(false)
 
     useEffect(() => {
-        const fetchSchoolDetails = async () => {
+        const fetchData = async () => {
             if (session?.user?.schoolId) {
                 try {
-                    const res = await fetch(`/api/schools/${session.user.schoolId}`)
+                    const res = await fetch(`/api/schools/${session.user.schoolId}/settings`)
                     if (res.ok) {
                         const data = await res.json()
-                        if (data.logoUrl) {
-                            setLogoPreview(data.logoUrl)
-                        }
-                        if (data.primaryColor) setPrimaryColor(data.primaryColor)
-                        if (data.tagline) setTagline(data.tagline)
+                        setForm({
+                            school_name: data.name || "",
+                            school_motto: data.motto || "",
+                            phone: data.phoneNumber || "",
+                            email: data.email || "",
+                            address: data.address || "",
+                            current_term: data.currentTerm || "Term 1",
+                            current_year: data.currentYear || new Date().getFullYear().toString(),
+                            mpesa_paybill: data.mpesaPaybill || "",
+                            subscription_plan: data.planTier || "FREE",
+                        })
+                        setLogoPreview(data.logoUrl || "")
+                        setPrimaryColor(data.primaryColor || "#4f46e5")
+                        setTagline(data.tagline || "")
                     }
                 } catch (err) {
-                    console.error('Failed to fetch school details:', err)
+                    console.error('Failed to fetch settings:', err)
+                } finally {
+                    setLoading(false)
                 }
             }
-        }
 
-        const fetchMaintenanceSate = async () => {
             if (session?.user?.role === 'SUPER_ADMIN') {
                 try {
                     const res = await fetch('/api/admin/maintenance')
@@ -76,44 +108,57 @@ export default function SettingsPage() {
             }
         }
 
-        fetchSchoolDetails()
-        fetchMaintenanceSate()
+        fetchData()
     }, [session?.user?.schoolId, session?.user?.role])
 
-    const handleToggleMaintenance = async () => {
-        if (!confirm(`Are you sure you want to ${maintenanceMode ? 'disable' : 'enable'} Global Maintenance Mode?\n\nThis will lock out EVERY user on the platform except Super Admins.`)) return
+    const handleSaveSettings = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!session?.user?.schoolId) return
 
-        setMaintenanceLoading(true)
+        setSaving(true)
+        setError('')
+        setSuccess('')
+
         try {
-            const res = await fetch('/api/admin/maintenance', {
-                method: 'POST',
+            const res = await fetch(`/api/schools/${session.user.schoolId}/settings`, {
+                method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ active: !maintenanceMode })
+                body: JSON.stringify({
+                    name: form.school_name,
+                    motto: form.school_motto,
+                    phoneNumber: form.phone,
+                    email: form.email,
+                    address: form.address,
+                    currentTerm: form.current_term,
+                    currentYear: form.current_year,
+                    mpesaPaybill: form.mpesa_paybill,
+                    planTier: form.subscription_plan
+                })
             })
+
             if (res.ok) {
-                const data = await res.json()
-                setMaintenanceMode(data.active)
-                setSuccess(`Maintenance Mode successfully ${data.active ? 'enabled. All non-admin accounts are locked out.' : 'disabled. System is back online.'}`)
+                setSuccess('Settings saved successfully!')
                 setTimeout(() => setSuccess(''), 5000)
             } else {
-                setError('Failed to update maintenance mode')
+                const data = await res.json()
+                setError(data.error || 'Failed to save settings')
             }
         } catch (err) {
-            setError('Error updating maintenance state')
+            setError('An error occurred. Please try again.')
         } finally {
-            setMaintenanceLoading(false)
+            setSaving(false)
         }
     }
 
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault()
-        setLoading(true)
+        setPasswordLoading(true)
         setError('')
         setSuccess('')
 
         if (newPassword !== confirmPassword) {
             setError('New passwords do not match')
-            setLoading(false)
+            setPasswordLoading(false)
             return
         }
 
@@ -138,7 +183,7 @@ export default function SettingsPage() {
         } catch (err) {
             setError('An error occurred. Please try again.')
         } finally {
-            setLoading(false)
+            setPasswordLoading(false)
         }
     }
 
@@ -170,10 +215,7 @@ export default function SettingsPage() {
             .from('school-assets')
             .upload(filePath, file, { cacheControl: '3600', upsert: true })
 
-        if (error) {
-            console.error('Supabase Upload Error:', error)
-            throw new Error('Failed to upload image to storage')
-        }
+        if (error) throw new Error('Failed to upload logo')
 
         const { data: { publicUrl } } = supabase.storage
             .from('school-assets')
@@ -204,373 +246,339 @@ export default function SettingsPage() {
             })
 
             if (res.ok) {
-                setSuccess('School branding updated successfully! Refreshing...')
-                // Force update session with the new logo
+                setSuccess('Branding updated!')
                 await update({
-                    user: {
-                        ...session?.user,
-                        logoUrl: finalLogoUrl
-                    }
+                    user: { ...session?.user, logoUrl: finalLogoUrl }
                 })
-                // Refresh the page to ensure all components (Sidebar, etc) pick up the change
                 setTimeout(() => window.location.reload(), 1500)
             } else {
-                const data = await res.json()
-                setError(data.error || 'Failed to update branding')
+                setError('Failed to update branding')
             }
         } catch (err) {
-            setError('An error occurred. Please try again.')
+            setError('Branding update error')
         } finally {
             setBrandingLoading(false)
         }
     }
 
-    const removeLogo = () => {
-        setLogoPreview('')
-        setLogoFile(null)
+    const handleToggleMaintenance = async () => {
+        if (!confirm('Toggle global maintenance mode?')) return
+
+        setMaintenanceLoading(true)
+        try {
+            const res = await fetch('/api/admin/maintenance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ active: !maintenanceMode })
+            })
+            if (res.ok) {
+                const data = await res.json()
+                setMaintenanceMode(data.active)
+                setSuccess(`Maintenance Mode ${data.active ? 'Enabled' : 'Disabled'}`)
+            }
+        } catch (err) { }
+        finally { setMaintenanceLoading(false) }
     }
+
+    if (loading) return (
+        <DashboardLayout>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+                <div className="spinner"></div>
+            </div>
+        </DashboardLayout>
+    )
 
     const isPrincipalOrAdmin = ['PRINCIPAL', 'SUPER_ADMIN'].includes(session?.user?.role || '')
     const isPro = ['PRO', 'ENTERPRISE'].includes(session?.user?.planTier || 'FREE') || session?.user?.role === 'SUPER_ADMIN'
 
     return (
         <DashboardLayout>
-            <div className="animate-fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-                    <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Account Settings</h2>
-                    <p className="text-muted">Manage your profile and security preferences</p>
+            <div className="animate-fade-in" style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: 'var(--spacing-3xl)' }}>
+                {/* Header Section */}
+                <div style={{ marginBottom: 'var(--spacing-2xl)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    <div>
+                        <h1 style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--neutral-900)', letterSpacing: '-0.02em', margin: 0 }}>Settings</h1>
+                        <p style={{ color: 'var(--neutral-500)', marginTop: '4px' }}>School configuration and institutional preferences</p>
+                    </div>
                 </div>
 
+                {success && <div className="alert alert-success mt-md mb-md animate-slide-up"><CheckCircle2 size={18} /> {success}</div>}
+                {error && <div className="alert alert-error mt-md mb-md animate-slide-up"><AlertCircle size={18} /> {error}</div>}
+
                 <div className="grid grid-cols-1 gap-xl">
-                    {/* Branding Section (Principals Only) */}
-                    {isPrincipalOrAdmin && (
-                        <div className="card" style={{ position: 'relative', overflow: 'hidden' }}>
-                            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    background: 'var(--primary-50)',
-                                    color: 'var(--primary-600)',
-                                    borderRadius: 'var(--radius-md)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
-                                    <Palette size={20} />
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                    <div>
-                                        <h3 className="card-title">School Branding</h3>
-                                        <p className="card-description">Customize your school's visual identity</p>
-                                    </div>
-                                    {!isPro && <span className="badge badge-warning" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Lock size={12} /> PRO Feature</span>}
-                                </div>
-                            </div>
 
-                            <div className="card-content" style={{ opacity: isPro ? 1 : 0.3, pointerEvents: isPro ? 'auto' : 'none' }}>
-                                <div style={{ display: 'flex', gap: 'var(--spacing-xl)', alignItems: 'flex-start' }}>
-                                    <div style={{ textAlign: 'center' }}>
-                                        <div style={{
-                                            width: '120px',
-                                            height: '120px',
-                                            borderRadius: 'var(--radius-lg)',
-                                            border: '2px dashed var(--border)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            overflow: 'hidden',
-                                            background: 'var(--neutral-50)',
-                                            position: 'relative'
-                                        }}>
-                                            {logoPreview ? (
-                                                <img src={logoPreview} alt="Logo Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                                            ) : (
-                                                <SchoolIcon size={40} className="text-muted" opacity={0.3} />
-                                            )}
-                                        </div>
-                                        <div style={{ display: 'flex', gap: 'var(--spacing-xs)', marginTop: 'var(--spacing-md)', justifyContent: 'center' }}>
-                                            <label className="btn btn-ghost btn-xs" style={{ cursor: 'pointer' }}>
-                                                <Camera size={14} /> Upload
-                                                <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
-                                            </label>
-                                            {logoPreview && (
-                                                <button className="btn btn-ghost btn-xs text-error" onClick={removeLogo}>
-                                                    <Trash2 size={14} /> Remove
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div style={{ flex: 1 }}>
-                                        <div className="form-group">
-                                            <label className="form-label">School Tagline</label>
-                                            <input
-                                                type="text"
-                                                className="form-input"
-                                                placeholder="e.g. Striving for Excellence"
-                                                value={tagline}
-                                                onChange={(e) => setTagline(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group" style={{ marginBottom: 0 }}>
-                                            <label className="form-label">Primary Brand Color</label>
-                                            <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
-                                                <input
-                                                    type="color"
-                                                    className="form-input"
-                                                    style={{ width: '50px', padding: '2px', height: '40px' }}
-                                                    value={primaryColor}
-                                                    onChange={(e) => setPrimaryColor(e.target.value)}
-                                                />
-                                                <input
-                                                    type="text"
-                                                    className="form-input"
-                                                    value={primaryColor}
-                                                    onChange={(e) => setPrimaryColor(e.target.value)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
+                    {/* 1. School Information Card */}
+                    <div className="card shadow-md">
+                        <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', background: 'var(--primary-50)', color: 'var(--primary-600)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Building2 size={20} />
                                 </div>
-                                <div style={{ marginTop: 'var(--spacing-xl)', display: 'flex', justifyContent: 'flex-end' }}>
-                                    <button className="btn btn-primary" onClick={handleUpdateBranding} disabled={brandingLoading}>
-                                        {brandingLoading ? <div className="spinner spinner-sm"></div> : <><Save size={18} /> Save Branding</>}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {!isPro && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '72px',
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    background: 'rgba(255, 255, 255, 0.4)',
-                                    backdropFilter: 'blur(4px)',
-                                    zIndex: 10
-                                }}>
-                                    <div style={{ background: 'white', padding: 'var(--spacing-lg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-lg)', textAlign: 'center', maxWidth: '320px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <Lock size={32} style={{ color: 'var(--warning-500)', marginBottom: 'var(--spacing-md)' }} />
-                                        <h4 style={{ fontWeight: 600, marginBottom: 'var(--spacing-xs)' }}>Unlock Custom Branding</h4>
-                                        <p className="text-sm text-muted" style={{ marginBottom: 'var(--spacing-md)' }}>Upgrade to a PRO plan to upload your school's logo and customize dashboard colors.</p>
-                                        <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => alert('Contact your Super Admin to upgrade your platform tier.')}>Upgrade Plan</button>
-                                    </div>
-                                </div>
-                            )}
-
-                        </div>
-                    )}
-
-                    {/* Profile Section */}
-                    <div className="card">
-                        <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                            <div style={{
-                                width: '40px',
-                                height: '40px',
-                                background: 'var(--secondary-50)',
-                                color: 'var(--secondary-600)',
-                                borderRadius: 'var(--radius-md)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <User size={20} />
-                            </div>
-                            <div>
-                                <h3 className="card-title">Profile Information</h3>
-                                <p className="card-description">Your basic account details</p>
+                                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>School Information</h3>
                             </div>
                         </div>
-                        <div className="card-content">
-                            <div className="grid grid-cols-2 gap-md">
-                                <div className="form-group">
-                                    <label className="form-label">Full Name</label>
-                                    <input type="text" className="form-input" value={session?.user?.name || ''} disabled />
+                        <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
+                            <form onSubmit={handleSaveSettings} className="grid grid-cols-1 sm:grid-cols-2 gap-xl">
+                                <div className="sm:col-span-2 form-group">
+                                    <label className="form-label">School Name</label>
+                                    <input type="text" className="form-input"
+                                        value={form.school_name}
+                                        onChange={(e) => setForm({ ...form, school_name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="sm:col-span-2 form-group">
+                                    <label className="form-label">School Motto / Tagline</label>
+                                    <input type="text" className="form-input"
+                                        value={form.school_motto}
+                                        onChange={(e) => setForm({ ...form, school_motto: e.target.value })}
+                                    />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">Email Address</label>
-                                    <input type="email" className="form-input" value={session?.user?.email || ''} disabled />
+                                    <label className="form-label">Contact Phone</label>
+                                    <input type="text" className="form-input"
+                                        value={form.phone}
+                                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                                    />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">Role</label>
-                                    <input type="text" className="form-input" value={session?.user?.role || ''} disabled />
+                                    <label className="form-label">Institutional Email</label>
+                                    <input type="email" className="form-input"
+                                        value={form.email}
+                                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                    />
+                                </div>
+                                <div className="sm:col-span-2 form-group">
+                                    <label className="form-label">Physical Address</label>
+                                    <input type="text" className="form-input"
+                                        value={form.address}
+                                        onChange={(e) => setForm({ ...form, address: e.target.value })}
+                                    />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">School</label>
-                                    <input type="text" className="form-input" value={session?.user?.schoolName || 'System'} disabled />
+                                    <label className="form-label">Current Academic Term</label>
+                                    <select className="form-input" value={form.current_term} onChange={(e) => setForm({ ...form, current_term: e.target.value })}>
+                                        <option value="Term 1">Term 1</option>
+                                        <option value="Term 2">Term 2</option>
+                                        <option value="Term 3">Term 3</option>
+                                    </select>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Security Section */}
-                    <div className="card">
-                        <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                            <div style={{
-                                width: '40px',
-                                height: '40px',
-                                background: 'var(--warning-50)',
-                                color: 'var(--warning-600)',
-                                borderRadius: 'var(--radius-md)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <Shield size={20} />
-                            </div>
-                            <div>
-                                <h3 className="card-title">Password & Security</h3>
-                                <p className="card-description">Change your password to keep your account secure</p>
-                            </div>
-                        </div>
-                        <div className="card-content">
-                            <form onSubmit={handlePasswordChange}>
-                                {success && (
-                                    <div className="alert alert-success" style={{ marginBottom: 'var(--spacing-md)' }}>
-                                        <CheckCircle2 size={18} />
-                                        {success}
-                                    </div>
-                                )}
-                                {error && (
-                                    <div className="alert alert-error" style={{ marginBottom: 'var(--spacing-md)' }}>
-                                        <AlertCircle size={18} />
-                                        {error}
-                                    </div>
-                                )}
-
                                 <div className="form-group">
-                                    <label className="form-label">Current Password</label>
-                                    <div style={{ position: 'relative' }}>
-                                        <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
-                                        <input
-                                            type="password"
-                                            className="form-input"
-                                            style={{ paddingLeft: '40px' }}
-                                            required
-                                            value={currentPassword}
-                                            onChange={(e) => setCurrentPassword(e.target.value)}
-                                        />
-                                    </div>
+                                    <label className="form-label">Current Year</label>
+                                    <input type="text" className="form-input"
+                                        value={form.current_year}
+                                        onChange={(e) => setForm({ ...form, current_year: e.target.value })}
+                                    />
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-md">
-                                    <div className="form-group">
-                                        <label className="form-label">New Password</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
-                                            <input
-                                                type="password"
-                                                className="form-input"
-                                                style={{ paddingLeft: '40px' }}
-                                                required
-                                                value={newPassword}
-                                                onChange={(e) => setNewPassword(e.target.value)}
-                                                minLength={6}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="form-label">Confirm New Password</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
-                                            <input
-                                                type="password"
-                                                className="form-input"
-                                                style={{ paddingLeft: '40px' }}
-                                                required
-                                                value={confirmPassword}
-                                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style={{ marginTop: 'var(--spacing-lg)', display: 'flex', justifyContent: 'flex-end' }}>
-                                    <button type="submit" className="btn btn-primary" disabled={loading}>
-                                        {loading ? <div className="spinner spinner-sm"></div> : <><Save size={18} /> Update Password</>}
+                                <div className="sm:col-span-2" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'var(--spacing-md)' }}>
+                                    <button type="submit" className="btn btn-primary" disabled={saving} style={{ width: '160px' }}>
+                                        {saving ? <div className="spinner spinner-xs"></div> : <><Save size={18} /> Save Changes</>}
                                     </button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    {/* Support Section */}
-                    <div className="card">
-                        <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                            <div style={{
-                                width: '40px',
-                                height: '40px',
-                                background: 'var(--indigo-50)',
-                                color: 'var(--indigo-600)',
-                                borderRadius: 'var(--radius-md)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <Bell size={20} />
-                            </div>
-                            <div>
-                                <h3 className="card-title">System Support</h3>
-                                <p className="card-description">Need help with your account?</p>
+                    {/* 2. M-Pesa Configuration Card */}
+                    <div className="card shadow-md">
+                        <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', background: 'var(--success-50)', color: 'var(--success-600)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <CreditCard size={20} />
+                                </div>
+                                <div>
+                                    <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>M-Pesa Configuration</h3>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--neutral-500)' }}>Configure automated payment collection</p>
+                                </div>
                             </div>
                         </div>
-                        <div className="card-content">
-                            <p className="text-sm text-muted mb-lg">
-                                If you're having trouble with your account or noticed any issues, please contact the technical support team.
-                            </p>
-                            <button className="btn btn-outline" onClick={() => router.push('/dashboard/inquiries')}>
-                                Contact Support
-                            </button>
+                        <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
+                            <div className="form-group">
+                                <label className="form-label">Paybill Number</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    placeholder="e.g. 247247"
+                                    value={form.mpesa_paybill}
+                                    onChange={(e) => setForm({ ...form, mpesa_paybill: e.target.value })}
+                                />
+                            </div>
+                            <div style={{ marginTop: 'var(--spacing-md)', display: 'flex', gap: 'var(--spacing-md)', background: 'var(--neutral-50)', padding: 'var(--spacing-md)', borderRadius: 'var(--radius-md)' }}>
+                                <AlertCircle size={20} className="text-warning-500" style={{ flexShrink: 0 }} />
+                                <p style={{ fontSize: '0.85rem', color: 'var(--neutral-600)', margin: 0 }}>
+                                    <strong>Note:</strong> Enabling automated STK Push requires M-Pesa Daraja API credentials. Contact the support team to complete your integration.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Super Admin System Operations */}
-                    {session?.user?.role === 'SUPER_ADMIN' && (
-                        <div className="card" style={{ borderColor: 'var(--error-200)', background: 'var(--error-50)' }}>
-                            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    background: 'var(--error-100)',
-                                    color: 'var(--error-700)',
-                                    borderRadius: 'var(--radius-md)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
-                                    <AlertCircle size={20} />
+                    {/* 3. Subscription Plans Card */}
+                    <div className="card shadow-md">
+                        <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', background: 'var(--warning-50)', color: 'var(--warning-600)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Crown size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="card-title text-error-700">System Operations (Super Admin)</h3>
-                                    <p className="card-description text-error-600">Global platform controls</p>
+                                    <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>Subscription Plan</h3>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--neutral-500)' }}>Choose a tier that fits your institution's scale</p>
                                 </div>
                             </div>
-                            <div className="card-content">
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div>
-                                        <h4 className="font-semibold" style={{ marginBottom: '4px' }}>Maintenance Mode</h4>
-                                        <p className="text-sm text-error-600">Lock out all users across all schools. Only Super Admins can log in.</p>
+                        </div>
+                        <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
+                                {plans.map((plan) => {
+                                    const isActive = form.subscription_plan === plan.id;
+                                    return (
+                                        <div
+                                            key={plan.id}
+                                            onClick={() => setForm({ ...form, subscription_plan: plan.id })}
+                                            className="card clickable"
+                                            style={{
+                                                padding: 'var(--spacing-lg)',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease',
+                                                borderColor: isActive ? 'var(--primary-500)' : 'var(--neutral-100)',
+                                                background: isActive ? 'var(--primary-50)' : 'white',
+                                                scale: isActive ? '1.02' : '1',
+                                                position: 'relative'
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                                <h4 style={{ fontWeight: 800, fontSize: '1rem', margin: 0 }}>{plan.name}</h4>
+                                                {isActive && <div className="badge badge-primary">Current</div>}
+                                            </div>
+                                            <p style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--neutral-900)', margin: '0 0 4px' }}>{plan.price}</p>
+                                            <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', marginBottom: '16px' }}>{plan.students}</p>
+                                            <div className="space-y-sm">
+                                                {plan.features.map(f => (
+                                                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--neutral-600)' }}>
+                                                        <Check size={14} className="text-primary-500" /> {f}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 4. Branding Section (Preserved Functionality) */}
+                    {isPrincipalOrAdmin && (
+                        <div className="card shadow-md">
+                            <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '36px', height: '36px', background: 'var(--indigo-50)', color: 'var(--indigo-600)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Palette size={20} />
                                     </div>
-                                    <button
-                                        className={`btn ${maintenanceMode ? 'btn-error' : 'btn-outline'}`}
-                                        onClick={handleToggleMaintenance}
-                                        disabled={maintenanceLoading}
-                                    >
-                                        {maintenanceLoading ? 'Updating...' : maintenanceMode ? 'Turn Off Maintenance' : 'Enable Maintenance Mode'}
-                                    </button>
+                                    <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>Visual Identity</h3>
+                                </div>
+                            </div>
+                            <div className="card-content" style={{ padding: 'var(--spacing-xl)', opacity: isPro ? 1 : 0.4, pointerEvents: isPro ? 'auto' : 'none', position: 'relative' }}>
+                                {!isPro && (
+                                    <div style={{ position: 'absolute', inset: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(2px)' }}>
+                                        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: 'var(--shadow-xl)', textAlign: 'center', maxWidth: '300px' }}>
+                                            <Lock size={32} style={{ margin: '0 auto 12px', color: 'var(--warning-500)' }} />
+                                            <h4 style={{ fontWeight: 800 }}>PRO Feature</h4>
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginBottom: '1rem' }}>Upgrade to unlock custom logos and branding colors.</p>
+                                            <button className="btn btn-primary btn-sm w-full" onClick={() => router.push('/dashboard/subscription')}>Upgrade Plan</button>
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-xl">
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ width: '120px', height: '120px', margin: '0 auto', borderRadius: 'var(--radius-lg)', border: '2px dashed var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: 'var(--neutral-50)' }}>
+                                            {logoPreview ? <img src={logoPreview} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <Building2 size={40} className="text-muted" />}
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px' }}>
+                                            <label className="btn btn-ghost btn-xs" style={{ cursor: 'pointer' }}>
+                                                <Camera size={14} /> Upload
+                                                <input type="file" hidden onChange={handleLogoUpload} />
+                                            </label>
+                                            {logoPreview && <button className="btn btn-ghost btn-xs text-error" onClick={() => setLogoPreview('')}><Trash2 size={14} /></button>}
+                                        </div>
+                                    </div>
+                                    <div className="md:col-span-3 space-y-md">
+                                        <div className="form-group">
+                                            <label className="form-label">Primary Brand Color</label>
+                                            <div style={{ display: 'flex', gap: '12px' }}>
+                                                <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} style={{ width: '60px', height: '40px', padding: '2px', borderRadius: '8px' }} />
+                                                <input type="text" className="form-input" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} />
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                            <button className="btn btn-primary btn-sm" onClick={handleUpdateBranding} disabled={brandingLoading}>
+                                                {brandingLoading ? "Saving..." : "Apply Branding"}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     )}
 
+                    {/* 5. Password & Security */}
+                    <div className="card shadow-md">
+                        <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', background: 'var(--error-50)', color: 'var(--error-600)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Shield size={20} />
+                                </div>
+                                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>Security Settings</h3>
+                            </div>
+                        </div>
+                        <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
+                            <form onSubmit={handlePasswordChange} className="space-y-md">
+                                <div className="form-group">
+                                    <label className="form-label">Current Password</label>
+                                    <input type="password" required className="form-input" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+                                    <div className="form-group">
+                                        <label className="form-label">New Password</label>
+                                        <input type="password" required className="form-input" value={newPassword} onChange={e => setNewPassword(e.target.value)} minLength={6} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Confirm New Password</label>
+                                        <input type="password" required className="form-input" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <button type="submit" className="btn btn-primary btn-sm" disabled={passwordLoading}>
+                                        {passwordLoading ? "Updating..." : "Change Password"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    {/* 6. Super Admin Operations */}
+                    {session?.user?.role === 'SUPER_ADMIN' && (
+                        <div className="card" style={{ border: '2px solid var(--error-200)', background: 'var(--error-50)' }}>
+                            <div className="card-header" style={{ padding: 'var(--spacing-lg)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <AlertCircle size={24} className="text-error-600" />
+                                    <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--error-700)', margin: 0 }}>Global Platform Controls</h3>
+                                </div>
+                            </div>
+                            <div className="card-content" style={{ padding: '0 var(--spacing-lg) var(--spacing-lg)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--error-700)', margin: 0 }}>
+                                        <strong>Maintenance Mode:</strong> Lock all access across entire platform.
+                                    </p>
+                                    <button
+                                        className={`btn btn-sm ${maintenanceMode ? 'btn-error' : 'btn-outline'}`}
+                                        onClick={handleToggleMaintenance}
+                                        disabled={maintenanceLoading}
+                                    >
+                                        {maintenanceMode ? "Turn Off Maintenance" : "Go Global Maintenance"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </DashboardLayout>
     )
 }
-
