@@ -57,6 +57,7 @@ model School {
   planStatus         String              @default("ACTIVE")
   planTier           String              @default("FREE")
   subscriptionFee    Decimal             @default(0) @db.Decimal(10, 2)
+  lastBillingNotification DateTime?
   academicPeriods    AcademicPeriod[]
   approvalRequests   ApprovalRequest[]
   attendance         Attendance[]
@@ -70,10 +71,27 @@ model School {
   payments           Payment[]
   paymentCommitments PaymentCommitment[]
   reminderRules      ReminderRule[]
+  subscriptionPayments SubscriptionPayment[]
   students           Student[]
   users              User[]
 
   @@index([code])
+}
+
+model SubscriptionPayment {
+  id              String      @id @default(cuid())
+  amount          Decimal     @db.Decimal(10, 2)
+  status          String      @default("PENDING") // PENDING, COMPLETED, FAILED
+  transactionRef  String?     @unique
+  phoneNumber     String?
+  checkoutRequestID String?   @unique
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  schoolId        String
+  school          School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId])
 }
 
 model Class {

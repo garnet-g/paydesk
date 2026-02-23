@@ -255,5 +255,48 @@ export const CommunicationEngine = {
                 schoolId: user.schoolId || undefined
             })
         }
+    },
+
+    /**
+     * Notify School Principal of Past Due Platform Subscription
+     */
+    async notifySchoolPastDue(schoolId: string) {
+        const school = await prisma.school.findUnique({
+            where: { id: schoolId },
+            include: {
+                users: {
+                    where: { role: 'PRINCIPAL' },
+                    take: 1
+                }
+            }
+        })
+
+        if (!school || !school.users[0]) return
+
+        const principal = school.users[0]
+        const message = `URGENT: Your PayDesk platform subscription for ${school.name} is PAST DUE. To avoid service interruption for your staff and parents, please settle the outstanding balance of KES ${school.subscriptionFee}. Thank you.`
+
+        if (principal.phoneNumber) {
+            await this.sendSMS({
+                to: principal.phoneNumber,
+                message,
+                schoolId: school.id
+            })
+        }
+
+        if (principal.email) {
+            await this.sendEmail({
+                to: principal.email,
+                subject: `URGENT: Platform Subscription Past Due - ${school.name}`,
+                message,
+                schoolId: school.id
+            })
+        }
+
+        // Track last notification
+        await prisma.school.update({
+            where: { id: schoolId },
+            data: { lastBillingNotification: new Date() }
+        })
     }
 }
