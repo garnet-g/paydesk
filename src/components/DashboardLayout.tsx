@@ -113,6 +113,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     flexDirection: 'column',
                     transition: 'transform var(--transition-base)',
                     zIndex: 50,
+                    backdropFilter: 'blur(10px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
                 }}
                 className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}
             >
@@ -124,13 +126,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             height: '48px',
                             background: session?.user?.logoUrl ? 'white' : 'var(--primary-600)',
                             color: 'white',
-                            borderRadius: '14px',
+                            borderRadius: '18px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             fontSize: '1.25rem',
                             fontWeight: 800,
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                            boxShadow: '0 8px 16px -4px rgba(0,0,0,0.1)',
                             border: '2px solid white',
                             overflow: 'hidden',
                             flexShrink: 0
