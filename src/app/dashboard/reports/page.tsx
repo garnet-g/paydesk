@@ -58,8 +58,8 @@ export default function ReportsPage() {
                             <TrendingUp size={16} />
                             FINANCIAL INTELLIGENCE
                         </div>
-                        <h2 style={{ fontSize: '2.25rem', fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>Executive Summary</h2>
-                        <p className="text-muted" style={{ fontSize: '1.125rem', marginTop: '4px' }}>Strategic insights for institutional financial health.</p>
+                        <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>Executive Summary</h2>
+                        <p className="text-muted" style={{ fontSize: '1rem', marginTop: '4px' }}>Strategic insights for institutional financial health.</p>
                     </div>
                     <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
                         <button className="btn btn-outline btn-sm" style={{ gap: '8px' }}>
@@ -72,7 +72,7 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Pulse Score & Forecasting */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-xl mb-2xl">
+                <div className="reports-top-grid">
                     {/* Collection Intelligence Card */}
                     <div className="card" style={{
                         background: 'linear-gradient(145deg, var(--background), var(--neutral-50))',
@@ -154,7 +154,7 @@ export default function ReportsPage() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+                <div className="reports-bottom-grid">
                     {/* Class Performance Table */}
                     <div className="lg:col-span-3 card" style={{ padding: 0 }}>
                         <div style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -214,7 +214,7 @@ export default function ReportsPage() {
                     </div>
 
                     {/* Drill-down Navigation */}
-                    <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
+                    <div className="reports-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
                         <Link href="/dashboard/reports/defaulters" className="card hover-card group" style={{ textDecoration: 'none', color: 'inherit', padding: 'var(--spacing-xl)', border: '1px solid var(--error-200)', background: 'var(--error-50)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-md)' }}>
                                 <div style={{
@@ -243,6 +243,20 @@ export default function ReportsPage() {
             </div>
 
             <style jsx>{`
+                .reports-top-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: var(--spacing-xl);
+                    margin-bottom: var(--spacing-2xl);
+                }
+                .reports-bottom-grid {
+                    display: grid;
+                    grid-template-columns: 3fr 2fr;
+                    gap: var(--spacing-xl);
+                }
+                .reports-sidebar {
+                    /* default: flows in grid */
+                }
                 .hover-card {
                     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 }
@@ -252,6 +266,23 @@ export default function ReportsPage() {
                 }
                 .group:hover .group-hover\:opacity-100 {
                     opacity: 1;
+                }
+                @media (max-width: 1024px) {
+                    .reports-top-grid {
+                        grid-template-columns: 1fr;
+                    }
+                    .reports-bottom-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+                @media (max-width: 768px) {
+                    .reports-top-grid {
+                        gap: var(--spacing-md);
+                        margin-bottom: var(--spacing-xl);
+                    }
+                    .reports-bottom-grid {
+                        gap: var(--spacing-md);
+                    }
                 }
             `}</style>
         </DashboardLayout>
