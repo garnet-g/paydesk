@@ -77,7 +77,7 @@ export const CommunicationEngine = {
             const resend = new Resend(process.env.RESEND_API_KEY)
 
             const { error } = await resend.emails.send({
-                from: 'PayDesk <notifications@paydesk.app>',
+                from: 'PayDesk <onboarding@resend.dev>', // TODO: swap to your verified domain email once set up
                 to: [to],
                 subject: resolvedSubject,
                 html: `
