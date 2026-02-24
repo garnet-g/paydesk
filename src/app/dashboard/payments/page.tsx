@@ -41,6 +41,7 @@ export default function PaymentsPage() {
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null)
     const [paymentMethod, setPaymentMethod] = useState('MPESA')
     const [phoneNumber, setPhoneNumber] = useState('')
+    const [customAmount, setCustomAmount] = useState('')
     const [isProcessing, setIsProcessing] = useState(false)
     const [paymentSuccess, setPaymentSuccess] = useState(false)
     const [students, setStudents] = useState<any[]>([])
@@ -174,6 +175,7 @@ export default function PaymentsPage() {
 
     const handlePayClick = (invoice: any) => {
         setSelectedInvoice(invoice)
+        setCustomAmount(invoice.balance.toString())
         setShowPayModal(true)
         setPaymentSuccess(false)
         if (session?.user?.phoneNumber) {
@@ -186,6 +188,10 @@ export default function PaymentsPage() {
             alert('Please enter a phone number')
             return
         }
+        if (!customAmount || Number(customAmount) <= 0) {
+            alert('Please enter a valid amount')
+            return
+        }
 
         setIsProcessing(true)
         try {
@@ -196,6 +202,7 @@ export default function PaymentsPage() {
                     studentId: selectedInvoice.studentId,
                     invoiceId: selectedInvoice.id,
                     phoneNumber: phoneNumber,
+                    amount: customAmount // Passing custom amount
                 })
             })
 
@@ -349,28 +356,30 @@ export default function PaymentsPage() {
             <div className="animate-fade-in">
                 {/* Page Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
-                    <div>
+                    <div style={{ flex: '1 1 300px' }}>
                         <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Payments</h2>
                         <p className="text-muted">
                             {isSuperAdmin ? 'Global payment monitoring and financial logs' : isParent ? 'Manage your school fees and payment history' : 'Track and manage payment records'}
                         </p>
                     </div>
 
-                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center', flexWrap: 'wrap' }}>
                         {isAdmin && (
                             <button
                                 className="btn btn-primary"
                                 onClick={() => setShowManualModal(true)}
+                                style={{ width: '100%', smWidth: 'auto' } as any}
                             >
                                 <Plus size={18} />
                                 Record Manual Payment
                             </button>
                         )}
                         {(isAdmin) && (
-                            <div style={{ display: 'flex', background: 'var(--neutral-100)', padding: '4px', borderRadius: 'var(--radius-lg)', gap: '2px' }}>
+                            <div style={{ display: 'flex', background: 'var(--neutral-100)', padding: '4px', borderRadius: 'var(--radius-lg)', gap: '2px', width: '100%', smWidth: 'auto' } as any}>
                                 <button
                                     onClick={() => setActiveTab('ledger')}
                                     style={{
+                                        flex: 1,
                                         padding: '8px 16px',
                                         borderRadius: 'var(--radius-md)',
                                         fontSize: '0.8125rem',
@@ -388,6 +397,7 @@ export default function PaymentsPage() {
                                 <button
                                     onClick={() => setActiveTab('approvals')}
                                     style={{
+                                        flex: 1,
                                         padding: '8px 16px',
                                         borderRadius: 'var(--radius-md)',
                                         fontSize: '0.8125rem',
@@ -400,6 +410,7 @@ export default function PaymentsPage() {
                                         boxShadow: activeTab === 'approvals' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
                                         display: 'flex',
                                         alignItems: 'center',
+                                        justifyContent: 'center',
                                         gap: '6px'
                                     }}
                                 >
@@ -419,8 +430,8 @@ export default function PaymentsPage() {
                 </div>
 
                 {/* Filter Bar */}
-                <div className="card" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'var(--spacing-md)' }}>
+                <div className="card" style={{ marginBottom: 'var(--spacing-lg)', padding: 'var(--spacing-md)' }}>
+                    <div className="flex sm:flex-col lg:flex-row gap-md items-center sm:items-stretch">
                         <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
                             <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
                             <input
@@ -431,46 +442,48 @@ export default function PaymentsPage() {
                             />
                         </div>
 
-                        {isSuperAdmin && (
+                        <div className="flex gap-md sm:flex-col md:flex-row">
+                            {isSuperAdmin && (
+                                <select
+                                    className="form-select"
+                                    style={{ minWidth: '160px' }}
+                                    value={filters.schoolId}
+                                    onChange={(e) => setFilters({ ...filters, schoolId: e.target.value })}
+                                >
+                                    <option value="">All Schools</option>
+                                    {schools.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                </select>
+                            )}
+
                             <select
                                 className="form-select"
-                                style={{ minWidth: '160px' }}
-                                value={filters.schoolId}
-                                onChange={(e) => setFilters({ ...filters, schoolId: e.target.value })}
+                                style={{ minWidth: '140px' }}
+                                value={filters.status}
+                                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                             >
-                                <option value="">All Schools</option>
-                                {schools.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                <option value="">All Status</option>
+                                <option value="COMPLETED">Completed</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="FAILED">Failed</option>
+                                <option value="DISPUTED">Disputed</option>
                             </select>
-                        )}
 
-                        <select
-                            className="form-select"
-                            style={{ minWidth: '140px' }}
-                            value={filters.status}
-                            onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                        >
-                            <option value="">All Status</option>
-                            <option value="COMPLETED">Completed</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="FAILED">Failed</option>
-                            <option value="DISPUTED">Disputed</option>
-                        </select>
-
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-                            <button
-                                className="btn btn-ghost btn-sm"
-                                onClick={fetchPayments}
-                                title="Refresh"
-                                style={{ padding: '8px' }}
-                            >
-                                <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-                            </button>
-                            {isAdmin && (
-                                <button className="btn btn-secondary btn-sm" onClick={() => window.open('/api/payments/export', '_blank')}>
-                                    <Download size={14} />
-                                    Export CSV
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+                                <button
+                                    className="btn btn-ghost btn-sm"
+                                    onClick={fetchPayments}
+                                    title="Refresh"
+                                    style={{ padding: '8px', flex: 1 }}
+                                >
+                                    <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
                                 </button>
-                            )}
+                                {isAdmin && (
+                                    <button className="btn btn-secondary btn-sm" onClick={() => window.open('/api/payments/export', '_blank')} style={{ flex: 3 }}>
+                                        <Download size={14} />
+                                        Export CSV
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -702,7 +715,7 @@ export default function PaymentsPage() {
                             )}
 
                             {/* Transaction Table */}
-                            <div>
+                            <div style={{ minWidth: 0 }}>
                                 <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                                     <div className="card-header">
                                         <div>
@@ -710,7 +723,7 @@ export default function PaymentsPage() {
                                             <p className="card-description">Verified payment records</p>
                                         </div>
                                     </div>
-                                    <div className="table-wrapper">
+                                    <div className="responsive-container">
                                         <table className="table">
                                             <thead>
                                                 <tr>
@@ -913,9 +926,27 @@ export default function PaymentsPage() {
                                             position: 'relative'
                                         }}>
                                             <div style={{ fontSize: '0.6875rem', opacity: 0.7, marginBottom: '4px' }}>Amount Payable</div>
-                                            <div style={{ fontSize: '2rem', fontWeight: 800 }}>{formatCurrency(selectedInvoice?.balance)}</div>
-                                            <div style={{ marginTop: 'var(--spacing-sm)', fontSize: '0.6875rem', opacity: 0.7 }}>
-                                                {selectedInvoice?.student?.firstName} • {selectedInvoice?.invoiceNumber}
+                                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                                <span style={{ fontSize: '1.5rem', fontWeight: 800 }}>KES</span>
+                                                <input
+                                                    type="number"
+                                                    value={customAmount}
+                                                    onChange={(e) => setCustomAmount(e.target.value)}
+                                                    style={{
+                                                        background: 'transparent',
+                                                        border: 'none',
+                                                        borderBottom: '2px solid rgba(255,255,255,0.5)',
+                                                        color: 'white',
+                                                        fontSize: '2rem',
+                                                        fontWeight: 800,
+                                                        width: '100%',
+                                                        outline: 'none'
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                                                <button onClick={() => setCustomAmount(selectedInvoice?.balance?.toString())} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>Pay Total ({formatCurrency(selectedInvoice?.balance)})</button>
+                                                <button onClick={() => setCustomAmount((selectedInvoice?.balance / 2)?.toString())} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>Pay Half</button>
                                             </div>
                                         </div>
                                     </div>

@@ -282,7 +282,7 @@ model AcademicPeriod {
 
 model Payment {
   id             String        @id @default(cuid())
-  transactionRef String
+  transactionRef String        @unique
   amount         Decimal       @db.Decimal(10, 2)
   method         String
   status         String        @default("PENDING")
@@ -303,7 +303,6 @@ model Payment {
   student        Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
   transactions   Transaction[]
 
-  @@unique([schoolId, transactionRef])
   @@index([schoolId])
   @@index([studentId])
   @@index([status])

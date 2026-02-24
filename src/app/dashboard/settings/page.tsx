@@ -14,7 +14,6 @@ import {
     Check,
     Building2,
     CreditCard,
-    Crown,
     Camera,
     Trash2,
     Palette,
@@ -25,12 +24,6 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { motion } from 'framer-motion'
 
-const plans = [
-    { id: "FREE", name: "Starter", price: "KES 2,500/mo", students: "Up to 200 students", features: ["Fee collection", "Basic reports", "SMS receipts"] },
-    { id: "PRO", name: "Growth", price: "KES 5,000/mo", students: "Up to 500 students", features: ["Everything in Starter", "M-Pesa STK Push", "Email receipts", "Analytics"] },
-    { id: "ENTERPRISE", name: "Premium", price: "KES 10,000/mo", students: "Unlimited students", features: ["Everything in Growth", "API access", "Priority support", "Custom branding"] },
-]
-
 export default function SettingsPage() {
     const { data: session, update } = useSession()
     const router = useRouter()
@@ -39,7 +32,7 @@ export default function SettingsPage() {
     const [saving, setSaving] = useState(false)
     const [success, setSuccess] = useState('')
     const [error, setError] = useState('')
-    const [activeTab, setActiveTab] = useState<'general' | 'payments' | 'billing' | 'branding' | 'security' | 'admin'>('general')
+    const [activeTab, setActiveTab] = useState<'general' | 'payments' | 'branding' | 'security' | 'admin'>('general')
 
     // Form Stats
     const [form, setForm] = useState({
@@ -297,7 +290,6 @@ export default function SettingsPage() {
     const tabs = [
         { id: 'general', label: 'General', icon: Building2 },
         { id: 'payments', label: 'Payments', icon: CreditCard },
-        { id: 'billing', label: 'Billing', icon: Crown },
         ...(isPrincipalOrAdmin ? [{ id: 'branding', label: 'Branding', icon: Palette }] : []),
         { id: 'security', label: 'Security', icon: Shield },
         ...(session?.user?.role === 'SUPER_ADMIN' ? [{ id: 'admin', label: 'Admin', icon: AlertCircle }] : [])
@@ -315,10 +307,10 @@ export default function SettingsPage() {
                 {success && <div className="alert alert-success mt-md mb-md animate-slide-up"><CheckCircle2 size={18} /> {success}</div>}
                 {error && <div className="alert alert-error mt-md mb-md animate-slide-up"><AlertCircle size={18} /> {error}</div>}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 'var(--spacing-2xl)', alignItems: 'start' }}>
+                <div className="settings-grid" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 'var(--spacing-2xl)', alignItems: 'start' }}>
 
                     {/* Mini Menu (Side Tabs) */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div className="scroll-x-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         {tabs.map((tab) => {
                             const Icon = tab.icon
                             const isActive = activeTab === tab.id
@@ -339,19 +331,20 @@ export default function SettingsPage() {
                                         transition: 'all 0.2s ease',
                                         textAlign: 'left',
                                         fontWeight: isActive ? 700 : 500,
-                                        fontSize: '0.9rem'
+                                        fontSize: '0.9rem',
+                                        flexShrink: 0
                                     }}
                                 >
                                     <Icon size={18} />
                                     {tab.label}
-                                    {isActive && <motion.div layoutId="activeTabIndicator" style={{ marginLeft: 'auto', width: '4px', height: '16px', background: 'white', borderRadius: '2px' }} />}
+                                    {isActive && <motion.div layoutId="activeTabIndicator" className="hide-mobile" style={{ marginLeft: 'auto', width: '4px', height: '16px', background: 'white', borderRadius: '2px' }} />}
                                 </button>
                             )
                         })}
                     </div>
 
                     {/* Content Area */}
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in" style={{ minWidth: 0 }}>
                         {/* GENERAL TAB */}
                         {activeTab === 'general' && (
                             <div className="card shadow-md">
@@ -436,58 +429,6 @@ export default function SettingsPage() {
                             </div>
                         )}
 
-                        {/* BILLING TAB */}
-                        {activeTab === 'billing' && (
-                            <div className="card shadow-md">
-                                <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
-                                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Subscription & Tiers</h3>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px' }}>Manage your PayDesk platform plan based on your school's size.</p>
-                                </div>
-                                <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
-                                        {plans.map((plan) => {
-                                            const isActive = form.subscription_plan === plan.id;
-                                            return (
-                                                <div
-                                                    key={plan.id}
-                                                    onClick={() => setForm({ ...form, subscription_plan: plan.id })}
-                                                    className="card clickable"
-                                                    style={{
-                                                        padding: 'var(--spacing-lg)',
-                                                        cursor: 'pointer',
-                                                        transition: 'all 0.3s ease',
-                                                        borderColor: isActive ? 'var(--primary-500)' : 'var(--neutral-200)',
-                                                        background: isActive ? 'var(--primary-50)' : 'white',
-                                                        transform: isActive ? 'translateY(-4px)' : 'none',
-                                                        boxShadow: isActive ? 'var(--shadow-lg)' : 'none'
-                                                    }}
-                                                >
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                                                        <h4 style={{ fontWeight: 800, fontSize: '1rem', margin: 0 }}>{plan.name}</h4>
-                                                        {isActive && <div className="badge badge-primary">Active</div>}
-                                                    </div>
-                                                    <p style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--neutral-900)', margin: '0' }}>{plan.price}</p>
-                                                    <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', marginBottom: '16px', fontWeight: 600 }}>{plan.students}</p>
-                                                    <hr style={{ border: 'none', borderTop: '1px solid var(--neutral-100)', margin: '12px 0' }} />
-                                                    <div className="space-y-sm">
-                                                        {plan.features.map(f => (
-                                                            <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: 'var(--neutral-600)' }}>
-                                                                <Check size={14} className="text-primary-500" /> {f}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                    <div style={{ marginTop: 'var(--spacing-xl)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--neutral-50)', padding: 'var(--spacing-md)', borderRadius: '12px' }}>
-                                        <p style={{ fontSize: '0.85rem', color: 'var(--neutral-600)', margin: 0 }}>Need a custom Enterprise plan?</p>
-                                        <button className="btn btn-primary" onClick={handleSaveSettings} disabled={saving}>Save Tier Selection</button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
                         {/* BRANDING TAB */}
                         {activeTab === 'branding' && isPrincipalOrAdmin && (
                             <div className="card shadow-md">
@@ -502,7 +443,7 @@ export default function SettingsPage() {
                                                 <Lock size={40} style={{ margin: '0 auto 16px', color: 'var(--warning-500)' }} />
                                                 <h4 style={{ fontWeight: 900, fontSize: '1.25rem' }}>PRO Branding</h4>
                                                 <p style={{ fontSize: '0.9rem', color: 'var(--neutral-500)', marginBottom: '1.5rem', lineHeight: 1.5 }}>Upload your logo and change dashboard colors to match your school's brand.</p>
-                                                <button className="btn btn-primary w-full" style={{ height: '48px' }} onClick={() => setActiveTab('billing')}>Upgrade to Pro</button>
+                                                <button className="btn btn-primary w-full" style={{ height: '48px' }} onClick={() => alert('Please contact the PayDesk team to unlock PRO features.')}>Upgrade to Pro</button>
                                             </div>
                                         </div>
                                     )}
@@ -639,6 +580,20 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </div>
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .settings-grid {
+                        grid-template-columns: 1fr !important;
+                        gap: var(--spacing-lg) !important;
+                    }
+                    .scroll-x-mobile {
+                        flex-direction: row !important;
+                        margin-bottom: var(--spacing-md);
+                        padding: 4px;
+                        border-bottom: 1px solid var(--neutral-100);
+                    }
+                }
+            `}</style>
         </DashboardLayout>
     )
 }

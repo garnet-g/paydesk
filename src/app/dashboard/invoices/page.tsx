@@ -67,18 +67,19 @@ export default function InvoicesPage() {
     return (
         <DashboardLayout>
             <div className="animate-fade-in">
-                <div className="page-header">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
                     <div>
                         <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Invoices</h2>
                         <p className="text-muted">Manage student billing and fee structures</p>
                     </div>
-                    <div style={{ display: 'flex', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap', width: '100%', smWidth: 'auto' } as any}>
                         <button
                             className="btn btn-secondary"
                             onClick={() => window.print()}
+                            style={{ flex: 1, smWidth: 'auto' } as any}
                         >
                             <Printer size={18} />
-                            Print All
+                            Print
                         </button>
                         <button
                             className="btn btn-secondary"
@@ -87,14 +88,16 @@ export default function InvoicesPage() {
                                 if (statusFilter !== 'ALL') exportParams.append('status', statusFilter)
                                 window.open(`/api/invoices/export?${exportParams.toString()}`, '_blank')
                             }}
+                            style={{ flex: 1, smWidth: 'auto' } as any}
                         >
                             <Download size={18} />
-                            Export CSV
+                            Export
                         </button>
                         {session?.user.role === 'PRINCIPAL' && (
                             <button
                                 className="btn btn-primary"
                                 onClick={() => window.location.href = '/dashboard/invoices/bulk'}
+                                style={{ width: '100%', smWidth: 'auto' } as any}
                             >
                                 <Plus size={18} />
                                 New Billing Run
@@ -103,8 +106,8 @@ export default function InvoicesPage() {
                     </div>
                 </div>
 
-                <div className="card" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                    <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+                <div className="card" style={{ marginBottom: 'var(--spacing-lg)', padding: 'var(--spacing-md)' }}>
+                    <div className="flex sm:flex-col gap-md items-center sm:items-stretch">
                         <div style={{ position: 'relative', flex: 1 }}>
                             <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
                             <input
@@ -116,36 +119,32 @@ export default function InvoicesPage() {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <button
-                            className={`btn ${showFilters ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setShowFilters(!showFilters)}
-                        >
-                            <Filter size={18} />
-                            {showFilters ? 'Hide Filters' : 'Filter'}
-                        </button>
-                    </div>
-
-                    {showFilters && (
-                        <div style={{ marginTop: 'var(--spacing-md)', display: 'flex', gap: 'var(--spacing-md)' }}>
-                            <div className="form-group" style={{ marginBottom: 0 }}>
-                                <select
-                                    className="form-input text-xs"
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                >
-                                    <option value="ALL">All Statuses</option>
-                                    <option value="UNPAID">Unpaid</option>
-                                    <option value="PARTIALLY_PAID">Partially Paid</option>
-                                    <option value="PAID">Paid</option>
-                                    <option value="CANCELLED">Cancelled</option>
-                                </select>
-                            </div>
+                        <div className="flex gap-md w-full sm:w-auto" style={{ smWidth: '100%' } as any}>
+                            <select
+                                className="form-select"
+                                style={{ flex: 1 }}
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                            >
+                                <option value="ALL">All Status</option>
+                                <option value="UNPAID">Unpaid</option>
+                                <option value="PARTIALLY_PAID">Partially Paid</option>
+                                <option value="PAID">Paid</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                            <button
+                                className={`btn ${showFilters ? 'btn-primary' : 'btn-secondary'}`}
+                                onClick={() => setShowFilters(!showFilters)}
+                                style={{ padding: '8px' }}
+                            >
+                                <Filter size={18} />
+                            </button>
                         </div>
-                    )}
+                    </div>
                 </div>
 
                 <div className="card" style={{ padding: 0 }}>
-                    <div className="table-wrapper">
+                    <div className="responsive-container">
                         <table className="table">
                             <thead>
                                 <tr>

@@ -175,7 +175,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', borderLeft: '1px solid var(--border)', paddingLeft: 'var(--spacing-xl)' }}>
+                        <div className="collection-rate-container" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', paddingLeft: 'var(--spacing-xl)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span className="text-xs font-bold text-muted uppercase tracking-wider">Collection Rate</span>
                                 <span className="badge badge-success">{dashboardStats.collectionRate}%</span>
@@ -511,7 +511,7 @@ export default function DashboardPage() {
                         <h3 className="card-title">Recent Payments</h3>
                         <p className="card-description">Latest transactions across the school</p>
                     </div>
-                    <div className="table-wrapper">
+                    <div className="responsive-container">
                         <table className="table">
                             <thead>
                                 <tr>
@@ -565,6 +565,9 @@ export default function DashboardPage() {
                 .banner-subtitle {
                     font-size: 1.125rem;
                 }
+                .collection-rate-container {
+                    border-left: 1px solid var(--border);
+                }
                 @media (max-width: 768px) {
                     .banner-card {
                         padding: var(--spacing-lg);
@@ -574,6 +577,12 @@ export default function DashboardPage() {
                     }
                     .banner-subtitle {
                         font-size: 0.9375rem;
+                    }
+                    .collection-rate-container {
+                        border-left: none !important;
+                        padding-left: 0 !important;
+                        padding-top: var(--spacing-lg);
+                        border-top: 1px solid var(--border);
                     }
                 }
                 @media (max-width: 640px) {

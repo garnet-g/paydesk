@@ -75,6 +75,25 @@ export default function PlatformBillingPage() {
         }
     }
 
+    const handleDownloadRevenueReport = () => {
+        const headers = ['School Name', 'Code', 'Students', 'Tier', 'MRR', 'Status']
+        const csvContent = "data:text/csv;charset=utf-8,"
+            + headers.join(",") + "\n"
+            + schools.map(s => `"${s.name}","${s.code}",${s._count?.students || 0},"${s.planTier}",${s.subscriptionFee},"${s.planStatus}"`).join("\n")
+
+        const encodedUri = encodeURI(csvContent)
+        const link = document.createElement("a")
+        link.setAttribute("href", encodedUri)
+        link.setAttribute("download", "platform_revenue_report.csv")
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
+    const handleViewBillingLogic = () => {
+        alert("Billing Logic Pipeline:\n\n1. At 00:00 UTC on the 1st of each month, the platform automatically runs a CRON scan.\n2. Invoices are generated for schools on PRO/ENTERPRISE tiers based on student count per your schema.\n3. Schools have a 7-day grace period. If unpaid, status shifts to PAST_DUE and reminders are queued.\n4. Super Admins can manually send queued reminders from this dashboard.")
+    }
+
     if (session?.user?.role !== 'SUPER_ADMIN') {
         return (
             <DashboardLayout>
@@ -293,7 +312,11 @@ export default function PlatformBillingPage() {
                                 >
                                     <PlusCircle size={14} /> New Institutional Partner
                                 </button>
-                                <button className="btn btn-primary w-full" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', fontSize: '0.75rem' }}>
+                                <button
+                                    className="btn btn-primary w-full"
+                                    style={{ background: 'rgba(255,255,255,0.1)', border: 'none', fontSize: '0.75rem' }}
+                                    onClick={handleDownloadRevenueReport}
+                                >
                                     Download Revenue Report
                                 </button>
                             </div>
@@ -304,7 +327,7 @@ export default function PlatformBillingPage() {
                             <p className="text-xs text-muted" style={{ marginBottom: '16px' }}>Reminders are queued for principals of past due institutions.</p>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-                                <button className="btn btn-primary btn-sm w-full" style={{ fontSize: '0.75rem' }}>View Billing Logic</button>
+                                <button className="btn btn-primary btn-sm w-full" style={{ fontSize: '0.75rem' }} onClick={handleViewBillingLogic}>View Billing Logic</button>
 
                                 {totalPastDue > 0 && (
                                     <button

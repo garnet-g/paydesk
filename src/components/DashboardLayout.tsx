@@ -67,7 +67,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: 'Students', href: '/dashboard/students', icon: GraduationCap, roles: ['PRINCIPAL', 'FINANCE_MANAGER'] },
         { name: 'Classes', href: '/dashboard/classes', icon: Layers, roles: ['PRINCIPAL'] },
         { name: 'Fee Setup', href: '/dashboard/fee-setup', icon: BookOpen, roles: ['PRINCIPAL'] },
-        { name: 'Subscription', href: '/dashboard/subscription', icon: CreditCard, roles: ['PRINCIPAL'] },
         { name: 'My Children', href: '/dashboard/children', icon: Users, roles: ['PARENT'] },
         { name: 'Receipt Wallet', href: '/dashboard/receipts', icon: FileText, roles: ['PARENT'] },
         { name: 'Payments', href: '/dashboard/payments', icon: DollarSign, roles: ['SUPER_ADMIN', 'PRINCIPAL', 'PARENT', 'FINANCE_MANAGER'] },
@@ -118,21 +117,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 }}
                 className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}
             >
-                {/* School Profile Section */}
-                <div style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)' }}>
+                {/* Header Section */}
+                <div style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
                         <div style={{
-                            width: '48px',
-                            height: '48px',
+                            width: '40px',
+                            height: '40px',
                             background: session?.user?.logoUrl ? 'white' : 'var(--primary-600)',
                             color: 'white',
-                            borderRadius: '18px',
+                            borderRadius: '14px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '1.25rem',
+                            fontSize: '1.125rem',
                             fontWeight: 800,
-                            boxShadow: '0 8px 16px -4px rgba(0,0,0,0.1)',
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
                             border: '2px solid white',
                             overflow: 'hidden',
                             flexShrink: 0
@@ -148,28 +147,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             )}
                         </div>
                         <div style={{ minWidth: 0 }}>
-                            <h2 style={{ fontSize: '0.9375rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            <h2 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                 {session?.user?.schoolName || 'System Admin'}
                             </h2>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
-                                    {userRole.split('_').join(' ')}
-                                </p>
-                                {userRole !== 'SUPER_ADMIN' && (
-                                    <span style={{
-                                        fontSize: '0.65rem',
-                                        padding: '2px 6px',
-                                        borderRadius: '4px',
-                                        background: planTier === 'PRO' ? 'var(--primary-100)' : planTier === 'ENTERPRISE' ? 'var(--neutral-800)' : 'var(--neutral-200)',
-                                        color: planTier === 'PRO' ? 'var(--primary-700)' : planTier === 'ENTERPRISE' ? 'white' : 'var(--neutral-600)',
-                                        fontWeight: 800
-                                    }}>
-                                        {planTier}
-                                    </span>
-                                )}
-                            </div>
+                            <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+                                {userRole.split('_').join(' ')}
+                            </p>
                         </div>
                     </div>
+                    <button
+                        className="mobile-only"
+                        onClick={() => setSidebarOpen(false)}
+                        style={{ display: 'none', border: 'none', background: 'var(--neutral-100)', color: 'var(--neutral-600)', padding: '6px', borderRadius: '8px', cursor: 'pointer' }}
+                    >
+                        <X size={18} />
+                    </button>
                 </div>
 
                 {/* Navigation - Scrollable Area */}
@@ -287,7 +279,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <div style={{
                     padding: 'var(--spacing-lg) var(--spacing-xl)',
                     borderTop: '1px solid var(--border)',
-                    background: 'var(--background)'
+                    background: 'var(--card-bg)'
                 }}>
                     <div style={{ marginBottom: 'var(--spacing-lg)', minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', marginBottom: '8px' }}>
@@ -316,73 +308,44 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         </div>
                     </div>
 
-                    {/* Theme Toggle */}
-                    <button
-                        onClick={toggleTheme}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 'var(--spacing-sm)',
-                            width: '100%',
-                            padding: '10px',
-                            background: 'var(--neutral-50)',
-                            border: '1px solid var(--neutral-200)',
-                            borderRadius: '12px',
-                            color: 'var(--neutral-600)',
-                            fontSize: '0.8125rem',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            marginBottom: 'var(--spacing-sm)'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'var(--primary-50)'
-                            e.currentTarget.style.color = 'var(--primary-600)'
-                            e.currentTarget.style.borderColor = 'var(--primary-200)'
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'var(--neutral-50)'
-                            e.currentTarget.style.color = 'var(--neutral-600)'
-                            e.currentTarget.style.borderColor = 'var(--neutral-200)'
-                        }}
-                    >
-                        {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-                        <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
-                    </button>
-
-                    <button
-                        onClick={() => signOut({ callbackUrl: '/login' })}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 'var(--spacing-sm)',
-                            width: '100%',
-                            padding: '10px',
-                            background: 'var(--neutral-50)',
-                            border: '1px solid var(--neutral-200)',
-                            borderRadius: '12px',
-                            color: 'var(--neutral-600)',
-                            fontSize: '0.8125rem',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'var(--error-50)'
-                            e.currentTarget.style.color = 'var(--error-600)'
-                            e.currentTarget.style.borderColor = 'var(--error-200)'
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'var(--neutral-50)'
-                            e.currentTarget.style.color = 'var(--neutral-600)'
-                            e.currentTarget.style.borderColor = 'var(--neutral-200)'
-                        }}
-                    >
-                        <LogOut size={16} />
-                        <span>Sign Out</span>
-                    </button>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                        <button
+                            onClick={toggleTheme}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: '10px',
+                                background: 'var(--neutral-50)',
+                                border: '1px solid var(--neutral-200)',
+                                borderRadius: '12px',
+                                color: 'var(--neutral-600)',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            title={theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
+                        >
+                            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                        </button>
+                        <button
+                            onClick={() => signOut({ callbackUrl: '/login' })}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: '10px',
+                                background: 'var(--neutral-50)',
+                                border: '1px solid var(--neutral-200)',
+                                borderRadius: '12px',
+                                color: 'var(--neutral-600)',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            title="Sign Out"
+                        >
+                            <LogOut size={18} />
+                        </button>
+                    </div>
                 </div>
             </aside>
 
@@ -391,7 +354,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 flex: 1,
                 marginLeft: '280px',
                 transition: 'margin-left var(--transition-base)',
-                minWidth: 0, // CRITICAL: Allows flex child to shrink below its content's size
+                minWidth: 0,
                 overflowX: 'hidden'
             }} className="main-wrapper">
                 {/* Top bar */}
@@ -406,7 +369,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     minHeight: '64px',
-                    width: '100%'
+                    width: '100%',
+                    backdropFilter: 'blur(10px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', minWidth: 0 }}>
                         <button
@@ -414,49 +379,51 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             className="mobile-menu-btn"
                             style={{
                                 display: 'none',
-                                padding: 'var(--spacing-sm)',
-                                background: 'transparent',
+                                padding: '8px',
+                                background: 'var(--neutral-100)',
                                 border: 'none',
+                                borderRadius: '10px',
                                 cursor: 'pointer',
                                 color: 'var(--foreground)',
                                 flexShrink: 0
                             }}
                         >
-                            {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+                            <Menu size={22} />
                         </button>
 
                         <div className="mobile-only" style={{ display: 'none', minWidth: 0 }}>
-                            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary-700)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {session?.user?.schoolName || 'PayDesk'}
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                PayDesk
                             </h2>
                         </div>
 
                         <div className="hide-mobile" style={{ minWidth: 0 }}>
-                            <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.125rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            <h1 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                 {filteredNavigation.find(item => item.href === pathname)?.name || 'Dashboard'}
                             </h1>
-                            <p className="text-muted text-xs">
-                                Welcome back, {session?.user?.name?.split(' ')[0]}!
+                            <p className="text-muted" style={{ fontSize: '0.75rem', fontWeight: 500 }}>
+                                Welcome, {session?.user?.name?.split(' ')[0]}!
                             </p>
                         </div>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexShrink: 0 }}>
-                        <span className="badge badge-primary hide-mobile">
+                        <span className="badge badge-primary hide-mobile" style={{ fontSize: '0.7rem', fontWeight: 800 }}>
                             {userRole.replace('_', ' ')}
                         </span>
                         <div style={{
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            background: 'var(--primary-100)',
-                            color: 'var(--primary-700)',
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '12px',
+                            background: 'var(--primary-600)',
+                            color: 'white',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            flexShrink: 0
+                            fontSize: '0.85rem',
+                            fontWeight: 800,
+                            flexShrink: 0,
+                            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
                         }}>
                             {session?.user?.name?.[0]}
                         </div>
