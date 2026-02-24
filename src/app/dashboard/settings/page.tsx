@@ -208,14 +208,17 @@ export default function SettingsPage() {
         if (!session?.user?.schoolId) return null
 
         const fileExt = file.name.split('.').pop()
-        const fileName = `${session.user.schoolId}-${Math.random()}.${fileExt}`
+        const fileName = `${session.user.schoolId}-${crypto.randomUUID()}.${fileExt}`
         const filePath = `logos/${fileName}`
 
         const { data, error } = await supabase.storage
             .from('school-assets')
             .upload(filePath, file, { cacheControl: '3600', upsert: true })
 
-        if (error) throw new Error('Failed to upload logo')
+        if (error) {
+            setError('Logo upload failed: ' + error.message)
+            throw new Error('Failed to upload logo')
+        }
 
         const { data: { publicUrl } } = supabase.storage
             .from('school-assets')
@@ -246,16 +249,21 @@ export default function SettingsPage() {
             })
 
             if (res.ok) {
+                const saved = await res.json()
+                const confirmedLogoUrl = saved.logoUrl || finalLogoUrl
                 setSuccess('Branding updated!')
                 await update({
-                    user: { ...session?.user, logoUrl: finalLogoUrl }
+                    user: { ...session?.user, logoUrl: confirmedLogoUrl }
                 })
                 setTimeout(() => window.location.reload(), 1500)
             } else {
-                setError('Failed to update branding')
+                const data = await res.json()
+                setError(data.error || 'Failed to update branding')
             }
-        } catch (err) {
-            setError('Branding update error')
+        } catch (err: any) {
+            if (!err.message.includes('upload')) {
+                setError('Branding update error: ' + (err.message || 'Unknown error'))
+            }
         } finally {
             setBrandingLoading(false)
         }
