@@ -54,6 +54,8 @@ export default function PaymentsPage() {
         description: '',
         date: new Date().toISOString().split('T')[0]
     })
+    const [studentSearchTerm, setStudentSearchTerm] = useState('')
+    const [showStudentSearch, setShowStudentSearch] = useState(false)
 
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN'
     const isPrincipal = session?.user?.role === 'PRINCIPAL'
@@ -1040,21 +1042,62 @@ export default function PaymentsPage() {
                             </div>
                             <form onSubmit={handleRecordManualPayment}>
                                 <div className="modal-body">
-                                    <div className="form-group">
+                                    <div className="form-group" style={{ position: 'relative' }}>
                                         <label className="form-label">Select Student</label>
-                                        <select
-                                            className="form-select"
-                                            required
-                                            value={manualForm.studentId}
-                                            onChange={(e) => setManualForm({ ...manualForm, studentId: e.target.value })}
-                                        >
-                                            <option value="">Choose a student...</option>
-                                            {students.map(s => (
-                                                <option key={s.id} value={s.id}>
-                                                    {s.firstName} {s.lastName} (Adm: {s.admissionNumber})
-                                                </option>
-                                            ))}
-                                        </select>
+                                        <div style={{ position: 'relative' }}>
+                                            <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+                                            <input
+                                                type="text"
+                                                className="form-input"
+                                                required={!manualForm.studentId}
+                                                placeholder="Search student by name, adm, or school..."
+                                                style={{ paddingLeft: '36px' }}
+                                                value={manualForm.studentId
+                                                    ? `${students.find(s => s.id === manualForm.studentId)?.firstName || ''} ${students.find(s => s.id === manualForm.studentId)?.lastName || ''} - ${students.find(s => s.id === manualForm.studentId)?.admissionNumber || ''}`
+                                                    : studentSearchTerm}
+                                                onChange={(e) => {
+                                                    setStudentSearchTerm(e.target.value)
+                                                    setManualForm({ ...manualForm, studentId: '' })
+                                                    setShowStudentSearch(true)
+                                                }}
+                                                onFocus={() => setShowStudentSearch(true)}
+                                                onBlur={() => setTimeout(() => setShowStudentSearch(false), 200)} // delay to allow click event
+                                            />
+                                        </div>
+
+                                        {showStudentSearch && (
+                                            <div style={{
+                                                position: 'absolute', top: '100%', left: 0, right: 0,
+                                                background: 'var(--card-bg)', border: '1px solid var(--border)',
+                                                borderRadius: 'var(--radius-md)', zIndex: 100,
+                                                maxHeight: '250px', overflowY: 'auto',
+                                                boxShadow: 'var(--shadow-lg)', marginTop: '4px'
+                                            }}>
+                                                {students.filter(s => `${s.firstName} ${s.lastName} ${s.admissionNumber} ${s.school?.name || ''}`.toLowerCase().includes(studentSearchTerm.toLowerCase())).slice(0, 50).map(s => (
+                                                    <div
+                                                        key={s.id}
+                                                        style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid var(--border)', transition: 'background 0.2s' }}
+                                                        onClick={() => {
+                                                            setManualForm({ ...manualForm, studentId: s.id })
+                                                            setStudentSearchTerm(`${s.firstName} ${s.lastName}`)
+                                                            setShowStudentSearch(false)
+                                                        }}
+                                                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--neutral-50)'}
+                                                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                                    >
+                                                        <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{s.firstName} {s.lastName}</div>
+                                                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                                                            Adm: {s.admissionNumber} {isSuperAdmin && s.school ? ` • ${s.school.name}` : ''}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                {students.filter(s => `${s.firstName} ${s.lastName} ${s.admissionNumber} ${s.school?.name || ''}`.toLowerCase().includes(studentSearchTerm.toLowerCase())).length === 0 && (
+                                                    <div style={{ padding: '12px', fontSize: '0.875rem', color: 'var(--muted-foreground)', textAlign: 'center' }}>
+                                                        No students found.
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-md">
