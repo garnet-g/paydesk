@@ -13,9 +13,9 @@ export default function FeeSetupPage() {
         <DashboardLayout>
             <div className="animate-fade-in">
                 {/* Page Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
-                    <div>
-                        <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Fee Setup</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: 'var(--spacing-xl)' }}>
+                    <div style={{ minWidth: 0, flex: '1 1 auto' }}>
+                        <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 1.75rem)', marginBottom: 'var(--spacing-xs)', wordBreak: 'break-word' }}>Fee Setup</h2>
                         <p className="text-muted">Manage your fee structures and academic terms</p>
                     </div>
 

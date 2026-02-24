@@ -353,8 +353,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 flex: 1,
                 marginLeft: '280px',
                 transition: 'margin-left var(--transition-base)',
-                minWidth: 0,
-                overflowX: 'hidden'
+                minWidth: 0
             }} className="main-wrapper">
                 {/* Top bar */}
                 <header style={{
@@ -442,31 +441,37 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
 
             <style jsx>{`
+                .sidebar {
+                    transform: translateX(0);
+                }
                 .dashboard-main-content {
                     padding: var(--spacing-xl);
                 }
+                .mobile-only {
+                    display: none !important;
+                }
+                
                 @media (max-width: 768px) {
-                    .dashboard-main-content {
-                        padding: var(--spacing-md);
+                    .main-wrapper {
+                        marginLeft: 0 !important;
                     }
                     .sidebar {
                         transform: translateX(-100%);
-                        width: 260px !important;
                     }
                     .sidebar.sidebar-open {
                         transform: translateX(0);
                     }
-                    .main-wrapper {
-                        margin-left: 0 !important;
+                    .dashboard-main-content {
+                        padding: var(--spacing-md);
                     }
                     .mobile-menu-btn {
-                        display: block !important;
+                        display: flex !important;
                     }
                     .hide-mobile {
                         display: none !important;
                     }
                     .mobile-only {
-                        display: block !important;
+                        display: flex !important;
                     }
                 }
             `}</style>

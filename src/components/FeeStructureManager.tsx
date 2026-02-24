@@ -271,12 +271,12 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                     {Object.entries(groupedFees).map(([key, group]: [string, any]) => (
                         <div key={key} className="card" style={{ padding: 0, overflow: 'hidden' }}>
                             {/* Group Header */}
-                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <h3 className="card-title">{group.className}</h3>
+                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
+                                <div style={{ minWidth: 0, flex: '1 1 auto' }}>
+                                    <h3 className="card-title" style={{ wordBreak: 'break-word' }}>{group.className}</h3>
                                     <p className="card-description">{group.fees.length} fee {group.fees.length === 1 ? 'entry' : 'entries'}</p>
                                 </div>
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'right', flexShrink: 0 }}>
                                     <div className="text-xs text-muted" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>Section Total</div>
                                     <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--primary-700)' }}>
                                         KES {group.fees.reduce((sum: number, fee: any) => sum + fee.amount, 0).toLocaleString()}

@@ -195,9 +195,9 @@ export default function BulkInvoicePage() {
                         </div>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 'var(--spacing-xl)', alignItems: 'start' }}>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-xl items-start">
                         {/* Left Column: Steps */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)', minWidth: 0 }} className="lg:col-span-2">
                             {/* Step 1 */}
                             <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                                 <div className="card-header" style={{ background: 'var(--neutral-50)', borderBottom: '1px solid var(--border)' }}>
@@ -354,8 +354,8 @@ export default function BulkInvoicePage() {
                         </div>
 
                         {/* Right Column: Summary */}
-                        <div>
-                            <div className="card" style={{ position: 'sticky', top: '2rem' }}>
+                        <div className="lg:col-span-1">
+                            <div className="card" style={{ position: 'sticky', top: '100px' }}>
                                 <div className="card-header">
                                     <h3 className="card-title">Generation Summary</h3>
                                 </div>

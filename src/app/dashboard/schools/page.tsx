@@ -89,15 +89,15 @@ export default function SchoolsPage() {
         <DashboardLayout>
             <div className="animate-fade-in" style={{ paddingBottom: '40px' }}>
                 {/* Header Section */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--spacing-2xl)' }}>
-                    <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: 'var(--spacing-2xl)' }}>
+                    <div style={{ minWidth: 0, flex: '1 1 auto' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                            <Building2 size={24} className="text-primary-600" />
-                            <span style={{ fontSize: '0.875rem', color: 'var(--neutral-400)', fontWeight: 600 }}>/ Institution Directory</span>
+                            <Building2 size={24} className="text-primary-600 flex-shrink-0" />
+                            <span style={{ fontSize: '0.875rem', color: 'var(--neutral-400)', fontWeight: 600, whiteSpace: 'nowrap' }}>/ Institution Directory</span>
                         </div>
-                        <h2 style={{ fontSize: '2.25rem', fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>Schools Management</h2>
+                        <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', fontWeight: 900, letterSpacing: '-0.02em', margin: 0, wordBreak: 'break-word' }}>Schools Management</h2>
                     </div>
-                    <button className="btn btn-primary" onClick={() => setShowAddModal(true)} style={{ borderRadius: '12px', padding: '12px 24px', gap: '8px', fontWeight: 700 }}>
+                    <button className="btn btn-primary" onClick={() => setShowAddModal(true)} style={{ borderRadius: '12px', padding: '12px 24px', gap: '8px', fontWeight: 700, flexShrink: 0 }}>
                         <Plus size={20} />
                         Register School
                     </button>

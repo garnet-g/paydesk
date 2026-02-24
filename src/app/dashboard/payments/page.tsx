@@ -493,7 +493,7 @@ export default function PaymentsPage() {
                 {activeTab === 'approvals' ? (
                     /* =================== APPROVALS TAB =================== */
                     <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <div className="card-header">
+                        <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
                             <div>
                                 <h3 className="card-title">Pending Approvals</h3>
                                 <p className="card-description">Cancellations and adjustments that need your review</p>
@@ -595,12 +595,12 @@ export default function PaymentsPage() {
                     </div>
                 ) : (
                     /* =================== LEDGER TAB =================== */
-                    <div style={isParent ? { display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-xl)' } : {}}>
-                        <div className="payments-layout" style={isParent ? { display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 'var(--spacing-xl)', alignItems: 'start' } : {}}>
+                    <div className={isParent ? "grid grid-cols-1 gap-xl" : ""}>
+                        <div className={`payments-layout ${isParent ? 'grid grid-cols-1 lg:grid-cols-12 gap-xl items-start' : ''}`}>
 
                             {/* Outstanding Invoices — Parent View */}
                             {isParent && (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }} className="lg:col-span-5">
                                     {/* Active Invoices Card */}
                                     <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                                         <div style={{
@@ -683,7 +683,7 @@ export default function PaymentsPage() {
                                     {/* Active Payment Plans */}
                                     {commitments.length > 0 && (
                                         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                                            <div className="card-header" style={{ background: 'var(--neutral-800)', color: 'white', borderBottom: 'none' }}>
+                                            <div className="card-header" style={{ background: 'var(--neutral-800)', color: 'white', borderBottom: 'none', padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
                                                 <div>
                                                     <h3 className="card-title" style={{ color: 'white' }}>Active Payment Plans</h3>
                                                     <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', margin: 0 }}>Installment tracking</p>
@@ -717,9 +717,9 @@ export default function PaymentsPage() {
                             )}
 
                             {/* Transaction Table */}
-                            <div style={{ minWidth: 0 }}>
+                            <div style={{ minWidth: 0 }} className={isParent ? "lg:col-span-7" : ""}>
                                 <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                                    <div className="card-header">
+                                    <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
                                         <div>
                                             <h3 className="card-title">Transaction History</h3>
                                             <p className="card-description">Verified payment records</p>
