@@ -23,6 +23,57 @@ import { formatCurrency } from '@/lib/utils'
 export default function ReportsPage() {
     const [execStats, setExecStats] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [sendingReminders, setSendingReminders] = useState(false)
+
+    const handleExportReport = () => {
+        if (!execStats) return alert('Report data is still loading, please wait.')
+        const rows = [
+            ['Executive Summary Report', new Date().toLocaleDateString('en-KE')],
+            [],
+            ['COLLECTION VELOCITY'],
+            ['Collection Rate', `${execStats.collectionRate}%`],
+            ['Total Invoiced', execStats.totalInvoiced],
+            ['Total Paid', execStats.totalPaid],
+            ['Outstanding', (execStats.totalInvoiced - execStats.totalPaid)],
+            [],
+            ['AGING DEBT EXPOSURE'],
+            ['Active (Current)', execStats.aging?.current ?? 0],
+            ['At Risk (31-60d)', execStats.aging?.thirty ?? 0],
+            ['Critical (61-90d)', execStats.aging?.sixty ?? 0],
+            ['Recovery (90d+)', execStats.aging?.ninetyPlus ?? 0],
+            [],
+            ['REVENUE FORECAST'],
+            ['Projected Inflow (Next 30 Days)', execStats.forecast?.next30 ?? 0],
+            ['Projected Inflow (30-60 Days)', execStats.forecast?.next60 ?? 0],
+            [],
+            ['CLASS PERFORMANCE'],
+            ['Rank', 'Class', 'Stream', 'Collection Rate', 'Outstanding'],
+            ...(execStats.classPerformance?.map((cls: any, i: number) => [
+                `#${i + 1}`, cls.name, cls.stream, `${cls.rate}%`, cls.outstanding
+            ]) || []),
+        ]
+        const csv = 'data:text/csv;charset=utf-8,' + rows.map(r => r.join(',')).join('\n')
+        const link = document.createElement('a')
+        link.setAttribute('href', encodeURI(csv))
+        link.setAttribute('download', `board_report_${new Date().toISOString().slice(0, 10)}.csv`)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
+    const handleBroadcastReminders = async () => {
+        if (!confirm('This will send SMS reminders to all parents with overdue balances. Proceed?')) return
+        setSendingReminders(true)
+        try {
+            const res = await fetch('/api/communication/reminders', { method: 'POST' })
+            const data = await res.json()
+            alert(data.message || data.error || 'Done.')
+        } catch (err) {
+            alert('Failed to send reminders. Please try again.')
+        } finally {
+            setSendingReminders(false)
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,12 +112,12 @@ export default function ReportsPage() {
                         <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>Executive Summary</h2>
                         <p className="text-muted" style={{ fontSize: '1rem', marginTop: '4px' }}>Strategic insights for institutional financial health.</p>
                     </div>
-                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
-                        <button className="btn btn-outline btn-sm" style={{ gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap' }}>
+                        <button className="btn btn-outline btn-sm" style={{ gap: '8px' }} onClick={handleExportReport} disabled={loading}>
                             <Download size={16} /> Export Board Report
                         </button>
-                        <button className="btn btn-primary btn-sm" style={{ gap: '8px' }}>
-                            <Mail size={16} /> Broadcast Reminders
+                        <button className="btn btn-primary btn-sm" style={{ gap: '8px' }} onClick={handleBroadcastReminders} disabled={sendingReminders}>
+                            <Mail size={16} /> {sendingReminders ? 'Sending...' : 'Broadcast Reminders'}
                         </button>
                     </div>
                 </div>
