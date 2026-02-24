@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     try {
-        const { phoneNumber, invoiceId, studentId } = await req.json()
+        const { phoneNumber, invoiceId, studentId, amount } = await req.json()
 
         if (!phoneNumber || !studentId || !invoiceId) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -27,9 +27,12 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
         }
 
-        const amountToPay = Number(invoice.balance)
+        const amountToPay = amount ? Number(amount) : Number(invoice.balance)
         if (amountToPay <= 0) {
-            return NextResponse.json({ error: 'Invoice is already paid' }, { status: 400 })
+            return NextResponse.json({ error: 'Invoice is already paid or amount is invalid' }, { status: 400 })
+        }
+        if (amountToPay > Number(invoice.balance)) {
+            return NextResponse.json({ error: 'Amount cannot exceed invoice balance' }, { status: 400 })
         }
 
         // Format phone number to 254XXXXXXXXX

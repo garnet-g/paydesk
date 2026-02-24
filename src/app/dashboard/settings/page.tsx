@@ -65,6 +65,10 @@ export default function SettingsPage() {
     const [maintenanceLoading, setMaintenanceLoading] = useState(false)
 
     useEffect(() => {
+        if (session?.user?.role === 'PARENT' && activeTab === 'general') {
+            setActiveTab('security')
+        }
+
         const fetchData = async () => {
             if (session?.user?.schoolId) {
                 try {
@@ -288,8 +292,10 @@ export default function SettingsPage() {
     const isPro = ['PRO', 'ENTERPRISE'].includes(session?.user?.planTier || 'FREE') || session?.user?.role === 'SUPER_ADMIN'
 
     const tabs = [
-        { id: 'general', label: 'General', icon: Building2 },
-        { id: 'payments', label: 'Payments', icon: CreditCard },
+        ...(session?.user?.role !== 'PARENT' ? [
+            { id: 'general', label: 'General', icon: Building2 },
+            { id: 'payments', label: 'Payments', icon: CreditCard }
+        ] : []),
         ...(isPrincipalOrAdmin ? [{ id: 'branding', label: 'Branding', icon: Palette }] : []),
         { id: 'security', label: 'Security', icon: Shield },
         ...(session?.user?.role === 'SUPER_ADMIN' ? [{ id: 'admin', label: 'Admin', icon: AlertCircle }] : [])
