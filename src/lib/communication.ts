@@ -2,7 +2,7 @@ import { prisma } from './prisma'
 
 /**
  * Communication Engine
- * Handles sending SMS and Emails via various providers (Africa's Talking, SendGrid, etc.)
+ * Handles sending SMS and Emails via various providers (Africa's Talking, Resend)
  */
 
 interface SendMessageOptions {
@@ -66,38 +66,45 @@ export const CommunicationEngine = {
     },
 
     /**
-     * Send Email
+     * Send Email via Resend
      */
     async sendEmail({ to, subject, message, studentId, schoolId }: SendMessageOptions) {
-        console.log(`[EMAIL MOCK] Sending to ${to} (${subject}): ${message}`)
+        const resolvedSubject = subject || 'School Notification'
+        console.log(`[EMAIL] Sending to ${to} — ${resolvedSubject}`)
 
         try {
-            await prisma.notification.create({
-                data: {
-                    type: 'EMAIL',
-                    recipient: to,
-                    subject: subject || 'School Notification',
-                    message: message,
-                    status: 'SENT',
-                    sentAt: new Date(),
-                    studentId,
-                    schoolId
-                }
+            const { Resend } = await import('resend')
+            const resend = new Resend(process.env.RESEND_API_KEY)
+
+            const { error } = await resend.emails.send({
+                from: 'PayDesk <notifications@paydesk.app>',
+                to: [to],
+                subject: resolvedSubject,
+                html: `
+                    <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;padding:32px;background:#f8fafc;border-radius:16px;">
+                        <div style="background:#4f46e5;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
+                            <h2 style="margin:0;font-size:1.25rem;font-weight:800;">PayDesk</h2>
+                        </div>
+                        <div style="background:white;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e2e8f0;border-top:none;">
+                            <p style="font-size:1rem;color:#1e293b;line-height:1.7;margin:0 0 16px;">${message.replace(/\n/g, '<br/>')}</p>
+                            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;"/>
+                            <p style="font-size:0.75rem;color:#94a3b8;margin:0;">You received this because you are linked to a student at a PayDesk-powered school. Do not reply to this email.</p>
+                        </div>
+                    </div>
+                `,
             })
 
-            // REAL IMPLEMENTATION (Skeleton)
-            /*
-            const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ... })
-            });
-            */
-        } catch (error) {
-            console.error("Email Sending Error:", error)
+            if (error) throw new Error(error.message)
+
+            await prisma.notification.create({
+                data: { type: 'EMAIL', recipient: to, subject: resolvedSubject, message, status: 'SENT', sentAt: new Date(), studentId, schoolId }
+            })
+
+        } catch (error: any) {
+            console.error('Email Sending Error:', error)
+            await prisma.notification.create({
+                data: { type: 'EMAIL', recipient: to, subject: resolvedSubject, message, status: 'FAILED', studentId, schoolId }
+            })
         }
     },
 
