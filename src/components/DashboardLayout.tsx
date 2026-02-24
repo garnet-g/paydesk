@@ -453,7 +453,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 
                 @media (max-width: 768px) {
                     .main-wrapper {
-                        marginLeft: 0 !important;
+                        margin-left: 0 !important;
                     }
                     .sidebar {
                         transform: translateX(-100%);
