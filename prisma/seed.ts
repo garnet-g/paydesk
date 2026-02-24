@@ -273,7 +273,7 @@ async function main() {
 
     // Create a sample payment
     const existingPayment = await prisma.payment.findUnique({
-        where: { schoolId_transactionRef: { schoolId: school.id, transactionRef: 'TXN-2026-001' } }
+        where: { transactionRef: 'TXN-2026-001' }
     })
 
     if (!existingPayment) {
