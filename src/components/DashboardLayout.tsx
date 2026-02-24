@@ -112,8 +112,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     flexDirection: 'column',
                     transition: 'transform var(--transition-base)',
                     zIndex: 50,
-                    backdropFilter: 'blur(16px)',
-                    backgroundColor: 'rgba(252, 250, 248, 0.9)', /* Linen (neutral-50) with transparency */
+                    backdropFilter: 'blur(16px)'
                 }}
                 className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}
             >
@@ -370,8 +369,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     justifyContent: 'space-between',
                     minHeight: '64px',
                     width: '100%',
-                    backdropFilter: 'blur(10px)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)'
+                    backdropFilter: 'blur(10px)'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', minWidth: 0 }}>
                         <button
