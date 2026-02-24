@@ -407,7 +407,7 @@ export default function SettingsPage() {
                             <div className="card shadow-md">
                                 <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
                                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>M-Pesa Gateway</h3>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px' }}>Set up your institutional paybill for automated fee collections.</p>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px', wordBreak: 'break-word' }}>Set up your institutional paybill for automated fee collections.</p>
                                 </div>
                                 <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
                                     <form onSubmit={handleSaveSettings} className="space-y-xl">
@@ -425,7 +425,7 @@ export default function SettingsPage() {
                                                 <button type="button" className="btn btn-ghost btn-xs mt-sm" style={{ padding: 0, fontWeight: 700 }} onClick={() => router.push('/dashboard/inquiries')}>Contact Support for API Setup <ArrowRight size={14} /></button>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-xl)' }}>
                                             <button type="submit" className="btn btn-primary" disabled={saving}>
                                                 {saving ? <div className="spinner spinner-xs"></div> : <><Save size={18} /> Update Payment Gateway</>}
                                             </button>
@@ -594,9 +594,18 @@ export default function SettingsPage() {
                     }
                     .scroll-x-mobile {
                         flex-direction: row !important;
+                        overflow-x: auto !important;
+                        -webkit-overflow-scrolling: touch;
                         margin-bottom: var(--spacing-md);
-                        padding: 4px;
+                        padding: 4px 4px 8px;
                         border-bottom: 1px solid var(--neutral-100);
+                        gap: 4px !important;
+                    }
+                    .scroll-x-mobile button {
+                        white-space: nowrap;
+                        flex-shrink: 0;
+                        font-size: 0.8rem !important;
+                        padding: 10px 14px !important;
                     }
                 }
             `}</style>
