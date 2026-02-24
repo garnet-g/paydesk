@@ -258,7 +258,7 @@ export default function DashboardPage() {
                         padding: 0,
                         overflow: 'hidden'
                     }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr' }}>
+                        <div className="payment-plan-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 3fr' }}>
                             <div style={{
                                 padding: 'var(--spacing-xl)',
                                 background: 'var(--primary-900)',
@@ -583,6 +583,9 @@ export default function DashboardPage() {
                         padding-left: 0 !important;
                         padding-top: var(--spacing-lg);
                         border-top: 1px solid var(--border);
+                    }
+                    .payment-plan-grid {
+                        grid-template-columns: 1fr !important;
                     }
                 }
                 @media (max-width: 640px) {

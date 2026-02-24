@@ -12,9 +12,7 @@ import {
     Users,
     Zap,
     Search,
-    Filter,
     ArrowUpRight,
-    ChevronRight,
     BadgeCheck,
     PlusCircle
 } from 'lucide-react'
@@ -125,15 +123,15 @@ export default function PlatformBillingPage() {
         <DashboardLayout>
             <div className="animate-fade-in" style={{ paddingBottom: '40px' }}>
                 {/* Header Section */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--spacing-2xl)' }}>
-                    <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: 'var(--spacing-2xl)' }}>
+                    <div style={{ minWidth: 0, flex: '1 1 auto' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                             <div style={{ background: 'var(--primary-600)', color: 'white', padding: '4px 8px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                 Platform
                             </div>
                             <span style={{ fontSize: '0.875rem', color: 'var(--neutral-400)', fontWeight: 600 }}>/ Revenue Intelligence</span>
                         </div>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.03em', margin: 0, color: 'var(--neutral-900)' }}>Platform Billing</h2>
+                        <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 900, letterSpacing: '-0.03em', margin: 0, wordBreak: 'break-word' }}>Platform Billing</h2>
                     </div>
                 </div>
 
@@ -142,7 +140,7 @@ export default function PlatformBillingPage() {
                     variants={container}
                     initial="hidden"
                     animate="show"
-                    className="grid grid-cols-1 md:grid-cols-4 gap-xl mb-2xl"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-xl mb-2xl"
                 >
                     <MetricCard
                         variants={item}
@@ -184,26 +182,21 @@ export default function PlatformBillingPage() {
                     {/* Main Table Content */}
                     <div className="lg:col-span-3">
                         <div className="card" style={{ padding: 0, border: '1px solid var(--neutral-200)', overflow: 'hidden', boxShadow: '0 4px 20px -5px rgba(0,0,0,0.05)' }}>
-                            <div style={{ padding: 'var(--spacing-xl)', borderBottom: '1px solid var(--neutral-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white' }}>
-                                <div style={{ position: 'relative', width: '300px' }}>
+                            <div style={{ padding: 'var(--spacing-xl)', borderBottom: '1px solid var(--neutral-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white', flexWrap: 'wrap', gap: '12px' }}>
+                                <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 0 }}>
                                     <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--neutral-400)' }} />
                                     <input
                                         type="text"
                                         placeholder="Search institutional partners..."
                                         className="form-input"
-                                        style={{ paddingLeft: '40px', background: 'var(--neutral-50)', border: 'none', borderRadius: '10px' }}
+                                        style={{ paddingLeft: '40px', background: 'var(--neutral-50)', border: 'none', borderRadius: '10px', width: '100%' }}
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
                                 </div>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button className="btn btn-outline btn-sm" style={{ gap: '8px', padding: '8px 16px', borderRadius: '10px' }}>
-                                        <Filter size={16} /> Filters
-                                    </button>
-                                </div>
                             </div>
 
-                            <div className="table-wrapper">
+                            <div className="responsive-container">
                                 <table className="table">
                                     <thead>
                                         <tr style={{ background: 'var(--neutral-50)' }}>
@@ -282,10 +275,10 @@ export default function PlatformBillingPage() {
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ textAlign: 'right' }}>
-                                                        <button className="btn btn-ghost btn-sm" style={{ padding: '4px', borderRadius: '8px' }}>
-                                                            <ChevronRight size={20} className="text-neutral-400" />
-                                                        </button>
+                                                    <td style={{ textAlign: 'right', padding: 'var(--spacing-lg) var(--spacing-xl)' }}>
+                                                        <span style={{ fontSize: '0.8rem', color: 'var(--neutral-400)' }}>
+                                                            {school.planStatus || 'ACTIVE'}
+                                                        </span>
                                                     </td>
                                                 </motion.tr>
                                             ))

@@ -356,7 +356,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 minWidth: 0
             }} className="main-wrapper">
                 {/* Top bar */}
-                <header style={{
+                <header className="top-header" style={{
                     background: 'var(--card-bg)',
                     borderBottom: '1px solid var(--border)',
                     padding: 'var(--spacing-md) var(--spacing-xl)',
@@ -454,6 +454,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 @media (max-width: 768px) {
                     .main-wrapper {
                         margin-left: 0 !important;
+                    }
+                    .top-header {
+                        position: fixed !important;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        z-index: 50;
+                    }
+                    .main-wrapper {
+                        padding-top: 64px;
                     }
                     .sidebar {
                         transform: translateX(-100%);
