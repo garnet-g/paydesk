@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import DashboardLayout from '@/components/DashboardLayout'
 import InvoiceDetailModal from '@/components/InvoiceDetailModal'
-import { FileText, Plus, Search, Download, Printer, Filter, Eye } from 'lucide-react'
+import { FileText, Plus, Search, Download, Printer, Filter, Eye, Landmark, X, Copy } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { generateInvoicePDF } from '@/lib/pdf-utils'
 
@@ -17,10 +17,25 @@ export default function InvoicesPage() {
     const [showFilters, setShowFilters] = useState(false)
     const [generating, setGenerating] = useState(false)
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null)
+    const [bankModal, setBankModal] = useState<any>(null) // invoice shown in bank transfer modal
+    const [schoolBank, setSchoolBank] = useState<any>(null)
 
     useEffect(() => {
         fetchInvoices()
     }, [searchTerm, statusFilter])
+
+    useEffect(() => {
+        const fetchSchoolBank = async () => {
+            try {
+                const res = await fetch(`/api/schools/${session?.user?.schoolId}/settings`)
+                if (res.ok) {
+                    const data = await res.json()
+                    setSchoolBank(data)
+                }
+            } catch { }
+        }
+        if (session?.user?.schoolId) fetchSchoolBank()
+    }, [session?.user?.schoolId])
 
     const fetchInvoices = async () => {
         setLoading(true)
@@ -184,28 +199,26 @@ export default function InvoicesPage() {
                                         </td>
                                         <td className="text-xs text-muted hide-mobile">{formatDate(invoice.createdAt)}</td>
                                         <td>
-                                            <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
-                                                <button
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="View Details"
-                                                    onClick={() => setSelectedInvoice(invoice)}
-                                                >
+                                            <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap' }}>
+                                                <button className="btn btn-ghost btn-sm" title="View Details" onClick={() => setSelectedInvoice(invoice)}>
                                                     <Eye size={16} />
                                                 </button>
-                                                <button
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="Print"
-                                                    onClick={() => generateInvoicePDF(invoice, 'print')}
-                                                >
+                                                <button className="btn btn-ghost btn-sm" title="Print" onClick={() => generateInvoicePDF(invoice, 'print')}>
                                                     <Printer size={16} />
                                                 </button>
-                                                <button
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="Download PDF"
-                                                    onClick={() => generateInvoicePDF(invoice, 'download')}
-                                                >
+                                                <button className="btn btn-ghost btn-sm" title="Download PDF" onClick={() => generateInvoicePDF(invoice, 'download')}>
                                                     <Download size={16} />
                                                 </button>
+                                                {session?.user?.role === 'PARENT' && ['PENDING', 'PARTIALLY_PAID'].includes(invoice.status) && (
+                                                    <button
+                                                        className="btn btn-outline btn-sm"
+                                                        title="Pay via Bank Transfer"
+                                                        style={{ gap: '4px', fontSize: '0.75rem' }}
+                                                        onClick={() => setBankModal(invoice)}
+                                                    >
+                                                        <Landmark size={14} /> Bank Transfer
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -221,6 +234,60 @@ export default function InvoicesPage() {
                         onClose={() => setSelectedInvoice(null)}
                         onUpdate={fetchInvoices}
                     />
+                )}
+
+                {/* Bank Transfer Modal */}
+                {bankModal && (
+                    <div className="modal-overlay" onClick={() => setBankModal(null)}>
+                        <div className="modal" style={{ maxWidth: '480px' }} onClick={e => e.stopPropagation()}>
+                            <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <Landmark size={20} style={{ color: 'var(--primary-600)' }} />
+                                    <h3 style={{ margin: 0 }}>Pay via Bank Transfer</h3>
+                                </div>
+                                <button className="btn btn-ghost btn-sm" onClick={() => setBankModal(null)}><X size={18} /></button>
+                            </div>
+                            <div className="modal-body" style={{ padding: 'var(--spacing-xl)' }}>
+                                {schoolBank?.bankAccount ? (
+                                    <>
+                                        <div style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-200)', borderRadius: '12px', padding: 'var(--spacing-lg)', marginBottom: 'var(--spacing-lg)' }}>
+                                            <p style={{ fontSize: '0.8rem', color: 'var(--primary-700)', fontWeight: 600, marginBottom: 'var(--spacing-sm)' }}>TRANSFER TO</p>
+                                            <div style={{ display: 'grid', gap: '8px' }}>
+                                                {[['Bank', schoolBank.bankName], ['Account Name', schoolBank.bankAccountName], ['Account Number', schoolBank.bankAccount], ['Branch', schoolBank.bankBranch]].filter(([, v]) => v).map(([label, value]) => (
+                                                    <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <span style={{ fontSize: '0.8rem', color: 'var(--neutral-500)' }}>{label}</span>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                            <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>{value}</span>
+                                                            <button className="btn btn-ghost btn-sm" style={{ padding: '2px 4px' }} onClick={() => navigator.clipboard.writeText(value || '')} title="Copy">
+                                                                <Copy size={12} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div style={{ background: 'var(--warning-50, #fffbeb)', border: '1px solid var(--warning-200, #fde68a)', borderRadius: '12px', padding: 'var(--spacing-lg)', marginBottom: 'var(--spacing-lg)' }}>
+                                            <p style={{ fontSize: '0.8rem', color: '#92400e', fontWeight: 700, marginBottom: '4px' }}>⚠️ IMPORTANT — Payment Reference</p>
+                                            <p style={{ fontSize: '1.1rem', fontWeight: 900, fontFamily: 'monospace', color: '#1e293b', letterSpacing: '0.05em', margin: 0 }}>{bankModal.invoiceNumber}</p>
+                                            <p style={{ fontSize: '0.75rem', color: '#92400e', marginTop: '4px' }}>Include this exact reference when making the transfer so we can match your payment.</p>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--neutral-50)', borderRadius: '10px', padding: 'var(--spacing-md) var(--spacing-lg)' }}>
+                                            <span style={{ color: 'var(--neutral-500)', fontSize: '0.85rem' }}>Amount Due</span>
+                                            <span style={{ fontWeight: 900, fontSize: '1.1rem', color: 'var(--error)' }}>{formatCurrency(bankModal.balance)}</span>
+                                        </div>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-400)', marginTop: 'var(--spacing-md)', textAlign: 'center' }}>
+                                            After transferring, please allow 1–2 business days for confirmation. Your receipt will be sent automatically.
+                                        </p>
+                                    </>
+                                ) : (
+                                    <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--neutral-500)' }}>
+                                        <Landmark size={40} style={{ opacity: 0.3, marginBottom: 'var(--spacing-md)' }} />
+                                        <p>Bank details not yet configured. Please contact the school office.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 )}
             </div>
         </DashboardLayout>

@@ -52,6 +52,10 @@ export async function PATCH(
             email,
             address,
             mpesaPaybill,
+            bankName,
+            bankAccount,
+            bankAccountName,
+            bankBranch,
             currentTerm,
             currentYear,
             planTier
@@ -66,6 +70,10 @@ export async function PATCH(
                 email,
                 address,
                 mpesaPaybill,
+                bankName,
+                bankAccount,
+                bankAccountName,
+                bankBranch,
                 currentTerm,
                 currentYear,
                 planTier

@@ -45,6 +45,10 @@ export default function SettingsPage() {
         current_year: new Date().getFullYear().toString(),
         mpesa_paybill: "",
         subscription_plan: "FREE",
+        bank_name: "",
+        bank_account: "",
+        bank_account_name: "",
+        bank_branch: "",
     })
 
     // Password States
@@ -85,6 +89,10 @@ export default function SettingsPage() {
                             current_year: data.currentYear || new Date().getFullYear().toString(),
                             mpesa_paybill: data.mpesaPaybill || "",
                             subscription_plan: data.planTier || "FREE",
+                            bank_name: data.bankName || "",
+                            bank_account: data.bankAccount || "",
+                            bank_account_name: data.bankAccountName || "",
+                            bank_branch: data.bankBranch || "",
                         })
                         setLogoPreview(data.logoUrl || "")
                         setPrimaryColor(data.primaryColor || "#4f46e5")
@@ -132,7 +140,11 @@ export default function SettingsPage() {
                     currentTerm: form.current_term,
                     currentYear: form.current_year,
                     mpesaPaybill: form.mpesa_paybill,
-                    planTier: form.subscription_plan
+                    planTier: form.subscription_plan,
+                    bankName: form.bank_name,
+                    bankAccount: form.bank_account,
+                    bankAccountName: form.bank_account_name,
+                    bankBranch: form.bank_branch,
                 })
             })
 
@@ -404,6 +416,30 @@ export default function SettingsPage() {
                                             <button type="submit" className="btn btn-primary" disabled={saving}>
                                                 {saving ? <div className="spinner spinner-xs"></div> : <><Save size={18} /> Save General Changes</>}
                                             </button>
+                                        </div>
+
+                                        {/* Banking Details Section */}
+                                        <div className="sm:col-span-2" style={{ borderTop: '1px solid var(--neutral-100)', paddingTop: 'var(--spacing-xl)', marginTop: 'var(--spacing-sm)' }}>
+                                            <h4 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '4px' }}>Banking Details</h4>
+                                            <p style={{ fontSize: '0.8rem', color: 'var(--neutral-500)', marginBottom: 'var(--spacing-lg)' }}>Used to generate bank transfer payment instructions for parents.</p>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-xl">
+                                                <div className="form-group">
+                                                    <label className="form-label">Bank Name</label>
+                                                    <input type="text" className="form-input" placeholder="e.g. KCB, Equity, Co-op" value={form.bank_name} onChange={(e) => setForm({ ...form, bank_name: e.target.value })} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label">Account Number</label>
+                                                    <input type="text" className="form-input" placeholder="e.g. 1234567890" value={form.bank_account} onChange={(e) => setForm({ ...form, bank_account: e.target.value })} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label">Account Name</label>
+                                                    <input type="text" className="form-input" placeholder="e.g. St. Mary's School" value={form.bank_account_name} onChange={(e) => setForm({ ...form, bank_account_name: e.target.value })} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label">Branch</label>
+                                                    <input type="text" className="form-input" placeholder="e.g. Westlands" value={form.bank_branch} onChange={(e) => setForm({ ...form, bank_branch: e.target.value })} />
+                                                </div>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>

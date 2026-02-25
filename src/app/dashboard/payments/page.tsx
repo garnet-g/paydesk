@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import DashboardLayout from '@/components/DashboardLayout'
-import { DollarSign, CreditCard, Smartphone, CheckCircle, ArrowRight, Search, Download, ShieldAlert, X, Loader2, TrendingUp, RefreshCw, Calendar, Plus } from 'lucide-react'
+import { DollarSign, CreditCard, Smartphone, CheckCircle, ArrowRight, Search, Download, ShieldAlert, X, Loader2, TrendingUp, RefreshCw, Calendar, Plus, Landmark } from 'lucide-react'
 import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils'
 import { generateReceiptPDF } from '@/lib/pdf-utils'
 
@@ -56,6 +56,59 @@ export default function PaymentsPage() {
     })
     const [studentSearchTerm, setStudentSearchTerm] = useState('')
     const [showStudentSearch, setShowStudentSearch] = useState(false)
+
+    // Bank Transfer modal
+    const [showBankModal, setShowBankModal] = useState(false)
+    const [bankForm, setBankForm] = useState({
+        invoiceNumber: '',
+        amount: '',
+        bankReference: '',
+        notes: '',
+        paidAt: new Date().toISOString().split('T')[0]
+    })
+    const [bankSubmitting, setBankSubmitting] = useState(false)
+    const [bankError, setBankError] = useState('')
+    const [bankSuccess, setBankSuccess] = useState('')
+
+    const handleRecordBankTransfer = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!bankForm.invoiceNumber || !bankForm.amount || !bankForm.bankReference) {
+            setBankError('Invoice number, amount and bank reference are required')
+            return
+        }
+        setBankSubmitting(true)
+        setBankError('')
+        setBankSuccess('')
+        try {
+            // Resolve invoice id from number
+            const invRes = await fetch(`/api/invoices?search=${bankForm.invoiceNumber}`)
+            const invData = await invRes.json()
+            const invoice = invData.find((i: any) => i.invoiceNumber === bankForm.invoiceNumber)
+            if (!invoice) { setBankError('Invoice not found. Check the invoice number.'); setBankSubmitting(false); return }
+
+            const res = await fetch('/api/payments/bank-transfer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    invoiceId: invoice.id,
+                    amount: parseFloat(bankForm.amount),
+                    bankReference: bankForm.bankReference,
+                    notes: bankForm.notes,
+                    paidAt: bankForm.paidAt
+                })
+            })
+            const data = await res.json()
+            if (res.ok) {
+                setBankSuccess(`Payment recorded. Invoice is now ${data.invoiceStatus}.`)
+                fetchPayments()
+                setBankForm({ invoiceNumber: '', amount: '', bankReference: '', notes: '', paidAt: new Date().toISOString().split('T')[0] })
+                setTimeout(() => { setShowBankModal(false); setBankSuccess('') }, 2000)
+            } else {
+                setBankError(data.error || 'Failed to record payment')
+            }
+        } catch { setBankError('Something went wrong. Please try again.') }
+        finally { setBankSubmitting(false) }
+    }
 
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN'
     const isPrincipal = session?.user?.role === 'PRINCIPAL'
@@ -367,14 +420,24 @@ export default function PaymentsPage() {
 
                     <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center', flexWrap: 'wrap' }}>
                         {isAdmin && (
-                            <button
-                                className="btn btn-primary"
-                                onClick={() => setShowManualModal(true)}
-                                style={{ width: '100%', smWidth: 'auto' } as any}
-                            >
-                                <Plus size={18} />
-                                Record Manual Payment
-                            </button>
+                            <>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => setShowManualModal(true)}
+                                    style={{ width: '100%', smWidth: 'auto' } as any}
+                                >
+                                    <Plus size={18} />
+                                    Record Manual Payment
+                                </button>
+                                <button
+                                    className="btn btn-outline"
+                                    onClick={() => setShowBankModal(true)}
+                                    style={{ width: '100%', smWidth: 'auto', gap: '8px' } as any}
+                                >
+                                    <Landmark size={18} />
+                                    Record Bank Transfer
+                                </button>
+                            </>
                         )}
                         {(isAdmin) && (
                             <div style={{ display: 'flex', background: 'var(--neutral-100)', padding: '4px', borderRadius: 'var(--radius-lg)', gap: '2px', width: '100%', smWidth: 'auto' } as any}>
@@ -1170,6 +1233,54 @@ export default function PaymentsPage() {
                     </div>
                 )}
             </div>
+
+            {/* Record Bank Transfer Modal */}
+            {showBankModal && (
+                <div className="modal-overlay" onClick={() => setShowBankModal(false)}>
+                    <div className="modal" style={{ maxWidth: '480px' }} onClick={e => e.stopPropagation()}>
+                        <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Landmark size={20} style={{ color: 'var(--primary-600)' }} />
+                                <h3 style={{ margin: 0 }}>Record Bank Transfer</h3>
+                            </div>
+                            <button className="btn btn-ghost btn-sm" onClick={() => setShowBankModal(false)}><X size={18} /></button>
+                        </div>
+                        <form onSubmit={handleRecordBankTransfer}>
+                            <div className="modal-body" style={{ padding: 'var(--spacing-xl)', display: 'grid', gap: 'var(--spacing-lg)' }}>
+                                {bankError && <div className="alert alert-error" style={{ fontSize: '0.85rem' }}>{bankError}</div>}
+                                {bankSuccess && <div className="alert alert-success" style={{ fontSize: '0.85rem' }}>{bankSuccess}</div>}
+                                <div className="form-group">
+                                    <label className="form-label">Invoice Number *</label>
+                                    <input type="text" className="form-input" placeholder="e.g. INV-2025-001" value={bankForm.invoiceNumber} onChange={e => setBankForm({ ...bankForm, invoiceNumber: e.target.value })} required />
+                                    <p style={{ fontSize: '0.75rem', color: 'var(--neutral-400)', marginTop: '4px' }}>Enter the exact invoice number the payment is for.</p>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Amount Received (KES) *</label>
+                                    <input type="number" className="form-input" placeholder="e.g. 15000" min="1" step="0.01" value={bankForm.amount} onChange={e => setBankForm({ ...bankForm, amount: e.target.value })} required />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Bank Reference / Deposit Slip No. *</label>
+                                    <input type="text" className="form-input" placeholder="e.g. BNK-202502-0012" value={bankForm.bankReference} onChange={e => setBankForm({ ...bankForm, bankReference: e.target.value })} required />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Date Received</label>
+                                    <input type="date" className="form-input" value={bankForm.paidAt} onChange={e => setBankForm({ ...bankForm, paidAt: e.target.value })} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Notes (optional)</label>
+                                    <textarea className="form-textarea" rows={2} placeholder="e.g. International wire from parent abroad" value={bankForm.notes} onChange={e => setBankForm({ ...bankForm, notes: e.target.value })} />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowBankModal(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-primary" disabled={bankSubmitting}>
+                                    {bankSubmitting ? 'Recording...' : 'Confirm & Record'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             <style jsx>{`
                 @media (max-width: 768px) {
