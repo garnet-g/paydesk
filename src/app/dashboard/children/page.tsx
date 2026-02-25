@@ -188,15 +188,11 @@ export default function ChildrenPage() {
                                     </div>
 
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-sm)' }}>
-                                        {totalBalance > 0 && isPro && initialInvoiceToPay ? (
+                                        {totalBalance > 0 && initialInvoiceToPay ? (
                                             <button onClick={() => handlePayClick(initialInvoiceToPay)} className="btn btn-primary btn-sm">
                                                 <DollarSign size={14} />
                                                 Pay Now
                                             </button>
-                                        ) : totalBalance > 0 ? (
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '6px 10px', background: 'var(--warning-50)', borderRadius: 'var(--radius-md)', color: 'var(--warning-700)', fontSize: '0.8rem', fontWeight: 600 }}>
-                                                <ShieldAlert size={14} /> Provide payment at finance office
-                                            </div>
                                         ) : (
                                             <button className="btn btn-outline btn-sm" disabled style={{ opacity: 0.5 }}>
                                                 <CheckCircle size={14} />

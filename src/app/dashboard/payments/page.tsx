@@ -713,29 +713,23 @@ export default function PaymentsPage() {
                                                             </div>
                                                         </div>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', justifyContent: 'flex-end' }}>
-                                                            {isPro ? (
-                                                                <>
-                                                                    <button
-                                                                        className="btn btn-ghost btn-sm"
-                                                                        style={{ fontSize: '0.6875rem' }}
-                                                                        onClick={() => handleCommitClick(invoice)}
-                                                                    >
-                                                                        Payment Plan
-                                                                    </button>
-                                                                    <button
-                                                                        className="btn btn-primary btn-sm"
-                                                                        style={{ fontSize: '0.6875rem' }}
-                                                                        onClick={() => handlePayClick(invoice)}
-                                                                    >
-                                                                        Pay Now <ArrowRight size={12} />
-                                                                    </button>
-                                                                </>
-                                                            ) : (
-                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px', background: 'var(--neutral-50)', borderRadius: 'var(--radius-md)' }}>
-                                                                    <ShieldAlert size={14} className="text-warning-500" />
-                                                                    <span className="text-xs font-medium text-muted">Please pay at finance office</span>
-                                                                </div>
+                                                            {/* All parents can pay now. Payment Plans remain Pro/Enterprise feature. */}
+                                                            {isPro && (
+                                                                <button
+                                                                    className="btn btn-ghost btn-sm"
+                                                                    style={{ fontSize: '0.6875rem' }}
+                                                                    onClick={() => handleCommitClick(invoice)}
+                                                                >
+                                                                    Payment Plan
+                                                                </button>
                                                             )}
+                                                            <button
+                                                                className="btn btn-primary btn-sm"
+                                                                style={{ fontSize: '0.6875rem' }}
+                                                                onClick={() => handlePayClick(invoice)}
+                                                            >
+                                                                Pay Now <ArrowRight size={12} />
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 ))
