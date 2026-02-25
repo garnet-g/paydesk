@@ -702,7 +702,7 @@ export default function PaymentsPage() {
                                                         onMouseEnter={e => (e.currentTarget.style.background = 'var(--neutral-50)')}
                                                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                                                     >
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-sm)' }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px', marginBottom: 'var(--spacing-sm)' }}>
                                                             <div>
                                                                 <div className="font-semibold text-sm">{invoice.student?.firstName} {invoice.student?.lastName}</div>
                                                                 <div className="text-xs text-muted">{invoice.invoiceNumber}</div>

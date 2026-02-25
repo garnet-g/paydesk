@@ -152,9 +152,9 @@ export default function ChildrenPage() {
                                         }}>
                                             {child.firstName[0]}{child.lastName[0]}
                                         </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                                <div>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                                                <div style={{ minWidth: 'min-content' }}>
                                                     <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{child.firstName} {child.lastName}</h3>
                                                     <p className="text-muted text-sm">{child.class?.name} {child.class?.stream}</p>
                                                     <code className="text-xs badge badge-neutral mt-xs">{child.admissionNumber}</code>
