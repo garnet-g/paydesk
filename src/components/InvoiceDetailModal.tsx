@@ -239,9 +239,9 @@ export default function InvoiceDetailModal({ invoice: initialInvoice, onClose, o
                             <div className="flex items-center gap-sm">
                                 <p className="text-sm text-muted">Adm No: {invoice.student?.admissionNumber}</p>
                                 <span className={`badge ${invoice.status === 'PAID' ? 'badge-success' :
-                                        invoice.status === 'PARTIALLY_PAID' ? 'badge-warning' :
-                                            invoice.status === 'CANCELLED' ? 'badge-muted' :
-                                                'badge-error'
+                                    invoice.status === 'PARTIALLY_PAID' ? 'badge-warning' :
+                                        invoice.status === 'CANCELLED' ? 'badge-muted' :
+                                            'badge-error'
                                     }`}>
                                     {invoice.status.replace('_', ' ')}
                                 </span>
@@ -491,6 +491,50 @@ export default function InvoiceDetailModal({ invoice: initialInvoice, onClose, o
                             </div>
                         </div>
                     </div>
+
+                    {/* Payment Instructions Section */}
+                    {(invoice.school?.mpesaPaybill || (invoice.school?.bankName && invoice.school?.bankAccount)) && (
+                        <div style={{
+                            marginTop: 'var(--spacing-lg)',
+                            padding: 'var(--spacing-lg)',
+                            background: 'var(--neutral-50)',
+                            borderRadius: 'var(--radius-md)',
+                            border: '1px solid var(--neutral-200)'
+                        }}>
+                            <h4 style={{ fontSize: '0.875rem', fontWeight: 800, marginBottom: 'var(--spacing-md)', color: 'var(--neutral-700)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                Payment Instructions
+                            </h4>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-lg" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-lg)' }}>
+                                {invoice.school?.mpesaPaybill && (
+                                    <div style={{ background: 'white', padding: 'var(--spacing-md)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--neutral-100)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: '#10b981' }}>
+                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }} />
+                                            <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>M-Pesa Paybill</span>
+                                        </div>
+                                        <p className="text-sm" style={{ margin: '2px 0' }}>Paybill: <strong>{invoice.school.mpesaPaybill}</strong></p>
+                                        <p className="text-sm" style={{ margin: '2px 0' }}>Account: <strong>{invoice.invoiceNumber}</strong></p>
+                                    </div>
+                                )}
+
+                                {invoice.school?.bankName && invoice.school?.bankAccount && (
+                                    <div style={{ background: 'white', padding: 'var(--spacing-md)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--neutral-100)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--primary-600)' }}>
+                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary-600)' }} />
+                                            <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>Bank Transfer</span>
+                                        </div>
+                                        <p className="text-xs" style={{ margin: '1px 0', opacity: 0.8 }}>Bank: {invoice.school.bankName}</p>
+                                        <p className="text-sm" style={{ margin: '2px 0' }}>A/C: <strong>{invoice.school.bankAccount}</strong></p>
+                                        <p className="text-xs" style={{ margin: '1px 0', opacity: 0.8 }}>Name: {invoice.school.bankAccountName || invoice.school.name}</p>
+                                        {invoice.school.bankBranch && <p className="text-xs" style={{ margin: '1px 0', opacity: 0.8 }}>Branch: {invoice.school.bankBranch}</p>}
+                                    </div>
+                                )}
+                            </div>
+                            <p style={{ marginTop: '12px', fontSize: '0.7rem', color: 'var(--neutral-500)', fontStyle: 'italic', margin: '12px 0 0' }}>
+                                Note: Always use <strong>{invoice.invoiceNumber}</strong> as your payment reference.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="modal-footer">

@@ -42,7 +42,12 @@ export async function GET() {
                         name: true,
                         logoUrl: true,
                         primaryColor: true,
-                        tagline: true
+                        tagline: true,
+                        mpesaPaybill: true,
+                        bankName: true,
+                        bankAccount: true,
+                        bankAccountName: true,
+                        bankBranch: true
                     }
                 },
                 academicPeriod: true,

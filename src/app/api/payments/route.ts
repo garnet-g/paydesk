@@ -55,7 +55,8 @@ export async function GET(req: Request) {
                     select: {
                         firstName: true,
                         lastName: true,
-                        admissionNumber: true
+                        admissionNumber: true,
+                        class: { select: { name: true, stream: true } }
                     }
                 },
                 school: {
@@ -64,12 +65,31 @@ export async function GET(req: Request) {
                         logoUrl: true,
                         primaryColor: true,
                         secondaryColor: true,
-                        tagline: true
+                        tagline: true,
+                        mpesaPaybill: true,
+                        bankName: true,
+                        bankAccount: true,
+                        bankAccountName: true,
+                        bankBranch: true
                     }
                 },
                 invoice: {
                     select: {
-                        invoiceNumber: true
+                        invoiceNumber: true,
+                        totalAmount: true,
+                        paidAmount: true,
+                        balance: true,
+                        items: {
+                            where: { isDismissed: false },
+                            select: {
+                                description: true,
+                                amount: true,
+                                category: true,
+                                quantity: true,
+                                unitPrice: true
+                            },
+                            orderBy: { category: 'asc' }
+                        }
                     }
                 }
             },

@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout'
 import InvoiceDetailModal from '@/components/InvoiceDetailModal'
 import { FileText, Plus, Search, Download, Printer, Filter, Eye, Landmark, X, Copy } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { generateInvoicePDF } from '@/lib/pdf-utils'
+import { generateInvoicePDF, generateFeeSchedulePDF } from '@/lib/pdf-utils'
 
 export default function InvoicesPage() {
     const { data: session } = useSession()
@@ -79,6 +79,28 @@ export default function InvoicesPage() {
         }
     }
 
+    const handleDownloadFeeSchedule = async () => {
+        if (!session?.user?.schoolId) return
+        try {
+            const [schoolRes, feesRes] = await Promise.all([
+                fetch(`/api/schools/${session.user.schoolId}/settings`),
+                fetch(`/api/fee-structures`)
+            ])
+            const school = schoolRes.ok ? await schoolRes.json() : {}
+            const feesData = feesRes.ok ? await feesRes.json() : []
+            const feeStructures = Array.isArray(feesData) ? feesData : feesData.feeStructures || []
+
+            // Get the active academic period from the first invoice
+            const period = invoices[0]?.academicPeriod || null
+
+            await generateFeeSchedulePDF(school, period, feeStructures, 'download')
+        } catch (e) {
+            alert('Could not generate fee schedule. Please try again.')
+            console.error(e)
+        }
+    }
+
+
     return (
         <DashboardLayout>
             <div className="animate-fade-in">
@@ -108,6 +130,17 @@ export default function InvoicesPage() {
                             <Download size={18} />
                             Export
                         </button>
+                        {(session?.user.role === 'PRINCIPAL' || session?.user.role === 'FINANCE_MANAGER') && (
+                            <button
+                                className="btn btn-secondary"
+                                onClick={handleDownloadFeeSchedule}
+                                title="Download Fee Schedule for this term"
+                                style={{ flex: 1 } as any}
+                            >
+                                <FileText size={18} />
+                                Fee Schedule
+                            </button>
+                        )}
                         {session?.user.role === 'PRINCIPAL' && (
                             <button
                                 className="btn btn-primary"
