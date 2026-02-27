@@ -52,11 +52,11 @@ export async function POST(req: Request) {
 
         const school = await prisma.school.findUnique({
             where: { id: session.user.schoolId! },
-            include: { students: true }
-        }) as any;
+            select: { planTier: true, _count: { select: { students: true } } }
+        });
 
-        if (school && school.planTier === 'FREE' && school.students.length >= 100) {
-            return new NextResponse('Free tier limit reached. Please upgrade to a PRO plan to add more than 100 students.', { status: 403 })
+        if (school && school.planTier === 'FREE' && school._count.students >= 200) {
+            return new NextResponse('Free tier limit reached. Please upgrade to a PRO plan to add more than 200 students.', { status: 403 })
         }
 
         const student = await prisma.$transaction(async (tx) => {

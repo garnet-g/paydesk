@@ -35,6 +35,13 @@ export async function POST(req: Request) {
         let errors = 0
 
         if (type === 'STUDENTS') {
+            const school = await prisma.school.findUnique({
+                where: { id: schoolId },
+                select: { planTier: true, _count: { select: { students: true } } }
+            });
+            const isFreeTier = school?.planTier === 'FREE';
+            let currentStudentCount = school?._count.students || 0;
+
             for (const row of data) {
                 processed++
                 try {
@@ -48,6 +55,14 @@ export async function POST(req: Request) {
                     if (!admNo || !firstName) {
                         errors++
                         continue
+                    }
+
+                    const existingStudent = await prisma.student.findUnique({
+                        where: { schoolId_admissionNumber: { schoolId, admissionNumber: admNo } }
+                    })
+
+                    if (!existingStudent && isFreeTier && currentStudentCount >= 200) {
+                        return NextResponse.json({ error: 'Free tier limit reached. Please upgrade to a PRO plan to add more than 200 students.' }, { status: 403 })
                     }
 
                     // Find or create class
@@ -72,6 +87,7 @@ export async function POST(req: Request) {
                         update: { firstName, lastName, classId },
                         create: { schoolId, admissionNumber: admNo, firstName, lastName, classId }
                     })
+                    if (!existingStudent) currentStudentCount++
                     created++
                 } catch (err) {
                     console.error("Student Import Row Error:", err)

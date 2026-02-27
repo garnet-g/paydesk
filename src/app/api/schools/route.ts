@@ -56,6 +56,7 @@ export async function POST(req: Request) {
                 curriculumType: curriculumType || 'CBC',
                 curriculumConfig: curriculumConfig ? JSON.stringify(curriculumConfig) : null,
                 planTier: planTier || 'FREE',
+                trialEndsAt: (!planTier || planTier === 'FREE') ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null,
                 subscriptionFee: subscriptionFee || 0,
             },
         })

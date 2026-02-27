@@ -64,6 +64,7 @@ model School {
   nextBillingDate    DateTime?
   planStatus         String              @default("ACTIVE")
   planTier           String              @default("FREE")
+  trialEndsAt        DateTime?
   subscriptionFee    Decimal             @default(0) @db.Decimal(10, 2)
   lastBillingNotification DateTime?
   academicPeriods    AcademicPeriod[]

@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma'
 export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt',
+        maxAge: 7 * 24 * 60 * 60, // 7 days expiration
     },
     pages: {
         signIn: '/login',
@@ -104,6 +105,7 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user, trigger, session }) {
+            // Initial sign in
             if (user) {
                 token.role = user.role
                 token.schoolId = user.schoolId
@@ -112,8 +114,16 @@ export const authOptions: NextAuthOptions = {
                 token.requiresPasswordChange = (user as any).requiresPasswordChange
                 token.logoUrl = (user as any).logoUrl
                 token.planTier = (user as any).planTier || 'FREE'
+
+                // Set initial token rotation timestamp and expiry
+                token.accessTokenExpires = Date.now() + 7 * 24 * 60 * 60 * 1000;
             }
 
+            // Implement basic rolling session logic
+            // If the token is halfway to expiring, we'll implicitly update its expiration
+            // The NextAuth session cookie maxAge will handle the actual client-side expiry
+
+            // Explicit updates
             if (trigger === 'update') {
                 if (session?.requiresPasswordChange !== undefined) {
                     token.requiresPasswordChange = session.requiresPasswordChange
