@@ -6,16 +6,18 @@ import { prisma } from '@/lib/prisma'
 // GET: Fetch grade history for a student
 export async function GET(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getServerSession(authOptions)
     if (!session) {
         return new NextResponse('Unauthorized', { status: 401 })
     }
 
+    const { id } = await params
+
     try {
         const history = await prisma.gradeHistory.findMany({
-            where: { studentId: params.id },
+            where: { studentId: id },
             include: {
                 fromClass: { select: { id: true, name: true, stream: true } },
                 toClass: { select: { id: true, name: true, stream: true } }
