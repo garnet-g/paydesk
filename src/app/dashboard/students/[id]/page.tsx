@@ -14,7 +14,9 @@ import {
     ArrowLeft,
     ChevronRight,
     Edit,
-    AlertCircle
+    AlertCircle,
+    ArrowRight,
+    History
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
@@ -27,12 +29,27 @@ export default function StudentProfilePage() {
 
     const [student, setStudent] = useState<any>(null)
     const [loading, setLoading] = useState(true)
-    const [activeTab, setActiveTab] = useState<'overview' | 'statement'>('overview')
+    const [activeTab, setActiveTab] = useState<'overview' | 'statement' | 'history'>('overview')
     const [showEditModal, setShowEditModal] = useState(false)
+    const [gradeHistory, setGradeHistory] = useState<any[]>([])
+    const [historyLoading, setHistoryLoading] = useState(false)
 
     useEffect(() => {
         if (id) fetchStudent()
     }, [id])
+
+    useEffect(() => {
+        if (activeTab === 'history' && id) fetchGradeHistory()
+    }, [activeTab, id])
+
+    const fetchGradeHistory = async () => {
+        setHistoryLoading(true)
+        try {
+            const res = await fetch(`/api/students/${id}/grade-history`)
+            if (res.ok) setGradeHistory(await res.json())
+        } catch { }
+        finally { setHistoryLoading(false) }
+    }
 
     const fetchStudent = async () => {
         setLoading(true)
@@ -138,6 +155,12 @@ export default function StudentProfilePage() {
                         >
                             Financial Statement
                         </button>
+                        <button
+                            onClick={() => setActiveTab('history')}
+                            className={`px-lg py-md font-bold text-sm transition-all border-b-2 flex items-center gap-xs ${activeTab === 'history' ? 'border-primary-600 text-primary-600' : 'border-transparent text-muted hover:text-foreground'}`}
+                        >
+                            <History size={14} /> Grade History
+                        </button>
                     </div>
                 </div>
 
@@ -219,8 +242,66 @@ export default function StudentProfilePage() {
                                     )}
                                 </div>
                             </>
-                        ) : (
+                        ) : activeTab === 'statement' ? (
                             <StudentStatement studentId={id} />
+                        ) : (
+                            // Grade History Tab
+                            <div className="card">
+                                <div className="flex items-center gap-md mb-lg">
+                                    <History size={20} style={{ color: 'var(--primary-600)' }} />
+                                    <h3 className="card-title m-0">Grade History</h3>
+                                </div>
+                                {historyLoading ? (
+                                    <p className="text-center py-xl text-muted text-sm">Loading...</p>
+                                ) : gradeHistory.length === 0 ? (
+                                    <div className="text-center py-xl">
+                                        <History size={32} className="mx-auto mb-sm text-muted" />
+                                        <p className="text-muted text-sm">No class transitions recorded yet.</p>
+                                        <p className="text-xs text-muted mt-xs">Transitions are logged each time a student is promoted or moved.</p>
+                                    </div>
+                                ) : (
+                                    <div className="relative">
+                                        {/* Timeline line */}
+                                        <div style={{ position: 'absolute', left: 15, top: 8, bottom: 8, width: 2, background: 'var(--border)' }} />
+                                        <div className="space-y-lg">
+                                            {gradeHistory.map((h: any, i: number) => (
+                                                <div key={h.id} className="flex items-start gap-lg" style={{ paddingLeft: '36px', position: 'relative' }}>
+                                                    {/* Dot */}
+                                                    <div style={{
+                                                        position: 'absolute', left: 0, top: 4,
+                                                        width: 32, height: 32, borderRadius: '50%',
+                                                        background: i === 0 ? 'var(--primary-600)' : 'var(--neutral-200)',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        border: '3px solid var(--card-bg)',
+                                                        zIndex: 1
+                                                    }}>
+                                                        <GraduationCap size={14} color={i === 0 ? 'white' : 'var(--neutral-500)'} />
+                                                    </div>
+                                                    {/* Content */}
+                                                    <div className="flex-1">
+                                                        <div className="flex flex-wrap items-center gap-sm mb-xs">
+                                                            {h.fromClass ? (
+                                                                <><span className="badge badge-neutral text-xs">{h.fromClass.name}{h.fromClass.stream ? ' ' + h.fromClass.stream : ''}</span>
+                                                                    <ArrowRight size={12} className="text-muted" /></>
+                                                            ) : null}
+                                                            <span className="badge badge-primary text-xs">{h.toClass.name}{h.toClass.stream ? ' ' + h.toClass.stream : ''}</span>
+                                                            <span className="badge text-xs" style={{
+                                                                background: h.reason === 'PROMOTION' ? 'var(--success-50)' : 'var(--warning-50)',
+                                                                color: h.reason === 'PROMOTION' ? 'var(--success-700)' : 'var(--warning-700)',
+                                                                border: h.reason === 'PROMOTION' ? '1px solid var(--success-100)' : '1px solid var(--warning-100)'
+                                                            }}>{h.reason}</span>
+                                                        </div>
+                                                        <p className="text-xs text-muted">
+                                                            {formatDate(h.promotionDate)} · {h.academicYear} {h.term}
+                                                        </p>
+                                                        {h.notes && <p className="text-xs mt-xs italic" style={{ color: 'var(--neutral-500)' }}>"{h.notes}"</p>}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
 

@@ -50,7 +50,9 @@ export async function POST(req: Request) {
                     const firstName = row['First Name'] || row['firstName'] || row['first_name']
                     const lastName = row['Last Name'] || row['lastName'] || row['last_name']
                     const className = row['Class'] || row['className'] || row['class_name']
-                    const stream = row['Stream'] || row['stream'] || ''
+                    // Normalize empty stream to null so it matches classes created without a stream
+                    const rawStream = (row['Stream'] || row['stream'] || '').toString().trim()
+                    const stream = rawStream === '' ? null : rawStream
 
                     if (!admNo || !firstName) {
                         errors++
@@ -69,13 +71,13 @@ export async function POST(req: Request) {
                     let classId = null
                     if (className) {
                         const cls = await prisma.class.findFirst({
-                            where: { schoolId, name: className.trim(), stream: stream.toString().trim() }
+                            where: { schoolId, name: className.trim(), stream: stream }
                         })
                         if (cls) {
                             classId = cls.id
                         } else {
                             const newCls = await prisma.class.create({
-                                data: { schoolId, name: className.trim(), stream: stream.toString().trim() }
+                                data: { schoolId, name: className.trim(), stream: stream }
                             })
                             classId = newCls.id
                         }

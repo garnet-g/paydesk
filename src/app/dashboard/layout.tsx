@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { Activity } from 'lucide-react'
+import { PrivacyConsentModal } from '@/components/modals/PrivacyConsentModal'
 
 export default async function DashboardRootLayout({
     children,
@@ -39,6 +40,7 @@ export default async function DashboardRootLayout({
 
     return (
         <>
+            <PrivacyConsentModal />
             {children}
         </>
     )

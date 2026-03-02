@@ -110,6 +110,124 @@ export async function PATCH(req: Request) {
                             totalAmount: payload.newTotal
                         }
                     })
+                } else if (req.type === 'GRADE_PROMOTION') {
+                    // --- GRADE PROMOTION EXECUTION ---
+                    const studentIds: string[] = payload.studentIds
+                    const fromClassId = payload.fromClassId
+                    const toClassId = payload.toClassId
+                    const academicYear = payload.academicYear
+                    const term = payload.term
+
+                    // 1. Update each student's class and create grade history
+                    for (const studentId of studentIds) {
+                        await tx.student.update({
+                            where: { id: studentId },
+                            data: { classId: toClassId }
+                        })
+
+                        await tx.gradeHistory.create({
+                            data: {
+                                studentId,
+                                fromClassId,
+                                toClassId,
+                                academicYear,
+                                term,
+                                reason: 'PROMOTION',
+                                notes: payload.notes || null,
+                                promotedById: userId,
+                                approvalId: requestId
+                            }
+                        })
+                    }
+
+                    // 2. Auto-generate invoices for the new class if an active period exists
+                    if (payload.activePeriodId) {
+                        const period = await tx.academicPeriod.findUnique({
+                            where: { id: payload.activePeriodId }
+                        })
+
+                        if (period) {
+                            const feeStructures = await tx.feeStructure.findMany({
+                                where: {
+                                    schoolId: req.schoolId,
+                                    academicPeriodId: period.id,
+                                    isActive: true,
+                                    OR: [
+                                        { classId: toClassId },
+                                        { classId: null }
+                                    ]
+                                }
+                            })
+
+                            if (feeStructures.length > 0) {
+                                for (const studentId of studentIds) {
+                                    // Skip if student already has an invoice for this period
+                                    const existingInvoice = await tx.invoice.findFirst({
+                                        where: { studentId, academicPeriodId: period.id }
+                                    })
+                                    if (existingInvoice) continue
+
+                                    const student = await tx.student.findUnique({
+                                        where: { id: studentId },
+                                        select: { admissionNumber: true }
+                                    })
+                                    if (!student) continue
+
+                                    const applicableFS = feeStructures.filter(
+                                        fs => !fs.classId || fs.classId === toClassId
+                                    )
+                                    if (applicableFS.length === 0) continue
+
+                                    const totalAmount = applicableFS.reduce(
+                                        (sum, fs) => sum + fs.amount, 0
+                                    )
+                                    const invoiceNumber = `INV-${period.academicYear}-${period.term}-${student.admissionNumber}`
+
+                                    await tx.invoice.create({
+                                        data: {
+                                            invoiceNumber,
+                                            totalAmount,
+                                            paidAmount: 0,
+                                            balance: totalAmount,
+                                            status: 'PENDING',
+                                            schoolId: req.schoolId,
+                                            studentId,
+                                            academicPeriodId: period.id,
+                                            dueDate: period.endDate,
+                                            feeStructureId: applicableFS[0].id,
+                                            items: {
+                                                create: applicableFS.map(fs => ({
+                                                    description: fs.name,
+                                                    amount: fs.amount,
+                                                    category: fs.category || 'OTHER',
+                                                    quantity: 1,
+                                                    unitPrice: fs.amount,
+                                                    feeStructureId: fs.id
+                                                }))
+                                            }
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    }
+
+                    // 3. Audit log for execution
+                    await tx.auditLog.create({
+                        data: {
+                            action: 'GRADE_PROMOTION_EXECUTED',
+                            entityType: 'GradeHistory',
+                            entityId: requestId,
+                            userId,
+                            schoolId: req.schoolId,
+                            details: JSON.stringify({
+                                fromClass: payload.fromClassName,
+                                toClass: payload.toClassName,
+                                studentCount: studentIds.length,
+                                invoicesGenerated: payload.activePeriodId ? true : false
+                            })
+                        }
+                    })
                 }
                 // (Extend for refunds, etc.)
             }

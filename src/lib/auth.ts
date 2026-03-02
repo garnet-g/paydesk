@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
                         schoolName: user.school?.name || 'System',
                         phoneNumber: user.phoneNumber || '',
                         requiresPasswordChange: user.requiresPasswordChange,
+                        termsAccepted: user.termsAccepted,
                         logoUrl: user.school?.logoUrl || null,
                         planTier: (user.school as any)?.planTier || 'FREE',
                     } as any
@@ -97,6 +98,7 @@ export const authOptions: NextAuthOptions = {
                     schoolName: user.school?.name || 'System',
                     phoneNumber: user.phoneNumber || '',
                     requiresPasswordChange: user.requiresPasswordChange,
+                    termsAccepted: user.termsAccepted,
                     logoUrl: user.school?.logoUrl || null,
                     planTier: (user.school as any)?.planTier || 'FREE',
                 } as any
@@ -112,6 +114,7 @@ export const authOptions: NextAuthOptions = {
                 token.schoolName = user.schoolName
                 token.phoneNumber = user.phoneNumber || undefined
                 token.requiresPasswordChange = (user as any).requiresPasswordChange
+                token.termsAccepted = (user as any).termsAccepted
                 token.logoUrl = (user as any).logoUrl
                 token.planTier = (user as any).planTier || 'FREE'
 
@@ -128,6 +131,9 @@ export const authOptions: NextAuthOptions = {
                 if (session?.requiresPasswordChange !== undefined) {
                     token.requiresPasswordChange = session.requiresPasswordChange
                 }
+                if (session?.termsAccepted !== undefined) {
+                    token.termsAccepted = session.termsAccepted
+                }
                 if (session?.user?.logoUrl !== undefined) {
                     token.logoUrl = session.user.logoUrl
                 }
@@ -143,6 +149,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.schoolName = (token.schoolName as string) || 'System'
                 session.user.phoneNumber = (token.phoneNumber as string) || ''
                 session.user.requiresPasswordChange = !!token.requiresPasswordChange
+                session.user.termsAccepted = !!token.termsAccepted
                 session.user.logoUrl = (token.logoUrl as string) || null
                 session.user.planTier = (token.planTier as string) || 'FREE'
             }

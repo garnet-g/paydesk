@@ -25,7 +25,8 @@ import {
     Megaphone,
     Briefcase,
     Lock,
-    CreditCard
+    CreditCard,
+    ArrowRight
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import ChangePasswordModal from './ChangePasswordModal'
@@ -65,6 +66,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: 'Parents', href: '/dashboard/parents', icon: Users, roles: ['PRINCIPAL'] },
         { name: 'Staff Management', href: '/dashboard/staff', icon: Briefcase, roles: ['PRINCIPAL'], requiresPro: true },
         { name: 'Students', href: '/dashboard/students', icon: GraduationCap, roles: ['PRINCIPAL', 'FINANCE_MANAGER'] },
+        { name: 'Grade Promotion', href: '/dashboard/grade-promotion', icon: ArrowRight, roles: ['PRINCIPAL', 'FINANCE_MANAGER'] },
         { name: 'Classes', href: '/dashboard/classes', icon: Layers, roles: ['PRINCIPAL'] },
         { name: 'Fee Setup', href: '/dashboard/fee-setup', icon: BookOpen, roles: ['PRINCIPAL'] },
         { name: 'My Children', href: '/dashboard/children', icon: Users, roles: ['PARENT'] },

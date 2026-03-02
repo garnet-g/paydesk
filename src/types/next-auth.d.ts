@@ -7,6 +7,7 @@ declare module 'next-auth' {
         schoolName?: string
         phoneNumber?: string | null
         requiresPasswordChange?: boolean
+        termsAccepted?: boolean
         logoUrl?: string | null
         planTier?: string
     }
@@ -21,6 +22,7 @@ declare module 'next-auth' {
             schoolName?: string
             phoneNumber?: string
             requiresPasswordChange: boolean
+            termsAccepted: boolean
             logoUrl?: string | null
             planTier?: string
         }
@@ -34,6 +36,7 @@ declare module 'next-auth/jwt' {
         schoolName?: string
         phoneNumber?: string
         requiresPasswordChange?: boolean
+        termsAccepted?: boolean
         logoUrl?: string | null
         planTier?: string
     }
