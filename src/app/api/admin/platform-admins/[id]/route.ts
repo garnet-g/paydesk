@@ -6,15 +6,16 @@ import { prisma } from '@/lib/prisma'
 // DELETE - Permanently remove a platform admin
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (session?.user?.role !== 'SUPER_ADMIN') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const admin = await prisma.user.findUnique({
-        where: { id: params.id },
+        where: { id },
         select: { id: true, role: true, email: true }
     })
 
@@ -30,14 +31,13 @@ export async function DELETE(
         data: {
             action: 'DELETE_PLATFORM_ADMIN',
             entityType: 'User',
-            entityId: params.id,
+            entityId: id,
             userId: session.user.id,
             details: `Deleted platform admin: ${admin.email}`
         }
     })
 
-    await prisma.user.delete({ where: { id: params.id } })
+    await prisma.user.delete({ where: { id } })
 
     return NextResponse.json({ success: true })
 }
-
