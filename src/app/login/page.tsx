@@ -52,20 +52,11 @@ export default function LoginPage() {
                 animation: 'slideUp 0.5s ease-out'
             }}>
                 <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-                    <div style={{
-                        width: '64px',
-                        height: '64px',
-                        background: 'linear-gradient(135deg, var(--primary-600), var(--primary-700))',
-                        borderRadius: 'var(--radius-xl)',
-                        margin: '0 auto var(--spacing-lg)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '2rem'
-                    }}>
-                        🎓
-                    </div>
-                    <h1 style={{ marginBottom: 'var(--spacing-sm)' }}>PayDesk</h1>
+                    <img
+                        src="/paydesk-logo.png"
+                        alt="PayDesk"
+                        style={{ height: '72px', margin: '0 auto var(--spacing-lg)', display: 'block', objectFit: 'contain' }}
+                    />
                     <p className="text-muted">Sign in to manage school fees</p>
                 </div>
 

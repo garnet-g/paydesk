@@ -26,7 +26,8 @@ import {
     Briefcase,
     Lock,
     CreditCard,
-    ArrowRight
+    ArrowRight,
+    Crown
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import ChangePasswordModal from './ChangePasswordModal'
@@ -78,6 +79,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: 'Broadcasts', href: '/dashboard/broadcast', icon: Megaphone, roles: ['SUPER_ADMIN', 'PRINCIPAL'], requiresPro: true },
         { name: 'System Logs', href: '/dashboard/logs', icon: FileText, roles: ['SUPER_ADMIN'] },
         { name: 'App Users', href: '/dashboard/users', icon: Users, roles: ['SUPER_ADMIN'] },
+        { name: 'Platform Admins', href: '/dashboard/platform-admins', icon: Crown, roles: ['SUPER_ADMIN'] },
 
         { name: 'Settings', href: '/dashboard/settings', icon: Settings, roles: ['SUPER_ADMIN', 'PRINCIPAL', 'PARENT', 'FINANCE_MANAGER'] },
     ]
@@ -193,6 +195,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             '/dashboard/platform-billing': { label: 'Economics' },
                             '/dashboard/broadcast': { label: 'Engagement' },
                             '/dashboard/logs': { label: 'Governance' },
+                            '/dashboard/platform-admins': { label: 'Admins' },
                             '/dashboard/settings': { label: 'Preferences' },
                         }
 

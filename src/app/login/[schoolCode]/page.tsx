@@ -89,21 +89,13 @@ export default function SchoolLoginPage() {
             }}>
                 <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
                     {school?.logoUrl ? (
-                        <img src={school.logoUrl} alt={schoolName} style={{ height: '80px', margin: '0 auto var(--spacing-lg)', objectFit: 'contain' }} />
+                        <img src={school.logoUrl} alt={schoolName} style={{ height: '80px', margin: '0 auto var(--spacing-lg)', objectFit: 'contain', display: 'block' }} />
                     ) : (
-                        <div style={{
-                            width: '64px',
-                            height: '64px',
-                            background: 'linear-gradient(135deg, var(--primary-600), var(--primary-700))',
-                            borderRadius: 'var(--radius-xl)',
-                            margin: '0 auto var(--spacing-lg)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '2rem'
-                        }}>
-                            🎓
-                        </div>
+                        <img
+                            src="/paydesk-logo.png"
+                            alt="PayDesk"
+                            style={{ height: '72px', margin: '0 auto var(--spacing-lg)', display: 'block', objectFit: 'contain' }}
+                        />
                     )}
                     <h1 style={{ marginBottom: 'var(--spacing-xs)', fontSize: '1.5rem' }}>{schoolName}</h1>
                     <p className="text-muted">Sign in to your account</p>
