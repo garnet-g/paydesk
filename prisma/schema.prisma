@@ -55,6 +55,11 @@ model School {
   tagline            String?
   motto              String?
   mpesaPaybill       String?
+  mpesaShortcode     String?             // Daraja shortcode (same as paybill for C2B)
+  mpesaConsumerKey   String?             // Daraja API Consumer Key
+  mpesaConsumerSecret String?            // Daraja API Consumer Secret
+  mpesaPasskey       String?             // Daraja STK Push Passkey
+  mpesaEnv           String?             @default("sandbox") // "sandbox" or "production"
   bankName           String?
   bankAccount        String?
   bankAccountName    String?

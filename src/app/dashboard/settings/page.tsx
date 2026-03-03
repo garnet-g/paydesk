@@ -44,6 +44,11 @@ export default function SettingsPage() {
         current_term: "Term 1",
         current_year: new Date().getFullYear().toString(),
         mpesa_paybill: "",
+        mpesa_shortcode: "",
+        mpesa_consumer_key: "",
+        mpesa_consumer_secret: "",
+        mpesa_passkey: "",
+        mpesa_env: "sandbox",
         subscription_plan: "FREE",
         bank_name: "",
         bank_account: "",
@@ -88,6 +93,11 @@ export default function SettingsPage() {
                             current_term: data.currentTerm || "Term 1",
                             current_year: data.currentYear || new Date().getFullYear().toString(),
                             mpesa_paybill: data.mpesaPaybill || "",
+                            mpesa_shortcode: data.mpesaShortcode || "",
+                            mpesa_consumer_key: data.mpesaConsumerKey || "",
+                            mpesa_consumer_secret: data.mpesaConsumerSecret || "",
+                            mpesa_passkey: data.mpesaPasskey || "",
+                            mpesa_env: data.mpesaEnv || "sandbox",
                             subscription_plan: data.planTier || "FREE",
                             bank_name: data.bankName || "",
                             bank_account: data.bankAccount || "",
@@ -140,6 +150,11 @@ export default function SettingsPage() {
                     currentTerm: form.current_term,
                     currentYear: form.current_year,
                     mpesaPaybill: form.mpesa_paybill,
+                    mpesaShortcode: form.mpesa_shortcode,
+                    mpesaConsumerKey: form.mpesa_consumer_key,
+                    mpesaConsumerSecret: form.mpesa_consumer_secret,
+                    mpesaPasskey: form.mpesa_passkey,
+                    mpesaEnv: form.mpesa_env,
                     planTier: form.subscription_plan,
                     bankName: form.bank_name,
                     bankAccount: form.bank_account,
@@ -446,33 +461,73 @@ export default function SettingsPage() {
                             </div>
                         )}
 
-                        {/* PAYMENTS TAB */}
                         {activeTab === 'payments' && (
                             <div className="card shadow-md">
                                 <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
-                                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>M-Pesa Gateway</h3>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px', wordBreak: 'break-word' }}>Set up your institutional paybill for automated fee collections.</p>
+                                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>M-Pesa / Daraja Setup</h3>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px' }}>Connect your school's Daraja API so parents pay directly into your M-Pesa account.</p>
                                 </div>
                                 <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
-                                    <form onSubmit={handleSaveSettings} className="space-y-xl">
-                                        <div className="form-group">
-                                            <label className="form-label">M-Pesa Paybill Number</label>
-                                            <input type="text" className="form-input" placeholder="e.g. 247247" value={form.mpesa_paybill} onChange={(e) => setForm({ ...form, mpesa_paybill: e.target.value })} />
+
+                                    {/* Info Banner */}
+                                    <div style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-100)', borderRadius: '14px', padding: 'var(--spacing-lg)', display: 'flex', gap: '14px', marginBottom: 'var(--spacing-xl)' }}>
+                                        <Zap size={22} style={{ color: 'var(--primary-600)', flexShrink: 0, marginTop: '2px' }} />
+                                        <div>
+                                            <p style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '4px' }}>How this works</p>
+                                            <p style={{ fontSize: '0.82rem', color: 'var(--neutral-600)', margin: 0, lineHeight: 1.6 }}>
+                                                When a parent clicks <strong>Pay</strong>, PayDesk uses <em>your school's</em> Daraja credentials to trigger the STK push. The money goes
+                                                directly to <strong>your paybill</strong> — PayDesk never touches it. Get your keys from{' '}
+                                                <a href="https://developer.safaricom.co.ke" target="_blank" rel="noreferrer" style={{ color: 'var(--primary-600)', fontWeight: 700 }}>developer.safaricom.co.ke</a>.
+                                            </p>
                                         </div>
-                                        <div style={{ transition: 'all 0.3s ease', background: 'var(--primary-50)', border: '1px solid var(--primary-100)', padding: 'var(--spacing-lg)', borderRadius: '16px', display: 'flex', gap: '16px' }}>
-                                            <Zap size={24} className="text-primary-600" style={{ flexShrink: 0 }} />
-                                            <div>
-                                                <h4 style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '4px' }}>Automated Reconciliation</h4>
-                                                <p style={{ fontSize: '0.8rem', color: 'var(--neutral-600)', lineHeight: 1.5 }}>
-                                                    Linking your Paybill allows PayDesk to automatically trigger STK Push prompts for parents and reconcile payments in real-time.
-                                                </p>
-                                                <button type="button" className="btn btn-ghost btn-xs mt-sm" style={{ padding: 0, fontWeight: 700 }} onClick={() => router.push('/dashboard/inquiries')}>Contact Support for API Setup <ArrowRight size={14} /></button>
+                                    </div>
+
+                                    <form onSubmit={handleSaveSettings}>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 'var(--spacing-lg)' }}>
+
+                                            <div className="form-group">
+                                                <label className="form-label">Paybill Number <span style={{ color: 'var(--neutral-400)', fontSize: '0.75rem' }}>(shown on invoices)</span></label>
+                                                <input type="text" className="form-input" placeholder="e.g. 247247" value={form.mpesa_paybill} onChange={e => setForm({ ...form, mpesa_paybill: e.target.value })} />
                                             </div>
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-xl)' }}>
-                                            <button type="submit" className="btn btn-primary" disabled={saving}>
-                                                {saving ? <div className="spinner spinner-xs"></div> : <><Save size={18} /> Update Payment Gateway</>}
-                                            </button>
+
+                                            <div className="form-group">
+                                                <label className="form-label">Shortcode <span style={{ color: 'var(--neutral-400)', fontSize: '0.75rem' }}>(same as paybill for C2B)</span></label>
+                                                <input type="text" className="form-input" placeholder="e.g. 247247" value={form.mpesa_shortcode} onChange={e => setForm({ ...form, mpesa_shortcode: e.target.value })} />
+                                            </div>
+
+                                            <div className="form-group sm:col-span-2">
+                                                <label className="form-label">Consumer Key</label>
+                                                <input type="password" className="form-input" placeholder="Paste from Daraja dashboard" value={form.mpesa_consumer_key} onChange={e => setForm({ ...form, mpesa_consumer_key: e.target.value })} style={{ fontFamily: 'monospace' }} />
+                                            </div>
+
+                                            <div className="form-group sm:col-span-2">
+                                                <label className="form-label">Consumer Secret</label>
+                                                <input type="password" className="form-input" placeholder="Paste from Daraja dashboard" value={form.mpesa_consumer_secret} onChange={e => setForm({ ...form, mpesa_consumer_secret: e.target.value })} style={{ fontFamily: 'monospace' }} />
+                                            </div>
+
+                                            <div className="form-group sm:col-span-2">
+                                                <label className="form-label">Lipa Na M-Pesa Passkey</label>
+                                                <input type="password" className="form-input" placeholder="Paste from Daraja STK Push section" value={form.mpesa_passkey} onChange={e => setForm({ ...form, mpesa_passkey: e.target.value })} style={{ fontFamily: 'monospace' }} />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <label className="form-label">Environment</label>
+                                                <select className="form-input" value={form.mpesa_env} onChange={e => setForm({ ...form, mpesa_env: e.target.value })}>
+                                                    <option value="sandbox">Sandbox (Testing)</option>
+                                                    <option value="production">Production (Live)</option>
+                                                </select>
+                                                {form.mpesa_env === 'production' && (
+                                                    <p style={{ fontSize: '0.75rem', color: 'var(--warning-600)', fontWeight: 600, marginTop: '6px' }}>
+                                                        ⚠ Live mode — real money will be charged to parents.
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div className="sm:col-span-2" style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-md)', borderTop: '1px solid var(--neutral-100)', marginTop: 'var(--spacing-sm)' }}>
+                                                <button type="submit" className="btn btn-primary" disabled={saving} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    {saving ? <div className="spinner spinner-xs" /> : <><Save size={18} /> Save M-Pesa Settings</>}
+                                                </button>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>

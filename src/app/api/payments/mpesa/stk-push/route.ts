@@ -2,11 +2,10 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { getMpesaAccessToken, generateMpesaTimestamp, generateMpesaPassword } from '@/lib/mpesa'
+import { getMpesaAccessToken, getMpesaBaseUrl, generateMpesaTimestamp, generateMpesaPassword } from '@/lib/mpesa'
 
 export async function POST(req: Request) {
     const session = await getServerSession(authOptions)
-
     if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -18,11 +17,8 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
 
-        // Get current invoice balance (in case items were dismissed)
-        const invoice = await prisma.invoice.findUnique({
-            where: { id: invoiceId }
-        })
-
+        // ── 1. Fetch invoice ────────────────────────────────────────────────────
+        const invoice = await prisma.invoice.findUnique({ where: { id: invoiceId } })
         if (!invoice) {
             return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
         }
@@ -35,7 +31,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Amount cannot exceed invoice balance' }, { status: 400 })
         }
 
-        // Format phone number to 254XXXXXXXXX
+        // ── 2. Format phone number ──────────────────────────────────────────────
         let formattedPhone = phoneNumber.replace(/\+/g, '')
         if (formattedPhone.startsWith('0')) {
             formattedPhone = '254' + formattedPhone.slice(1)
@@ -43,10 +39,28 @@ export async function POST(req: Request) {
             formattedPhone = '254' + formattedPhone
         }
 
-        if (!process.env.MPESA_CONSUMER_KEY || !process.env.MPESA_CONSUMER_SECRET) {
-            console.warn("M-Pesa credentials missing. Entering DEMO MODE.")
-            const demoCheckoutId = "DEMO-" + Math.random().toString(36).toUpperCase().slice(2, 10)
+        // ── 3. Load school Daraja credentials ─────────────────────────────────
+        //       schoolId comes from the parent's session — already scoped to their school
+        const schoolId = session.user.schoolId!
+        const school = await prisma.school.findUnique({
+            where: { id: schoolId },
+            select: {
+                mpesaConsumerKey: true,
+                mpesaConsumerSecret: true,
+                mpesaShortcode: true,
+                mpesaPasskey: true,
+                mpesaEnv: true,
+                mpesaPaybill: true,  // display only (on invoice PDFs)
+            }
+        })
 
+        // ── 4. DEMO MODE: no credentials configured yet ─────────────────────────
+        const hasCreds = school?.mpesaConsumerKey && school?.mpesaConsumerSecret
+            && school?.mpesaShortcode && school?.mpesaPasskey
+
+        if (!hasCreds && !process.env.MPESA_CONSUMER_KEY) {
+            // Full demo — no real Daraja at all
+            const demoCheckoutId = 'DEMO-' + Math.random().toString(36).toUpperCase().slice(2, 10)
             await prisma.payment.create({
                 data: {
                     amount: amountToPay,
@@ -55,54 +69,55 @@ export async function POST(req: Request) {
                     transactionRef: demoCheckoutId,
                     payerName: session.user.name || 'Parent',
                     payerPhone: formattedPhone,
-                    schoolId: session.user.schoolId!,
+                    schoolId,
                     studentId,
-                    invoiceId: invoiceId,
+                    invoiceId,
                 }
             })
-
             return NextResponse.json({
                 success: true,
                 checkoutRequestId: demoCheckoutId,
-                message: "[DEMO MODE] Payment initiated. Use the M-Pesa Simulator to complete it."
+                message: '[DEMO MODE] Payment initiated. Use the M-Pesa Simulator to complete it.'
             })
         }
 
-        const mpesaEnv = process.env.MPESA_ENV || 'sandbox';
-        const accessToken = await getMpesaAccessToken()
-        const timestamp = generateMpesaTimestamp()
-        const shortCode = process.env.MPESA_SHORTCODE
-        const passKey = process.env.MPESA_PASSKEY
-
-        if (!shortCode || !passKey) {
-            return NextResponse.json({
-                error: 'M-Pesa Shortcode or Passkey missing in server configuration.'
-            }, { status: 500 })
+        // ── 5. Resolve credentials: school-specific → fallback to global env ───
+        const creds = {
+            consumerKey: school?.mpesaConsumerKey || process.env.MPESA_CONSUMER_KEY,
+            consumerSecret: school?.mpesaConsumerSecret || process.env.MPESA_CONSUMER_SECRET,
+            shortcode: school?.mpesaShortcode || process.env.MPESA_SHORTCODE,
+            passkey: school?.mpesaPasskey || process.env.MPESA_PASSKEY,
+            env: school?.mpesaEnv || process.env.MPESA_ENV || 'sandbox',
         }
 
-        const password = generateMpesaPassword(shortCode, passKey, timestamp)
-        const callbackUrl = process.env.MPESA_CALLBACK_URL || `${process.env.NEXTAUTH_URL}/api/payments/mpesa/callback`
+        if (!creds.shortcode || !creds.passkey) {
+            return NextResponse.json({
+                error: 'This school has not configured M-Pesa yet. Please contact your school administrator.'
+            }, { status: 400 })
+        }
 
-        const baseUrl = mpesaEnv === 'production'
-            ? "https://api.safaricom.co.ke"
-            : "https://sandbox.safaricom.co.ke";
+        // ── 6. Fire the STK Push using school's credentials ─────────────────────
+        const accessToken = await getMpesaAccessToken(creds)
+        const timestamp = generateMpesaTimestamp()
+        const password = generateMpesaPassword(creds.shortcode, creds.passkey, timestamp)
+        const baseUrl = getMpesaBaseUrl(creds.env)
+        const callbackUrl = process.env.MPESA_CALLBACK_URL
+            || `${process.env.NEXTAUTH_URL}/api/payments/mpesa/callback`
 
-        const processRequestUrl = `${baseUrl}/mpesa/stkpush/v1/processrequest`
-
-        const response = await fetch(processRequestUrl, {
+        const response = await fetch(`${baseUrl}/mpesa/stkpush/v1/processrequest`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                BusinessShortCode: shortCode,
+                BusinessShortCode: creds.shortcode,
                 Password: password,
                 Timestamp: timestamp,
-                TransactionType: "CustomerPayBillOnline",
+                TransactionType: 'CustomerPayBillOnline',
                 Amount: Math.round(amountToPay),
                 PartyA: formattedPhone,
-                PartyB: shortCode,
+                PartyB: creds.shortcode,   // ← school's own paybill, not PayDesk's
                 PhoneNumber: formattedPhone,
                 CallBackURL: callbackUrl,
                 AccountReference: invoice.invoiceNumber,
@@ -112,8 +127,7 @@ export async function POST(req: Request) {
 
         const data = await response.json()
 
-        if (data.ResponseCode === "0") {
-            // Log the payment attempt
+        if (data.ResponseCode === '0') {
             await prisma.payment.create({
                 data: {
                     amount: amountToPay,
@@ -122,24 +136,23 @@ export async function POST(req: Request) {
                     transactionRef: data.CheckoutRequestID,
                     payerName: session.user.name || 'Parent',
                     payerPhone: formattedPhone,
-                    schoolId: session.user.schoolId!,
+                    schoolId,
                     studentId,
-                    invoiceId: invoiceId,
+                    invoiceId,
                 }
             })
-
             return NextResponse.json({
                 success: true,
                 checkoutRequestId: data.CheckoutRequestID,
-                message: "Please enter your M-Pesa PIN on your phone"
+                message: 'Please enter your M-Pesa PIN on your phone'
             })
-        } else {
-            console.error("Daraja Response Error:", data)
-            return NextResponse.json({
-                success: false,
-                error: data.ResponseDescription || "M-Pesa request failed"
-            }, { status: 400 })
         }
+
+        console.error('Daraja Response Error:', data)
+        return NextResponse.json({
+            success: false,
+            error: data.ResponseDescription || 'M-Pesa request failed'
+        }, { status: 400 })
 
     } catch (error: any) {
         console.error('STK Push error:', error)
