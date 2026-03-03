@@ -98,7 +98,9 @@ export async function GET(req: Request) {
             }
         })
 
-        return NextResponse.json(payments)
+        return NextResponse.json(payments, {
+            headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' }
+        })
     } catch (error) {
         console.error('Failed to fetch payments:', error)
         return new NextResponse('Internal Server Error', { status: 500 })

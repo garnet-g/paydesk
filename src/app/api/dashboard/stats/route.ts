@@ -27,7 +27,9 @@ export async function GET() {
                 totalSchools,
                 totalStudents,
                 totalCollections: Number(collectionsAgg._sum.amount || 0),
-                growth: '0%'   // placeholder — extend later if needed
+                growth: '0%'
+            }, {
+                headers: { 'Cache-Control': 'private, max-age=60, stale-while-revalidate=120' }
             })
         }
 
@@ -69,6 +71,8 @@ export async function GET() {
                 thisMonth: `KES ${Number(thisMonthAgg._sum.amount || 0).toLocaleString()}`,
                 totalExpected: `KES ${totalExpected.toLocaleString()}`,
                 collectionRate
+            }, {
+                headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' }
             })
         }
 
@@ -129,6 +133,8 @@ export async function GET() {
                     : 'N/A',
                 hasActivePlan: activeCommitments.length > 0,
                 commitmentVolume
+            }, {
+                headers: { 'Cache-Control': 'private, max-age=20, stale-while-revalidate=40' }
             })
         }
 

@@ -59,7 +59,9 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         })
 
-        return NextResponse.json(invoices)
+        return NextResponse.json(invoices, {
+            headers: { 'Cache-Control': 'private, max-age=20, stale-while-revalidate=60' }
+        })
     } catch (error: any) {
         console.error('Failed to fetch invoices:', error)
         return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 })
