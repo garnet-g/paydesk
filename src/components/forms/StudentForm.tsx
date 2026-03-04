@@ -115,7 +115,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
 
     return (
         <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-            <div className="modal-content" style={{ maxWidth: '750px', border: 'none' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content" style={{ maxWidth: '750px' }} onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3 className="modal-title flex items-center gap-md">
                         <div className="p-sm bg-primary-100 text-primary-700 rounded-lg">
@@ -126,7 +126,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                     <button className="btn btn-ghost p-sm" onClick={onClose}><X size={20} /></button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col">
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
                     <div className="modal-body">
                         <div className="alert alert-info py-xs px-md mb-md">
                             <GraduationCap size={16} />

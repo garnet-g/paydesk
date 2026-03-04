@@ -62,7 +62,7 @@ export default function AddSchoolForm({ onClose, onSuccess }: AddSchoolFormProps
 
                 <form
                     onSubmit={handleSubmit}
-                    style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}
+                    style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
                 >
                     <div className="modal-body">
                         <div className="grid grid-cols-2 gap-md">

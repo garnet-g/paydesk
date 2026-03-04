@@ -1380,69 +1380,169 @@ a:hover {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(67, 56, 202, 0.45);
-  /* Rich Indigo Glass */
+  background-color: rgba(67, 56, 202, 0.40);
   backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: var(--spacing-md);
-  animation: fadeIn 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Safe margin on all sides so modal never touches screen edge */
+  padding: 16px;
+  animation: fadeIn 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Allow overlay itself to scroll on tiny screens */
+  overflow-y: auto;
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 1.75rem;
-  box-shadow: 0 40px 100px -20px rgba(67, 56, 202, 0.35);
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 1.5rem;
+  box-shadow: 0 32px 80px -16px rgba(67, 56, 202, 0.30),
+    0 0 0 1px rgba(67, 56, 202, 0.08);
   width: 100%;
-  max-width: 500px;
-  max-height: 94vh;
-  overflow-y: auto;
-  position: relative;
+  max-width: 520px;
+  /* Never taller than 90% of viewport — body scrolls inside */
+  max-height: 90vh;
+  /* Flex column so header/footer stay pinned, body scrolls */
   display: flex;
   flex-direction: column;
-  animation: slideUp 500ms cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(67, 56, 202, 0.1);
+  overflow: hidden;
+  /* clip to border-radius */
+  position: relative;
+  animation: slideUp 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Push away from screen edges on mobile */
+  margin: auto;
 }
 
 .modal-header {
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid rgba(67, 56, 202, 0.1);
+  /* Pinned at top — always visible even when body scrolls */
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 0;
-  background: transparent;
-  z-index: 10;
+  gap: 12px;
+  /* Padding inside — away from rounded corner */
+  padding: 20px 24px 18px;
+  border-bottom: 1px solid rgba(67, 56, 202, 0.09);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem 1.5rem 0 0;
+  flex-shrink: 0;
 }
 
 .modal-title {
-  margin-bottom: 0;
-  font-size: 1.25rem;
+  margin: 0;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--primary-900);
   letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .modal-body {
-  padding: var(--spacing-lg);
-  overflow: visible !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(238, 242, 255, 0.5) 100%);
+  /* This is the scrollable zone */
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Padding away from content edges & rounded bottom */
+  padding: 22px 24px;
+  background: linear-gradient(160deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(238, 242, 255, 0.45) 100%);
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(67, 56, 202, 0.2) transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(67, 56, 202, 0.2);
+  border-radius: 4px;
 }
 
 .modal-footer {
-  padding: var(--spacing-lg);
-  border-top: 1px solid rgba(67, 56, 202, 0.1);
+  /* Pinned at bottom — buttons always reachable */
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-md);
-  background: white;
-  z-index: 10;
+  align-items: center;
+  gap: 10px;
+  /* Padding away from rounded corner */
+  padding: 16px 24px 20px;
+  border-top: 1px solid rgba(67, 56, 202, 0.09);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  border-radius: 0 0 1.5rem 1.5rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/* ── Wide variant for large forms ─────────────────────── */
+.modal-content--wide {
+  max-width: 720px;
+}
+
+/* ── Dark mode ────────────────────────────────────────── */
+[data-theme='dark'] .modal-content {
+  background: rgba(15, 23, 42, 0.97);
+}
+
+[data-theme='dark'] .modal-header,
+[data-theme='dark'] .modal-footer {
+  background: rgba(15, 23, 42, 0.98);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] .modal-body {
+  background: linear-gradient(160deg,
+      rgba(15, 23, 42, 0.7) 0%,
+      rgba(30, 27, 75, 0.5) 100%);
+}
+
+/* ── Mobile: bottom-sheet style ───────────────────────── */
+@media (max-width: 600px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-content {
+    border-radius: 1.5rem 1.5rem 0 0 !important;
+    max-width: 100% !important;
+    max-height: 90vh;
+    width: 100%;
+    margin: 0;
+  }
+
+  .modal-header {
+    border-radius: 1.5rem 1.5rem 0 0;
+    padding: 18px 20px 16px;
+  }
+
+  .modal-footer {
+    border-radius: 0;
+    padding: 14px 20px 28px;
+    /* extra bottom for home-indicator */
+  }
+
+  .modal-body {
+    padding: 18px 20px;
+  }
 }
 
 /* Glass Popouts */
+
 .popout-card {
   background: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(20px) saturate(180%);

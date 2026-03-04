@@ -213,7 +213,7 @@ export default function ChildrenPage() {
                 {/* =================== PAYMENT MODAL =================== */}
                 {showPayModal && (
                     <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowPayModal(false)}>
-                        <div className="modal-content" style={{ maxWidth: '480px', padding: 0, overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
                             {!paymentSuccess ? (
                                 <>
                                     {/* Header with Amount */}

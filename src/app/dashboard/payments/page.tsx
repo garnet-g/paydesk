@@ -875,7 +875,7 @@ export default function PaymentsPage() {
                 {/* =================== COMMITMENT MODAL =================== */}
                 {showCommitModal && (
                     <div className="modal-overlay" onClick={() => setShowCommitModal(false)}>
-                        <div className="modal-content" style={{ maxWidth: '460px', padding: 0, overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
                             <div className="modal-header" style={{ background: 'var(--neutral-800)', color: 'white', borderBottom: 'none' }}>
                                 <div>
                                     <h3 className="modal-title" style={{ color: 'white' }}>Setup Payment Plan</h3>
@@ -942,7 +942,7 @@ export default function PaymentsPage() {
                 {/* =================== PAYMENT MODAL =================== */}
                 {showPayModal && (
                     <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowPayModal(false)}>
-                        <div className="modal-content" style={{ maxWidth: '480px', padding: 0, overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
                             {!paymentSuccess ? (
                                 <>
                                     {/* Header with Amount */}
