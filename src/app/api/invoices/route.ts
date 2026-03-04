@@ -60,7 +60,9 @@ export async function GET() {
         })
 
         return NextResponse.json(invoices, {
-            headers: { 'Cache-Control': 'private, max-age=20, stale-while-revalidate=60' }
+            // This is also read by parents — no stale cache so balances
+            // always reflect freshly-recorded manual payments
+            headers: { 'Cache-Control': 'private, no-store' }
         })
     } catch (error: any) {
         console.error('Failed to fetch invoices:', error)

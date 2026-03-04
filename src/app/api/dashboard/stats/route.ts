@@ -85,22 +85,24 @@ export async function GET() {
             })
             const studentIds = guardianships.map(g => g.studentId)
 
-            const [myChildren, balanceAgg, paidThisTermAgg] = await Promise.all([
+            const [myChildren, balanceAgg, paidAgg] = await Promise.all([
                 Promise.resolve(studentIds.length),
+
+                // Total balance still owed across all unpaid invoices
                 prisma.invoice.aggregate({
                     where: { studentId: { in: studentIds }, status: { notIn: ['PAID'] } },
                     _sum: { balance: true }
                 }),
-                prisma.payment.aggregate({
-                    where: {
-                        studentId: { in: studentIds },
-                        status: 'COMPLETED',
-                        createdAt: {
-                            gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-                        }
-                    },
-                    _sum: { amount: true }
-                })
+
+                // Total amount paid = sum of invoice.paidAmount across ALL invoices
+                // This is the canonical value, always updated by every payment route
+                // (M-Pesa callback, manual cheque, bank transfer etc.)
+                // Do NOT use payment.aggregate with createdAt filter — that misses
+                // backdated/manual payments and only covers the current calendar month.
+                prisma.invoice.aggregate({
+                    where: { studentId: { in: studentIds } },
+                    _sum: { paidAmount: true }
+                }),
             ])
 
             // Next due date: earliest unpaid invoice due date
@@ -127,14 +129,15 @@ export async function GET() {
             return NextResponse.json({
                 myChildren,
                 totalBalance: Number(balanceAgg._sum.balance || 0),
-                paidThisTerm: Number(paidThisTermAgg._sum.amount || 0),
+                paidThisTerm: Number(paidAgg._sum.paidAmount || 0),
                 nextPayment: nextInvoice?.dueDate
                     ? new Date(nextInvoice.dueDate).toLocaleDateString('en-KE', { day: 'numeric', month: 'short' })
                     : 'N/A',
                 hasActivePlan: activeCommitments.length > 0,
                 commitmentVolume
             }, {
-                headers: { 'Cache-Control': 'private, max-age=20, stale-while-revalidate=40' }
+                // No cache for parent stats — must always reflect latest manual payments
+                headers: { 'Cache-Control': 'private, no-store' }
             })
         }
 

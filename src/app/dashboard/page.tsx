@@ -107,7 +107,7 @@ export default function DashboardPage() {
     ] : [
         { label: 'My Children', value: dashboardStats?.myChildren || '0', icon: Users, color: 'var(--primary-600)', bg: 'var(--primary-50)' },
         { label: 'Total Balance', value: `KES ${(dashboardStats?.totalBalance || 0).toLocaleString()}`, icon: DollarSign, color: 'var(--warning-600)', bg: 'var(--warning-50)' },
-        { label: 'Paid This Term', value: `KES ${(dashboardStats?.paidThisTerm || 0).toLocaleString()}`, icon: DollarSign, color: 'var(--success-600)', bg: 'var(--success-50)' },
+        { label: 'Total Paid', value: `KES ${(dashboardStats?.paidThisTerm || 0).toLocaleString()}`, icon: DollarSign, color: 'var(--success-600)', bg: 'var(--success-50)' },
         { label: 'Next Payment', value: dashboardStats?.nextPayment || 'N/A', icon: TrendingUp, color: 'var(--secondary-600)', bg: 'var(--secondary-50)' },
     ]
 
