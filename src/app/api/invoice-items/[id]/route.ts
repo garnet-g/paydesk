@@ -3,21 +3,21 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-// DELETE: Remove an item from invoice
+// DELETE: Remove an item from invoice and recompute all totals
 export async function DELETE(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getServerSession(authOptions)
 
-    if (!session || (session.user.role !== 'PRINCIPAL' && session.user.role !== 'SUPER_ADMIN')) {
+    if (!session || (session.user.role !== 'PRINCIPAL' && session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'FINANCE_MANAGER')) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     try {
         const { id: itemId } = await params
 
-        // Use raw SQL to get item and invoice details to bypass stale Prisma Client metadata
+        // ── Fix #17: Use proper Prisma tagged template instead of $queryRawUnsafe ─
         const items = await prisma.$queryRaw<any[]>`
             SELECT ii.*, i."schoolId" as "invoiceSchoolId", i."paidAmount" as "invoicePaidAmount"
             FROM "InvoiceItem" ii
@@ -31,38 +31,44 @@ export async function DELETE(
             return NextResponse.json({ error: 'Item not found' }, { status: 404 })
         }
 
-        if (session.user.role === 'PRINCIPAL' && item.invoiceSchoolId !== session.user.schoolId) {
+        if (session.user.role !== 'SUPER_ADMIN' && item.invoiceSchoolId !== session.user.schoolId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
         }
 
         const invoiceId = item.invoiceId
 
-        // Transaction to delete item and update invoice totals
-        // Note: Using standard prisma inside transaction for tables that didn't change schema
-        // But use executeRaw for the deletion just to be safe if the client is really bad.
         const updatedInvoice = await prisma.$transaction(async (tx) => {
-            // Delete item
-            await tx.$executeRawUnsafe('DELETE FROM "InvoiceItem" WHERE id = $1', itemId)
+            // Delete item using safe tagged template
+            await tx.$executeRaw`DELETE FROM "InvoiceItem" WHERE id = ${itemId}`
 
-            // Recalculate totals
-            const remainingItems: any[] = await tx.$queryRawUnsafe(
-                'SELECT amount FROM "InvoiceItem" WHERE "invoiceId" = $1 AND "isDismissed" = false',
-                invoiceId
-            )
+            // Recalculate totals from remaining active items
+            const remainingItems = await tx.$queryRaw<{ amount: number }[]>`
+                SELECT amount FROM "InvoiceItem"
+                WHERE "invoiceId" = ${invoiceId} AND "isDismissed" = false
+            `
 
             const newTotal = remainingItems.reduce((sum, i) => sum + Number(i.amount), 0)
-            const newBalance = newTotal - Number(item.invoicePaidAmount)
+            const paidAmount = Number(item.invoicePaidAmount)
+            const newBalance = Math.max(0, newTotal - paidAmount)
 
-            const updated = await (tx.invoice as any).update({
+            // ── Fix #6: Recalculate invoice status after item removal ─────────────
+            const newStatus = newBalance <= 0 && newTotal > 0
+                ? 'PAID'
+                : paidAmount > 0 && newBalance > 0
+                    ? 'PARTIALLY_PAID'
+                    : newTotal === 0
+                        ? 'CANCELLED'
+                        : 'PENDING'
+
+            const updated = await tx.invoice.update({
                 where: { id: invoiceId },
                 data: {
                     totalAmount: newTotal,
-                    balance: newBalance
+                    balance: newBalance,
+                    status: newStatus
                 },
                 include: {
-                    items: {
-                        orderBy: { category: 'asc' } as any
-                    }
+                    items: { where: { isDismissed: false }, orderBy: { category: 'asc' } }
                 }
             })
 

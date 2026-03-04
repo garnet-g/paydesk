@@ -43,7 +43,11 @@ export async function GET() {
 
             payments = await prisma.payment.findMany({
                 where: {
-                    studentId: { in: studentIds }
+                    studentId: { in: studentIds },
+                    // ── Fix #14: Only show confirmed payments to parents ──────────
+                    // PENDING/FAILED M-Pesa attempts were appearing as transactions,
+                    // making parents think they had paid when STK Push was cancelled.
+                    status: 'COMPLETED'
                 },
                 take: 10,
                 orderBy: { createdAt: 'desc' },

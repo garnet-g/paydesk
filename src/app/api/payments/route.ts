@@ -137,6 +137,14 @@ export async function POST(req: Request) {
 
         const paymentAmount = parseFloat(amount)
 
+        // ── Fix #12: Validate amount — must be a positive number ────────────────
+        if (isNaN(paymentAmount) || paymentAmount <= 0) {
+            return new NextResponse('Amount must be a positive number', { status: 400 })
+        }
+        // Sanity cap: reject amounts above KES 10,000,000 (10 million) as obvious typos
+        if (paymentAmount > 10_000_000) {
+            return new NextResponse('Amount exceeds the maximum allowed single payment (KES 10,000,000). Please check for typos.', { status: 400 })
+        }
         // Generate receipt number (Manual/Serial)
         const count = await prisma.payment.count({ where: { schoolId } })
         const receiptNumber = `RCP-${(count + 1).toString().padStart(5, '0')}`

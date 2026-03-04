@@ -77,7 +77,10 @@ export const CommunicationEngine = {
             const resend = new Resend(process.env.RESEND_API_KEY)
 
             const { error } = await resend.emails.send({
-                from: 'PayDesk <onboarding@resend.dev>', // TODO: swap to your verified domain email once set up
+                // ── Fix #20: Use configured domain email, not Resend test address ──────
+                // Set MAIL_FROM env var e.g. "PayDesk <noreply@paydesk.co.ke>" once your
+                // domain is verified in Resend. Falls back to test address for dev only.
+                from: process.env.MAIL_FROM || 'PayDesk <onboarding@resend.dev>',
                 to: [to],
                 subject: resolvedSubject,
                 html: `
@@ -155,11 +158,25 @@ export const CommunicationEngine = {
      * Notify parents in bulk after a billing run
      */
     async notifyBulkInvoices(invoiceIds: string[]) {
-        console.log(`[COMMUNICATION] Queuing notifications for ${invoiceIds.length} invoices...`)
-        // In a real app, this would be pushed to a queue (BullMQ/Redis)
-        // For MVP, we'll process them asynchronously
-        for (const id of invoiceIds) {
-            this.notifyInvoiceGenerated(id).catch(err => console.error(`Failed to notify for invoice ${id}:`, err))
+        console.log(`[COMMUNICATION] Sending notifications for ${invoiceIds.length} invoices...`)
+        // ── Fix #19: Sequential with delay instead of fire-and-forget parallel blast ──
+        // Firing 500+ simultaneous DB + email calls will exhaust connection pools.
+        // Process in small batches with a pause to stay within Supabase limits.
+        const BATCH_SIZE = 10
+        const BATCH_DELAY_MS = 150
+
+        for (let i = 0; i < invoiceIds.length; i += BATCH_SIZE) {
+            const batch = invoiceIds.slice(i, i + BATCH_SIZE)
+            await Promise.all(
+                batch.map(id =>
+                    this.notifyInvoiceGenerated(id).catch(err =>
+                        console.error(`Failed to notify for invoice ${id}:`, err)
+                    )
+                )
+            )
+            if (i + BATCH_SIZE < invoiceIds.length) {
+                await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS))
+            }
         }
     },
 
@@ -211,14 +228,16 @@ export const CommunicationEngine = {
             },
             include: {
                 student: { include: { guardians: { include: { user: true } } } },
-                school: true
+                school: { select: { name: true, mpesaPaybill: true, mpesaShortcode: true } }
             }
         })
 
         console.log(`[COMMUNICATION] Sending reminders for ${overdueInvoices.length} overdue invoices...`)
 
         for (const invoice of overdueInvoices) {
-            const message = `REMINDER: Invoice ${invoice.invoiceNumber} for ${invoice.student.firstName} is overdue. Balance: KES ${invoice.balance}. Please pay via Paybill 174379. - ${invoice.school.name}`
+            // ── Fix #11: Use school's own paybill number, not hardcoded PayDesk one ──
+            const paybill = invoice.school.mpesaPaybill || invoice.school.mpesaShortcode || 'your school paybill'
+            const message = `REMINDER: Invoice ${invoice.invoiceNumber} for ${invoice.student.firstName} is overdue. Balance: KES ${invoice.balance}. Please pay via Paybill ${paybill}. - ${invoice.school.name}`
 
             for (const g of invoice.student.guardians) {
                 if (g.user.phoneNumber) {
@@ -244,8 +263,12 @@ export const CommunicationEngine = {
 
         if (!user || user.role !== 'PARENT') return
 
-        const message = `Welcome to ${user.school?.name || 'PayDesk'}. Your parent account has been created. Login at ${process.env.APP_URL}/login using your email: ${user.email} and temporary password: ${tempPassword}. You will be prompted to change it upon first login.`
+        const message = `Welcome to ${user.school?.name || 'PayDesk'}. Your parent account has been created. Login at ${process.env.APP_URL || process.env.NEXTAUTH_URL}/login using your email: ${user.email} and set your password on first login.`
 
+        // ── Fix #10: Temporary passwords must NOT be sent in plaintext SMS ────────
+        // Security: SMS messages are stored in carrier logs. Never reveal actual credentials.
+        // The tempPassword parameter is still accepted but used only in the email for now.
+        // TODO: Replace with a magic-link / forced-password-reset flow.
         if (user.phoneNumber) {
             await this.sendSMS({
                 to: user.phoneNumber,

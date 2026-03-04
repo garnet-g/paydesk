@@ -7,7 +7,7 @@ import { CommunicationEngine } from '@/lib/communication'
 export async function POST() {
     const session = await getServerSession(authOptions)
 
-    if (!session || (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN')) {
+    if (!session || session.user.role !== 'SUPER_ADMIN') {
         return new NextResponse('Unauthorized', { status: 401 })
     }
 

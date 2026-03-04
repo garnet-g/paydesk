@@ -87,11 +87,15 @@ export async function POST(req: Request) {
         // 4. Batch Generate Invoices
         // We use a simple loop here for reliability, but could be optimized
         for (const student of students) {
-            // Check for existing invoice for this period
+            // ── Fix #8: Duplicate guard — skip if this period already invoiced ──
+            // Using findFirst inside the loop is safe enough for typical class sizes
+            // (< 200 students). A unique constraint on [studentId, academicPeriodId]
+            // provides the DB-level guarantee against race conditions.
             const existing = await prisma.invoice.findFirst({
                 where: {
                     studentId: student.id,
-                    academicPeriodId: academicPeriodId
+                    academicPeriodId: academicPeriodId,
+                    status: { not: 'CANCELLED' }  // Allow re-invoicing cancelled invoices
                 }
             })
 

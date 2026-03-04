@@ -80,6 +80,11 @@ export async function PATCH(req: Request) {
             return new NextResponse('Request not found', { status: 404 })
         }
 
+        // ── Fix #18: School ownership — principal can only approve own school's requests ─
+        if (request.schoolId !== session.user.schoolId) {
+            return new NextResponse('Forbidden: Cannot approve requests from another school', { status: 403 })
+        }
+
         if (request.requestedById === userId) {
             return new NextResponse('Dual-authorization required: You cannot approve your own request', { status: 403 })
         }
@@ -103,11 +108,25 @@ export async function PATCH(req: Request) {
                         data: { status: 'CANCELLED' }
                     })
                 } else if (req.type === 'BALANCE_ADJUSTMENT') {
+                    // ── Fix #9: Also update paidAmount and recalculate status ────────
+                    const currentInvoice = await tx.invoice.findUnique({
+                        where: { id: payload.invoiceId },
+                        select: { totalAmount: true }
+                    })
+                    const newTotal = payload.newTotal ?? Number(currentInvoice?.totalAmount ?? 0)
+                    const newBalance = payload.newBalance ?? 0
+                    const impliedPaid = Math.max(0, newTotal - newBalance)
+                    const newStatus = newBalance <= 0 ? 'PAID'
+                        : impliedPaid > 0 ? 'PARTIALLY_PAID'
+                            : 'PENDING'
+
                     await tx.invoice.update({
                         where: { id: payload.invoiceId },
                         data: {
-                            balance: payload.newBalance,
-                            totalAmount: payload.newTotal
+                            balance: newBalance,
+                            totalAmount: newTotal,
+                            paidAmount: impliedPaid,
+                            status: newStatus
                         }
                     })
                 } else if (req.type === 'GRADE_PROMOTION') {

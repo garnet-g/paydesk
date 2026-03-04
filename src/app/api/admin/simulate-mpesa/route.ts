@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 /**
  * M-Pesa Simulator API
  * Allows developers to trigger callbacks for testing reconciliation
+ * ── Fix #7: Restricted to SUPER_ADMIN only ──────────────────────────────────
  */
 export async function POST(req: Request) {
+    // SECURITY: This endpoint can create payment records — must be protected
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== 'SUPER_ADMIN') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     try {
         const body = await req.json()
         const { type, payload } = body
@@ -31,7 +40,6 @@ export async function POST(req: Request) {
                 }
             }
 
-            // Call our own callback endpoint
             const res = await fetch(`${process.env.NEXTAUTH_URL}/api/payments/mpesa/callback`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

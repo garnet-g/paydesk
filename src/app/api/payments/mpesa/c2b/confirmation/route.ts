@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 /**
  * M-Pesa C2B Confirmation Webhook
- * Safaricom calls this after a successful payment
+ * Safaricom calls this after a successful payment via Paybill
  */
 export async function POST(req: Request) {
     try {
@@ -30,14 +30,26 @@ export async function POST(req: Request) {
         const payerName = `${FirstName || ''} ${MiddleName || ''} ${LastName || ''}`.trim()
         const payerPhone = MSISDN
 
-        // Logic for reconciliation
-        // 1. Check if it's an invoice match
+        // ── Fix #3: Idempotency — reject duplicate TransIDs ─────────────────────
+        const existingPayment = await prisma.payment.findFirst({
+            where: { transactionRef: TransID }
+        })
+        if (existingPayment) {
+            console.warn(`[C2B] Duplicate TransID ${TransID} ignored`)
+            return NextResponse.json({ ResultCode: 0, ResultDesc: "Success" })
+        }
+
+        // ── Fix #13: Identify school by BusinessShortCode instead of findFirst ──
+        // Find which school this payment belongs to based on their registered shortcode
+        const school = await prisma.school.findFirst({
+            where: { mpesaShortcode: BusinessShortCode?.toString() }
+        })
+
+        // 1. Match by invoice number
         const invoice = await prisma.invoice.findFirst({
             where: {
-                invoiceNumber: {
-                    equals: BillRefNumber.trim(),
-                    mode: 'insensitive'
-                }
+                invoiceNumber: { equals: BillRefNumber.trim(), mode: 'insensitive' },
+                ...(school ? { schoolId: school.id } : {})
             },
             include: { student: true }
         })
@@ -47,13 +59,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ ResultCode: 0, ResultDesc: "Success" })
         }
 
-        // 2. Check if it's a student match
+        // 2. Match by student admission number
         const student = await prisma.student.findFirst({
             where: {
-                admissionNumber: {
-                    equals: BillRefNumber.trim(),
-                    mode: 'insensitive'
-                }
+                admissionNumber: { equals: BillRefNumber.trim(), mode: 'insensitive' },
+                ...(school ? { schoolId: school.id } : {})
             },
             include: {
                 invoices: {
@@ -64,16 +74,16 @@ export async function POST(req: Request) {
         })
 
         if (student) {
-            // Apply to the oldest pending invoice first
             const targetInvoice = student.invoices[0]
             await reconcilePayment(targetInvoice?.id || null, student.id, student.schoolId, TransID, amount, payerName, payerPhone)
             return NextResponse.json({ ResultCode: 0, ResultDesc: "Success" })
         }
 
-        // 3. Fallback: Create unassigned payment for manual reconciliation
-        // We'll need to find the school by ShortCode if multiple schools use the same system,
-        // but for now we assume one school or use default
-        const defaultSchool = await prisma.school.findFirst()
+        // ── Fix #4: Fallback unmatched payment — use nullable studentId ──────────
+        // Use the school matched by shortcode; if still not found log a warning
+        if (!school) {
+            console.warn(`[C2B] No school found for shortcode: ${BusinessShortCode}. Payment ${TransID} stored as global unreconciled.`)
+        }
 
         await prisma.payment.create({
             data: {
@@ -84,11 +94,10 @@ export async function POST(req: Request) {
                 payerName: payerName,
                 payerPhone: payerPhone,
                 receiptNumber: TransID,
-                notes: `Unmatched C2B Payment. BillRef: ${BillRefNumber}`,
-                schoolId: defaultSchool?.id || 'GLOBAL',
-                studentId: 'UNASSIGNED', // We should probably have a better way for this
+                schoolId: school?.id,        // undefined if no school matched — Prisma will omit it
+                notes: `Unreconciled C2B Payment. BillRef: ${BillRefNumber}. Shortcode: ${BusinessShortCode}`,
                 completedAt: new Date(),
-            }
+            } as any   // schoolId and studentId are optional nullable FK fields
         })
 
         return NextResponse.json({ ResultCode: 0, ResultDesc: "Success" })
@@ -99,9 +108,16 @@ export async function POST(req: Request) {
     }
 }
 
-async function reconcilePayment(invoiceId: string | null, studentId: string, schoolId: string, transId: string, amount: number, name: string, phone: string) {
+async function reconcilePayment(
+    invoiceId: string | null,
+    studentId: string,
+    schoolId: string,
+    transId: string,
+    amount: number,
+    name: string,
+    phone: string
+) {
     return await prisma.$transaction(async (tx) => {
-        // Create the payment record
         const payment = await tx.payment.create({
             data: {
                 transactionRef: transId,
@@ -118,25 +134,25 @@ async function reconcilePayment(invoiceId: string | null, studentId: string, sch
             }
         })
 
-        // If matched to an invoice, update balance and status
+        // ── Fix #2: Safe invoice update — no negative balances ───────────────────
         if (invoiceId) {
             const invoice = await tx.invoice.findUnique({ where: { id: invoiceId } })
             if (invoice) {
                 const newPaidAmount = Number(invoice.paidAmount) + amount
-                const newBalance = Number(invoice.totalAmount) - newPaidAmount
+                const newBalance = Math.max(0, Number(invoice.balance) - amount)
 
                 await tx.invoice.update({
                     where: { id: invoiceId },
                     data: {
                         paidAmount: newPaidAmount,
-                        balance: Math.max(0, newBalance),
+                        balance: newBalance,
                         status: newBalance <= 0 ? 'PAID' : 'PARTIALLY_PAID'
                     }
                 })
             }
         }
 
-        // [MVP Phase 2] Trigger automatic receipt notification
+        // Notify parent
         try {
             const { CommunicationEngine } = await import('@/lib/communication')
             await CommunicationEngine.notifyPaymentReceived(payment.id)
