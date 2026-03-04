@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sanitizeId, sanitizeAmount, sanitizeEnum, sanitizeNotes, sanitizeString, sanitizeDate } from '@/lib/sanitize'
 
 export async function GET(req: Request) {
     const session = await getServerSession(authOptions)
@@ -114,12 +115,17 @@ export async function POST(req: Request) {
     }
 
     try {
-        const body = await req.json()
-        const { studentId, amount, method, description, transactionRef, date } = body
+        const raw = await req.json()
+        const studentId = sanitizeId(raw.studentId)
+        const amount = sanitizeAmount(raw.amount)
+        const method = sanitizeEnum(raw.method, ['CASH', 'BANK_TRANSFER', 'MPESA', 'CHEQUE', 'OTHER'] as const)
+        const description = sanitizeNotes(raw.description, 500)
+        const transactionRef = sanitizeString(raw.transactionRef, 100)
+        const date = sanitizeDate(raw.date)
 
-        if (!studentId || !amount || !method) {
-            return new NextResponse('Missing required fields', { status: 400 })
-        }
+        if (!studentId) return new NextResponse('Invalid student ID', { status: 400 })
+        if (!amount) return new NextResponse('Amount must be a positive number (max KES 10,000,000)', { status: 400 })
+        if (!method) return new NextResponse('Invalid payment method. Allowed: CASH, BANK_TRANSFER, MPESA, CHEQUE, OTHER', { status: 400 })
 
         let schoolId: string | null = session.user.schoolId || null
 
@@ -135,16 +141,9 @@ export async function POST(req: Request) {
             return new NextResponse('School context missing', { status: 400 })
         }
 
-        const paymentAmount = parseFloat(amount)
+        // amount is already sanitized (positive, finite, max 10M) by sanitizeAmount()
+        const paymentAmount = amount  // type: number
 
-        // ── Fix #12: Validate amount — must be a positive number ────────────────
-        if (isNaN(paymentAmount) || paymentAmount <= 0) {
-            return new NextResponse('Amount must be a positive number', { status: 400 })
-        }
-        // Sanity cap: reject amounts above KES 10,000,000 (10 million) as obvious typos
-        if (paymentAmount > 10_000_000) {
-            return new NextResponse('Amount exceeds the maximum allowed single payment (KES 10,000,000). Please check for typos.', { status: 400 })
-        }
         // Generate receipt number (Manual/Serial)
         const count = await prisma.payment.count({ where: { schoolId } })
         const receiptNumber = `RCP-${(count + 1).toString().padStart(5, '0')}`

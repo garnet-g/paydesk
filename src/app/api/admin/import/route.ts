@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import * as XLSX from 'xlsx'
+import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeAdmNo, sanitizeAmount } from '@/lib/sanitize'
 
 export async function POST(req: Request) {
     const session = await getServerSession(authOptions)
@@ -22,6 +23,22 @@ export async function POST(req: Request) {
 
         if (!file) {
             return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
+        }
+
+        // ── File type whitelist — only accept spreadsheet formats ───────────────
+        const allowedTypes = [
+            'text/csv',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ]
+        const allowedExtensions = ['.csv', '.xls', '.xlsx']
+        const fileExt = '.' + (file.name.split('.').pop() || '').toLowerCase()
+        if (!allowedExtensions.includes(fileExt) && !allowedTypes.includes(file.type)) {
+            return NextResponse.json({ error: 'Invalid file type. Only CSV, XLS, and XLSX files are accepted.' }, { status: 400 })
+        }
+        // Cap file size at 5MB to prevent memory exhaustion
+        if (file.size > 5 * 1024 * 1024) {
+            return NextResponse.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 400 })
         }
 
         const buffer = await file.arrayBuffer()
@@ -45,13 +62,11 @@ export async function POST(req: Request) {
             for (const row of data) {
                 processed++
                 try {
-                    // Normalize keys (handle case sensitivity and spaces)
-                    const admNo = (row['Admission Number'] || row['AdmNo'] || row['admissionNumber'] || row['adm_no'] || row['admission_number'])?.toString().trim()
-                    const firstName = row['First Name'] || row['firstName'] || row['first_name']
-                    const lastName = row['Last Name'] || row['lastName'] || row['last_name']
-                    const className = row['Class'] || row['className'] || row['class_name']
-                    // Normalize empty stream to null so it matches classes created without a stream
-                    const rawStream = (row['Stream'] || row['stream'] || '').toString().trim()
+                    const admNo = sanitizeAdmNo(row['Admission Number'] || row['AdmNo'] || row['admissionNumber'] || row['adm_no'] || row['admission_number'])
+                    const firstName = sanitizeName(row['First Name'] || row['firstName'] || row['first_name'])
+                    const lastName = sanitizeName(row['Last Name'] || row['lastName'] || row['last_name'])
+                    const className = (row['Class'] || row['className'] || row['class_name'])?.toString().trim().slice(0, 50)
+                    const rawStream = (row['Stream'] || row['stream'] || '').toString().trim().slice(0, 30)
                     const stream = rawStream === '' ? null : rawStream
 
                     if (!admNo || !firstName) {
@@ -100,18 +115,21 @@ export async function POST(req: Request) {
             for (const row of data) {
                 processed++
                 try {
-                    const email = (row['Email'] || row['email'])?.toString().trim().toLowerCase()
-                    const phone = (row['Phone'] || row['phone'] || row['phone_number'] || row['phoneNumber'])?.toString().trim()
-                    const firstName = row['First Name'] || row['firstName'] || row['first_name'] || 'Parent'
-                    const lastName = row['Last Name'] || row['lastName'] || row['last_name'] || ''
-                    const studentAdmNo = (row['Student AdmNo'] || row['student_adm_no'] || row['Student Admission Number'] || row['studentAdmNo'])?.toString().trim()
+                    const email = sanitizeEmail(row['Email'] || row['email'])
+                    const phone = sanitizePhone(row['Phone'] || row['phone'] || row['phone_number'] || row['phoneNumber'])
+                    const firstName = sanitizeName(row['First Name'] || row['firstName'] || row['first_name'] || 'Parent')
+                    const lastName = sanitizeName(row['Last Name'] || row['lastName'] || row['last_name'])
+                    const studentAdmNo = sanitizeAdmNo(row['Student AdmNo'] || row['student_adm_no'] || row['Student Admission Number'] || row['studentAdmNo'])
 
                     if (!email || !studentAdmNo) {
                         errors++
                         continue
                     }
 
-                    const tempPassword = 'TemporaryPassword123!'
+                    // Generate a unique random temp password per user — never use a shared hardcoded one.
+                    // crypto.randomBytes gives cryptographic randomness; slice produces a 12-char password.
+                    const { randomBytes } = await import('crypto')
+                    const tempPassword = randomBytes(9).toString('base64url').slice(0, 12)
                     const bcrypt = await import('bcryptjs')
                     const hashedPassword = await bcrypt.hash(tempPassword, 10)
 
@@ -169,10 +187,10 @@ export async function POST(req: Request) {
             for (const row of data) {
                 processed++
                 try {
-                    const admNo = row['Admission Number'] || row['AdmNo']
-                    const balanceAmount = parseFloat(row['Balance'] || row['Amount'])
+                    const admNo = sanitizeAdmNo(row['Admission Number'] || row['AdmNo'])
+                    const balanceAmount = sanitizeAmount(row['Balance'] || row['Amount'], 5_000_000)
 
-                    if (!admNo || isNaN(balanceAmount)) {
+                    if (!admNo || !balanceAmount) {
                         errors++
                         continue
                     }

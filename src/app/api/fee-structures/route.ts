@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sanitizeString, sanitizeAmount, sanitizeEnum } from '@/lib/sanitize'
 
 export async function GET(req: Request) {
     const session = await getServerSession(authOptions)
@@ -79,11 +80,22 @@ export async function POST(req: Request) {
     }
 
     try {
-        const body = await req.json()
-        const { name, description, amount, category, displayOrder, academicPeriodId, classId, applyToAllClasses } = body
+        const raw = await req.json()
+        const name = sanitizeString(raw.name, 200)
+        const description = sanitizeString(raw.description, 500)
+        const amount = sanitizeAmount(raw.amount, 5_000_000)
+        const category = sanitizeEnum(raw.category,
+            ['TUITION', 'BOARDING', 'TRANSPORT', 'MEALS', 'UNIFORM', 'BOOKS', 'ACTIVITIES', 'EXAM', 'OTHER'] as const
+        ) || 'OTHER'
+        const displayOrder = Math.max(0, Math.min(999, parseInt(raw.displayOrder ?? '0') || 0))
+        const academicPeriodId = raw.academicPeriodId
+        const classId = raw.classId
+        const applyToAllClasses = Boolean(raw.applyToAllClasses)
 
-        const schoolId = session.user.role === 'PRINCIPAL' ? session.user.schoolId : body.schoolId
+        const schoolId = session.user.role === 'PRINCIPAL' ? session.user.schoolId : raw.schoolId
 
+        if (!name) return new NextResponse('Fee name is required', { status: 400 })
+        if (!amount) return new NextResponse('A valid positive amount is required', { status: 400 })
         if (!schoolId) {
             return new NextResponse('School ID required', { status: 400 })
         }
@@ -109,9 +121,9 @@ export async function POST(req: Request) {
                         data: {
                             name,
                             description,
-                            amount: parseFloat(amount),
-                            category: (category as any) || 'OTHER',
-                            displayOrder: displayOrder || 0,
+                            amount: amount,
+                            category: (category as any),
+                            displayOrder,
                             schoolId,
                             academicPeriodId,
                             classId: cls.id
@@ -136,9 +148,9 @@ export async function POST(req: Request) {
             data: {
                 name,
                 description,
-                amount: parseFloat(amount),
-                category: (category as any) || 'OTHER',
-                displayOrder: displayOrder || 0,
+                amount: amount,
+                category: (category as any),
+                displayOrder,
                 schoolId,
                 academicPeriodId,
                 classId: classId || null

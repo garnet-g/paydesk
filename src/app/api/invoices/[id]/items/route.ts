@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sanitizeNotes, sanitizeAmount, sanitizeEnum } from '@/lib/sanitize'
 
 export async function POST(
     req: Request,
@@ -15,10 +16,15 @@ export async function POST(
 
     try {
         const { id: invoiceId } = await params
-        const { description, amount, category } = await req.json()
+        const raw = await req.json()
+        const description = sanitizeNotes(raw.description, 300)
+        const amount = sanitizeAmount(raw.amount, 5_000_000)
+        const category = sanitizeEnum(raw.category,
+            ['TUITION', 'BOARDING', 'TRANSPORT', 'MEALS', 'UNIFORM', 'BOOKS', 'ACTIVITIES', 'EXAM', 'OTHER'] as const
+        ) || 'OTHER'
 
         if (!description || !amount) {
-            return new NextResponse('Description and amount are required', { status: 400 })
+            return new NextResponse('Description and a valid positive amount are required', { status: 400 })
         }
 
         const invoice = await prisma.invoice.findUnique({
@@ -41,15 +47,14 @@ export async function POST(
                 data: {
                     invoiceId,
                     description,
-                    amount: parseFloat(amount),
-                    category: category || 'OTHER',
+                    amount: amount,
+                    category: category,
                     quantity: 1,
-                    unitPrice: parseFloat(amount)
+                    unitPrice: amount
                 } as any
             })
 
-            // Update invoice totals
-            const itemAmount = parseFloat(amount.toString()) // Ensure number
+            const itemAmount = amount
 
             const updated = await tx.invoice.update({
                 where: { id: invoiceId },

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { isOfficialEmail } from '@/lib/utils'
+import { sanitizeString, sanitizeName, sanitizeEmail, sanitizePhone, sanitizeAmount } from '@/lib/sanitize'
 
 export async function GET() {
     const session = await getServerSession(authOptions)
@@ -35,13 +36,25 @@ export async function POST(req: Request) {
     }
 
     try {
-        const data = await req.json()
-        const { name, code, address, phoneNumber, email, principalName, principalEmail, principalPhone, curriculumType, curriculumConfig, planTier, subscriptionFee } = data
+        const raw = await req.json()
+        const name = sanitizeString(raw.name, 200)
+        const code = sanitizeString(raw.code, 20).toUpperCase()
+        const address = sanitizeString(raw.address, 300)
+        const phoneNumber = sanitizePhone(raw.phoneNumber)
+        const email = sanitizeEmail(raw.email)
+        const principalName = sanitizeName(raw.principalName, 150)
+        const principalEmail = sanitizeEmail(raw.principalEmail)
+        const principalPhone = sanitizePhone(raw.principalPhone)
+        const curriculumType = raw.curriculumType || 'CBC'
+        const curriculumConfig = raw.curriculumConfig
+        const planTier = raw.planTier
+        const subscriptionFee = sanitizeAmount(raw.subscriptionFee, 1_000_000) ?? 0
+
+        if (!name) return new NextResponse('School name is required', { status: 400 })
 
         if (email && !isOfficialEmail(email)) {
             return new NextResponse('School email must be an official domain email', { status: 400 })
         }
-
         if (principalEmail && !isOfficialEmail(principalEmail)) {
             return new NextResponse('Principal email must be an official domain email', { status: 400 })
         }
@@ -57,7 +70,7 @@ export async function POST(req: Request) {
                 curriculumConfig: curriculumConfig ? JSON.stringify(curriculumConfig) : null,
                 planTier: planTier || 'FREE',
                 trialEndsAt: (!planTier || planTier === 'FREE') ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null,
-                subscriptionFee: subscriptionFee || 0,
+                subscriptionFee,
             },
         })
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sanitizeEmail, sanitizeName, sanitizePhone, sanitizeSearchQuery } from '@/lib/sanitize'
 
 export async function GET(req: Request) {
     const session = await getServerSession(authOptions)
@@ -18,11 +19,14 @@ export async function GET(req: Request) {
     }
 
     if (query) {
-        where.OR = [
-            { firstName: { contains: query, mode: 'insensitive' } },
-            { lastName: { contains: query, mode: 'insensitive' } },
-            { email: { contains: query, mode: 'insensitive' } },
-        ]
+        const safeQuery = sanitizeSearchQuery(query)
+        if (safeQuery) {
+            where.OR = [
+                { firstName: { contains: safeQuery, mode: 'insensitive' } },
+                { lastName: { contains: safeQuery, mode: 'insensitive' } },
+                { email: { contains: safeQuery, mode: 'insensitive' } },
+            ]
+        }
     }
 
     const parents = await prisma.user.findMany({
@@ -49,11 +53,17 @@ export async function POST(req: Request) {
     }
 
     try {
-        const data = await req.json()
-        const { firstName, lastName, email, phoneNumber } = data
+        const raw = await req.json()
+        const firstName = sanitizeName(raw.firstName)
+        const lastName = sanitizeName(raw.lastName)
+        const email = sanitizeEmail(raw.email)
+        const phoneNumber = sanitizePhone(raw.phoneNumber)
 
-        if (!firstName || !lastName || !email) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+        if (!firstName || !lastName) {
+            return NextResponse.json({ error: 'First and last name are required' }, { status: 400 })
+        }
+        if (!email) {
+            return NextResponse.json({ error: 'A valid email address is required' }, { status: 400 })
         }
 
         // Check if user already exists
