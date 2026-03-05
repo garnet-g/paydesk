@@ -46,6 +46,11 @@ export async function GET(request: Request) {
                         lastName: true,
                         middleName: true,
                         admissionNumber: true,
+                        class: {
+                            select: {
+                                name: true
+                            }
+                        }
                     }
                 }
             }
@@ -70,6 +75,11 @@ export async function GET(request: Request) {
                 lastName: true,
                 middleName: true,
                 admissionNumber: true,
+                class: {
+                    select: {
+                        name: true
+                    }
+                }
             },
             orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }]
         })

@@ -1,22 +1,31 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Trash2, Edit2, Coins, X, Loader2 } from 'lucide-react'
+import { Plus, Trash2, Edit2, Coins, X, Loader2, Wallet, Info, Filter, MoreHorizontal, ChevronRight, Check, AlertCircle, TrendingUp } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
+import { toast } from 'sonner'
+import { cn, formatCurrency } from '@/lib/utils'
 
 interface FeeStructureManagerProps {
     schoolId?: string
 }
 
 const FEE_CATEGORIES = [
-    { value: 'TUITION', label: 'Tuition', color: 'var(--primary-600)' },
-    { value: 'BOARDING', label: 'Boarding', color: '#8b5cf6' },
-    { value: 'TRANSPORT', label: 'Transport', color: 'var(--success-600)' },
-    { value: 'TRIPS', label: 'Trips/Excursions', color: '#f59e0b' },
-    { value: 'UNIFORMS', label: 'Uniforms', color: '#ec4899' },
-    { value: 'BOOKS', label: 'Books/Materials', color: '#6366f1' },
-    { value: 'EXAM_FEES', label: 'Exam Fees', color: 'var(--error-600)' },
-    { value: 'ACTIVITIES', label: 'Activities/Clubs', color: '#14b8a6' },
-    { value: 'OTHER', label: 'Other', color: 'var(--muted-foreground)' }
+    { value: 'TUITION', label: 'Tuition', color: 'blue' },
+    { value: 'BOARDING', label: 'Boarding', color: 'purple' },
+    { value: 'TRANSPORT', label: 'Transport', color: 'emerald' },
+    { value: 'TRIPS', label: 'Trips/Excursions', color: 'amber' },
+    { value: 'UNIFORMS', label: 'Uniforms', color: 'pink' },
+    { value: 'BOOKS', label: 'Books/Materials', color: 'indigo' },
+    { value: 'EXAM_FEES', label: 'Exam Fees', color: 'red' },
+    { value: 'ACTIVITIES', label: 'Activities/Clubs', color: 'teal' },
+    { value: 'OTHER', label: 'Other', color: 'slate' }
 ]
 
 export default function FeeStructureManager({ schoolId }: FeeStructureManagerProps) {
@@ -72,6 +81,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
             }
         } catch (error) {
             console.error('Failed to fetch initial data:', error)
+            toast.error("Resource fetch failed")
         } finally {
             setLoading(false)
         }
@@ -95,6 +105,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
             }
         } catch (error) {
             console.error('Failed to fetch fee structures:', error)
+            toast.error("Financial data sync error")
         } finally {
             setLoading(false)
         }
@@ -119,31 +130,35 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
             })
 
             if (res.ok) {
+                toast.success(editingFee ? "Fee allocation modified" : "New fee structure deployed")
                 fetchFeeStructures()
                 setShowAddModal(false)
                 setEditingFee(null)
                 resetForm()
             } else {
                 const err = await res.text()
-                alert('Error: ' + err)
+                toast.error(err || 'Failed to authorize transaction')
             }
         } catch (error) {
-            alert('Failed to save fee structure')
+            toast.error('System error during fee deployment')
         } finally {
             setSubmitting(false)
         }
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this fee structure?')) return
+        if (!confirm('EXTERMINATE ALLOCATION: Are you sure? This will remove this fee from all systemic calculations.')) return
 
         try {
             const res = await fetch(`/api/fee-structures/${id}`, { method: 'DELETE' })
             if (res.ok) {
+                toast.success("Fee structure expunged")
                 fetchFeeStructures()
+            } else {
+                toast.error("Deletion rejected")
             }
         } catch (error) {
-            alert('Failed to delete fee structure')
+            toast.error('Failed to delete resource')
         }
     }
 
@@ -179,8 +194,27 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
         resetForm()
     }
 
-    const getCategoryMeta = (category: string) =>
-        FEE_CATEGORIES.find(c => c.value === category) || { label: category, color: 'var(--muted-foreground)' }
+    const getCategoryStyles = (category: string) => {
+        const cat = FEE_CATEGORIES.find(c => c.value === category)
+        if (!cat) return 'bg-slate-100 text-slate-700'
+
+        const colors: Record<string, string> = {
+            blue: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+            purple: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+            emerald: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+            amber: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+            pink: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400',
+            indigo: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
+            red: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+            teal: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
+            slate: 'bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400'
+        }
+
+        return colors[cat.color] || 'bg-slate-100 text-slate-700'
+    }
+
+    const getCategoryLabel = (category: string) =>
+        FEE_CATEGORIES.find(c => c.value === category)?.label || category
 
     const groupedFees = feeStructures.reduce((acc: any, fee: any) => {
         const key = fee.classId || 'general'
@@ -188,7 +222,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
             acc[key] = {
                 className: fee.class
                     ? `${fee.class.name} ${fee.class.stream || ''}`.trim()
-                    : (fee.classId ? 'Loading Class...' : 'General / All Classes'),
+                    : (fee.classId ? 'Loading Class...' : 'Consolidated / All Units'),
                 fees: []
             }
         }
@@ -197,277 +231,339 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
     }, {})
 
     return (
-        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-
+        <div className="animate-in fade-in duration-700 space-y-8">
             {/* Page Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Fee Structures</h2>
-                    <p className="text-muted">Define and manage fee categories for each academic period</p>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                            <Wallet size={24} />
+                        </div>
+                        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Financial Atlas</h2>
+                    </div>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium italic">
+                        Mapping systemic fee structures and <span className="text-blue-600 font-black uppercase not-italic italic">Fiscal Allocations</span>
+                    </p>
                 </div>
-                <button
-                    className="btn btn-primary"
+                <Button
+                    className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100/50 dark:shadow-none"
                     onClick={() => { resetForm(); setShowAddModal(true) }}
                 >
-                    <Plus size={18} />
-                    Add Fee Structure
-                </button>
+                    <Plus size={18} className="mr-2" />
+                    Deploy New Fee
+                </Button>
             </div>
 
-            {/* Filters */}
-            <div className="card" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                <div className="grid grid-cols-2 gap-md">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Academic Period</label>
-                        <select
-                            className="form-select"
-                            value={selectedPeriod}
-                            onChange={(e) => setSelectedPeriod(e.target.value)}
-                        >
-                            <option value="">Select a period...</option>
-                            {academicPeriods.map(period => (
-                                <option key={period.id} value={period.id}>
-                                    {period.academicYear} — {period.term.replace('_', ' ')} {period.isActive && '(Active)'}
-                                </option>
-                            ))}
-                        </select>
+            {/* Selection Filters */}
+            <Card className="border-none shadow-xl bg-white dark:bg-slate-950 rounded-[2rem] overflow-hidden">
+                <CardHeader className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900 p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Academic Lifecycle</Label>
+                            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                                <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white transition-all shadow-sm">
+                                    <div className="flex items-center gap-2">
+                                        <TrendingUp size={16} className="text-blue-600" />
+                                        <SelectValue placeholder="Select Cycle Phase..." />
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
+                                    {academicPeriods.length === 0 ? (
+                                        <SelectItem value="none" disabled>No Periods Defined</SelectItem>
+                                    ) : (
+                                        academicPeriods.map(period => (
+                                            <SelectItem key={period.id} value={period.id} className="font-bold">
+                                                {period.academicYear} — {period.term.replace('_', ' ')} {period.isActive && '[ACTIVE MISSION]'}
+                                            </SelectItem>
+                                        ))
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Division Filter</Label>
+                            <Select value={selectedClass} onValueChange={setSelectedClass}>
+                                <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white transition-all shadow-sm">
+                                    <div className="flex items-center gap-2">
+                                        <Filter size={16} className="text-blue-600" />
+                                        <SelectValue placeholder="All Divisions" />
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
+                                    <SelectItem value="all_classes" className="font-bold">ALL DIVISIONS</SelectItem>
+                                    {classes.map(cls => (
+                                        <SelectItem key={cls.id} value={cls.id} className="font-bold">
+                                            {cls.name} {cls.stream}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Class (Optional)</label>
-                        <select
-                            className="form-select"
-                            value={selectedClass}
-                            onChange={(e) => setSelectedClass(e.target.value)}
-                        >
-                            <option value="">All Classes</option>
-                            {classes.map(cls => (
-                                <option key={cls.id} value={cls.id}>{cls.name} {cls.stream}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-            </div>
+                </CardHeader>
+            </Card>
 
-            {/* Content */}
+            {/* Deployment Map (Content) */}
             {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-2xl)' }}>
-                    <div className="spinner"></div>
+                <div className="py-24 text-center">
+                    <div className="inline-flex items-center gap-4">
+                        <Loader2 className="animate-spin text-blue-600" size={32} />
+                        <span className="text-2xl font-black text-slate-400 uppercase italic tracking-tighter animate-pulse">Syncing Treasury Data...</span>
+                    </div>
                 </div>
             ) : Object.keys(groupedFees).length === 0 ? (
-                <div className="card" style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                    <Coins size={48} style={{ opacity: 0.2, marginBottom: 'var(--spacing-md)', margin: '0 auto var(--spacing-md)' }} />
-                    <p className="font-semibold" style={{ marginBottom: 'var(--spacing-xs)' }}>No fee structures found</p>
-                    <p className="text-muted text-sm" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                        {!selectedPeriod ? 'Select an academic period to view or add fee structures.' : 'No fees defined for this period yet.'}
+                <div className="py-24 text-center bg-white dark:bg-slate-950 rounded-[2.5rem] shadow-xl border-2 border-dashed border-slate-100 dark:border-slate-900">
+                    <div className="h-24 w-24 bg-slate-50 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                        <Coins size={48} className="text-slate-200 dark:text-slate-800" />
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase italic tracking-tighter">Vault Empty</h3>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium italic max-w-sm mx-auto mb-8">
+                        {!selectedPeriod ? 'Initialize an academic period to map treasury allocations.' : 'No fee structures have been deployed for this cycle phase yet.'}
                     </p>
                     {selectedPeriod && (
-                        <button className="btn btn-outline" onClick={() => { resetForm(); setShowAddModal(true) }}>
-                            <Plus size={16} /> Add First Fee
-                        </button>
+                        <Button
+                            variant="outline"
+                            className="h-12 px-8 rounded-xl font-black text-xs uppercase tracking-widest border-slate-200 dark:border-slate-800"
+                            onClick={() => { resetForm(); setShowAddModal(true) }}
+                        >
+                            <Plus size={18} className="mr-2 text-blue-600" />
+                            Launch First Allocation
+                        </Button>
                     )}
                 </div>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xl)' }}>
+                <div className="space-y-12">
                     {Object.entries(groupedFees).map(([key, group]: [string, any]) => (
-                        <div key={key} className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                            {/* Group Header */}
-                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
-                                <div style={{ minWidth: 0, flex: '1 1 auto' }}>
-                                    <h3 className="card-title" style={{ wordBreak: 'break-word' }}>{group.className}</h3>
-                                    <p className="card-description">{group.fees.length} fee {group.fees.length === 1 ? 'entry' : 'entries'}</p>
+                        <Card key={key} className="border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden group">
+                            {/* Section Header */}
+                            <div className="bg-slate-900 p-8 text-white flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                                <div className="relative z-10 flex items-center gap-6">
+                                    <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-blue-400 border border-white/10 shadow-xl group-hover:scale-110 transition-transform">
+                                        <Wallet size={28} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-black uppercase tracking-tighter italic leading-tight">{group.className}</h3>
+                                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
+                                            {group.fees.length} Allocation Items • Billing Sector
+                                        </p>
+                                    </div>
                                 </div>
-                                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                                    <div className="text-xs text-muted" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>Section Total</div>
-                                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--primary-700)' }}>
-                                        KES {group.fees.reduce((sum: number, fee: any) => sum + fee.amount, 0).toLocaleString()}
+                                <div className="relative z-10 text-right mt-6 md:mt-0">
+                                    <div className="text-[10px] font-black text-blue-400/60 uppercase tracking-widest mb-1 italic">Aggregate Assessment</div>
+                                    <div className="text-3xl font-black tracking-tighter text-white uppercase italic">
+                                        {formatCurrency(group.fees.reduce((sum: number, fee: any) => sum + fee.amount, 0))}
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Table */}
-                            <div className="table-wrapper">
-                                <table className="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Category</th>
-                                            <th>Name / Description</th>
-                                            <th>Amount (KES)</th>
-                                            <th style={{ textAlign: 'right' }}>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {group.fees.map((fee: any) => {
-                                            const catMeta = getCategoryMeta(fee.category)
-                                            return (
-                                                <tr key={fee.id}>
-                                                    <td>
-                                                        <span
-                                                            className="badge"
-                                                            style={{
-                                                                background: `${catMeta.color}15`,
-                                                                color: catMeta.color,
-                                                                border: `1px solid ${catMeta.color}30`
-                                                            }}
-                                                        >
-                                                            {catMeta.label}
-                                                        </span>
+                            <CardContent className="p-0">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900">
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Revenue Source</th>
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Description</th>
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Valuation</th>
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Operations</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
+                                            {group.fees.map((fee: any) => (
+                                                <tr key={fee.id} className="group/row hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors border-l-4 border-transparent hover:border-blue-600">
+                                                    <td className="px-8 py-6">
+                                                        <Badge className={cn(
+                                                            "font-black text-[9px] px-3 h-6 uppercase tracking-widest border-none shadow-none",
+                                                            getCategoryStyles(fee.category)
+                                                        )}>
+                                                            {getCategoryLabel(fee.category)}
+                                                        </Badge>
                                                     </td>
-                                                    <td>
-                                                        <div className="font-semibold">{fee.name}</div>
+                                                    <td className="px-8 py-6">
+                                                        <div className="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm">{fee.name}</div>
                                                         {fee.description && (
-                                                            <div className="text-xs text-muted">{fee.description}</div>
+                                                            <div className="text-[10px] text-slate-400 font-bold uppercase italic mt-0.5 max-w-sm truncate">{fee.description}</div>
                                                         )}
                                                     </td>
-                                                    <td>
-                                                        <span className="font-semibold">{fee.amount.toLocaleString()}</span>
+                                                    <td className="px-8 py-6">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-xs font-black text-slate-400 uppercase tracking-tighter">KES</span>
+                                                            <span className="text-base font-black text-slate-900 dark:text-white tracking-widest">{fee.amount.toLocaleString()}</span>
+                                                        </div>
                                                     </td>
-                                                    <td style={{ textAlign: 'right' }}>
-                                                        <div style={{ display: 'flex', gap: 'var(--spacing-xs)', justifyContent: 'flex-end' }}>
-                                                            <button
-                                                                className="btn btn-ghost btn-sm"
-                                                                title="Edit"
+                                                    <td className="px-8 py-6 text-right">
+                                                        <div className="flex gap-2 justify-end opacity-0 group-hover/row:opacity-100 transition-opacity">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="h-10 w-10 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-300 hover:text-blue-600 transition-all"
                                                                 onClick={() => handleEdit(fee)}
+                                                                title="Modify Parameters"
                                                             >
-                                                                <Edit2 size={15} />
-                                                            </button>
-                                                            <button
-                                                                className="btn btn-ghost btn-sm"
-                                                                title="Delete"
-                                                                style={{ color: 'var(--error-600)' }}
+                                                                <Edit2 size={16} />
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="h-10 w-10 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-300 hover:text-red-500 transition-all"
                                                                 onClick={() => handleDelete(fee.id)}
+                                                                title="Expunge Record"
                                                             >
-                                                                <Trash2 size={15} />
-                                                            </button>
+                                                                <Trash2 size={16} />
+                                                            </Button>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            )
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </CardContent>
+                        </Card>
                     ))}
                 </div>
             )}
 
-            {/* Add / Edit Modal */}
-            {showAddModal && (
-                <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) closeModal() }}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h3 className="modal-title">{editingFee ? 'Edit Fee Structure' : 'Add Fee Structure'}</h3>
-                            <button className="btn btn-ghost btn-sm" onClick={closeModal}>
-                                <X size={20} />
-                            </button>
+            {/* Allocation Modality (Add/Edit Modal) */}
+            <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+                <DialogContent className="sm:max-w-[600px] border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] p-0 overflow-hidden">
+                    <DialogHeader className="bg-slate-900 p-8 text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                        <div className="relative z-10 flex items-center gap-6">
+                            <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-blue-400 border border-white/10 shadow-xl">
+                                <TrendingUp size={28} />
+                            </div>
+                            <div>
+                                <DialogTitle className="text-2xl font-black uppercase tracking-tighter italic">
+                                    {editingFee ? 'Modify Allocation' : 'Deploy Allocation'}
+                                </DialogTitle>
+                                <DialogDescription className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
+                                    {editingFee ? 'Updating fiscal parameters in systemic registry' : 'Establishing new recurring financial obligation'}
+                                </DialogDescription>
+                            </div>
                         </div>
-                        <form onSubmit={handleSubmit}>
-                            <div className="modal-body">
-                                <div className="form-group">
-                                    <label className="form-label">Fee Name</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        required
-                                        placeholder="e.g. Laboratory Fee"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    />
-                                </div>
+                    </DialogHeader>
 
-                                <div className="form-group">
-                                    <label className="form-label">Description (Optional)</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        placeholder="Brief description..."
-                                        value={formData.description}
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    />
-                                </div>
+                    <form onSubmit={handleSubmit} className="p-8 space-y-8">
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Asset Descriptor</Label>
+                                <Input
+                                    type="text"
+                                    required
+                                    placeholder="e.g. ADVANCED LABORATORY RESOURCE FEE"
+                                    className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white uppercase placeholder:opacity-30"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                />
+                            </div>
 
-                                <div className="grid grid-cols-2 gap-md">
-                                    <div className="form-group">
-                                        <label className="form-label">Category</label>
-                                        <select
-                                            className="form-select"
-                                            value={formData.category}
-                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        >
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Meta Description (Optional)</Label>
+                                <Input
+                                    type="text"
+                                    placeholder="BRIEF MISSION OVERVIEW..."
+                                    className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-bold text-slate-700 dark:text-slate-300 italic uppercase placeholder:opacity-30"
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-8">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Source Category</Label>
+                                    <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                                        <SelectTrigger className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-2xl">
                                             {FEE_CATEGORIES.map(cat => (
-                                                <option key={cat.value} value={cat.value}>{cat.label}</option>
+                                                <SelectItem key={cat.value} value={cat.value} className="font-bold">
+                                                    {cat.label.toUpperCase()}
+                                                </SelectItem>
                                             ))}
-                                        </select>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="form-label">Amount (KES)</label>
-                                        <input
-                                            type="number"
-                                            className="form-input"
-                                            required
-                                            min="0"
-                                            step="0.01"
-                                            placeholder="0.00"
-                                            value={formData.amount}
-                                            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                                        />
-                                    </div>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Valuation (KES)</Label>
+                                    <Input
+                                        type="number"
+                                        required
+                                        min="0"
+                                        step="0.01"
+                                        className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black text-lg text-slate-900 dark:text-white"
+                                        placeholder="0.00"
+                                        value={formData.amount}
+                                        onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                                    />
+                                </div>
+                            </div>
 
-                                <div className="form-group">
-                                    <label className="form-label">Class Restriction</label>
-                                    <select
-                                        className="form-select"
-                                        value={formData.classId}
-                                        onChange={(e) => setFormData({ ...formData, classId: e.target.value, applyToAllClasses: false })}
-                                        disabled={formData.applyToAllClasses}
-                                    >
-                                        <option value="">All Classes (School-wide)</option>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Division Restriction</Label>
+                                <Select
+                                    value={formData.classId}
+                                    onValueChange={(v) => setFormData({ ...formData, classId: v === 'school-wide' ? '' : v, applyToAllClasses: false })}
+                                    disabled={formData.applyToAllClasses}
+                                >
+                                    <SelectTrigger className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
+                                        <SelectValue placeholder="SYSTEM-WIDE (GENERAL)" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl">
+                                        <SelectItem value="school-wide" className="font-bold">SYSTEM-WIDE (ALL DIVISIONS)</SelectItem>
                                         {classes.map(cls => (
-                                            <option key={cls.id} value={cls.id}>{cls.name} {cls.stream}</option>
+                                            <SelectItem key={cls.id} value={cls.id} className="font-bold">
+                                                {cls.name.toUpperCase()} {cls.stream?.toUpperCase()}
+                                            </SelectItem>
                                         ))}
-                                    </select>
-                                    <p className="form-hint">Leave empty to apply this fee to all classes.</p>
-                                </div>
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                                {!editingFee && (
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 'var(--spacing-md)',
-                                        padding: 'var(--spacing-md)',
-                                        background: 'var(--neutral-50)',
-                                        borderRadius: 'var(--radius-md)',
-                                        border: '1px solid var(--border)',
-                                        cursor: 'pointer'
-                                    }}>
-                                        <input
-                                            type="checkbox"
-                                            id="applyToAll"
-                                            className="form-checkbox"
-                                            checked={formData.applyToAllClasses}
-                                            onChange={(e) => setFormData({ ...formData, applyToAllClasses: e.target.checked, classId: '' })}
-                                        />
-                                        <label htmlFor="applyToAll" style={{ cursor: 'pointer', marginBottom: 0 }}>
-                                            <div className="font-semibold text-sm">Apply to all classes</div>
-                                            <div className="text-xs text-muted">Creates a copy of this fee for each class in the school</div>
-                                        </label>
+                            {!editingFee && (
+                                <div className="flex items-center justify-between p-6 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/30 rounded-[1.5rem] cursor-pointer group/check" onClick={() => setFormData({ ...formData, applyToAllClasses: !formData.applyToAllClasses, classId: '' })}>
+                                    <div className="flex items-center gap-4">
+                                        <div className={cn(
+                                            "h-8 w-8 rounded-xl border-2 flex items-center justify-center transition-all",
+                                            formData.applyToAllClasses ? "bg-blue-600 border-blue-600 shadow-lg shadow-blue-200" : "border-slate-200 dark:border-slate-800"
+                                        )}>
+                                            {formData.applyToAllClasses && <Check size={18} className="text-white" />}
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.1em]">Mass Unit Deployment</div>
+                                            <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Replicates allocation for every existing division</div>
+                                        </div>
                                     </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <DialogFooter className="gap-4">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                                onClick={closeModal}
+                            >
+                                Abort Mission
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100 dark:shadow-none"
+                                disabled={submitting}
+                            >
+                                {submitting ? <Loader2 className="animate-spin" size={18} /> : (
+                                    <>
+                                        <Check size={18} className="mr-2" />
+                                        {editingFee ? 'Confirm Parameters' : 'Authorize Deployment'}
+                                    </>
                                 )}
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" disabled={submitting}>
-                                    {submitting
-                                        ? <div className="spinner" style={{ width: '18px', height: '18px' }}></div>
-                                        : editingFee ? 'Save Changes' : 'Add Fee Structure'
-                                    }
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

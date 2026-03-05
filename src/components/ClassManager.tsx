@@ -1,9 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Edit2, Users, Coins, X, Calendar, Loader2, Layers } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
+import { Plus, Edit2, Users, Coins, X, Calendar, Loader2, Layers, ChevronRight, Search, Trash2, AlertCircle } from 'lucide-react'
+import { formatCurrency, cn } from '@/lib/utils'
 import AcademicPeriodManager from './AcademicPeriodManager'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from '@/components/ui/dialog'
+import { toast } from 'sonner'
 
 export default function ClassManager() {
     const [classes, setClasses] = useState<any[]>([])
@@ -11,6 +19,7 @@ export default function ClassManager() {
     const [showAddModal, setShowAddModal] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
     const [submitting, setSubmitting] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
 
     // Forms State
     const [formData, setFormData] = useState({
@@ -48,6 +57,7 @@ export default function ClassManager() {
             }
         } catch (error) {
             console.error('Failed to fetch classes', error)
+            toast.error("Failed to load classes")
         } finally {
             setLoading(false)
         }
@@ -67,12 +77,13 @@ export default function ClassManager() {
                 fetchClasses()
                 setShowAddModal(false)
                 setFormData({ name: '', stream: '' })
+                toast.success("Class created successfully")
             } else {
                 const err = await res.text()
-                alert('Error: ' + err)
+                toast.error(err || "Failed to add class")
             }
         } catch (error) {
-            alert('Failed to add class')
+            toast.error("An error occurred")
         } finally {
             setSubmitting(false)
         }
@@ -94,12 +105,13 @@ export default function ClassManager() {
             if (res.ok) {
                 fetchClasses()
                 setShowEditModal(false)
+                toast.success("Class updated successfully")
             } else {
                 const err = await res.text()
-                alert('Error: ' + err)
+                toast.error(err || "Failed to update class")
             }
         } catch (error) {
-            alert('Failed to update class')
+            toast.error("An error occurred")
         } finally {
             setSubmitting(false)
         }
@@ -151,20 +163,19 @@ export default function ClassManager() {
                 fetchClassFees(selectedClass.id)
                 setFeeData({ name: '', amount: '', category: 'TUITION' })
                 setApplyToGrade(false)
+                toast.success("Fee added successfully")
             } else {
                 const err = await res.text()
-                alert('Error: ' + err)
+                toast.error(err || "Failed to add fee")
             }
         } catch (error) {
-            alert('Failed to add fee')
+            toast.error("An error occurred")
         } finally {
             setSubmitting(false)
         }
     }
 
     const handleRemoveFee = async (feeId: string) => {
-        if (!confirm('Are you sure you want to remove this fee? It will be removed from all pending invoices.')) return
-
         try {
             const res = await fetch(`/api/fee-structures/${feeId}`, {
                 method: 'DELETE'
@@ -172,400 +183,407 @@ export default function ClassManager() {
 
             if (res.ok) {
                 if (selectedClass) fetchClassFees(selectedClass.id)
+                toast.success("Fee removed")
             } else {
-                alert('Failed to remove fee')
+                toast.error("Failed to remove fee")
             }
         } catch (error) {
-            alert('Error removing fee')
+            toast.error("An error occurred")
         }
     }
 
+    const filteredClasses = classes.filter(c =>
+        c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (c.stream && c.stream.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+
     return (
-        <div className="animate-fade-in">
+        <div className="space-y-8 animate-in fade-in duration-500">
             {/* Page Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Classes</h2>
-                    <p className="text-muted">Manage your school's classes and fee structures</p>
+                    <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Management: Classes</h2>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium italic">Configure academic streams and fee structures</p>
                 </div>
-                <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center' }}>
-                    <button
-                        className="btn btn-secondary"
+                <div className="flex gap-4 w-full md:w-auto">
+                    <Button
+                        variant="outline"
+                        className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
                         onClick={() => setShowPeriodManager(true)}
                     >
-                        <Calendar size={16} />
-                        Term Cycle
-                    </button>
-                    <button
-                        className="btn btn-primary"
+                        <Calendar className="mr-2 h-4 w-4" />
+                        Term Cycles
+                    </Button>
+                    <Button
+                        className="flex-1 md:flex-none h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200"
                         onClick={() => setShowAddModal(true)}
                     >
-                        <Plus size={18} />
-                        Add Class
-                    </button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Class
+                    </Button>
                 </div>
             </div>
 
-            {/* Classes Table */}
+            {/* Search and Filters */}
+            <Card className="border-none shadow-xl shadow-slate-200/50 dark:shadow-none bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden">
+                <CardContent className="p-4 md:p-6">
+                    <div className="relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <Input
+                            placeholder="Filter by class name or stream..."
+                            className="pl-11 h-12 bg-slate-50 dark:bg-slate-950 border-none rounded-2xl font-medium focus-visible:ring-blue-600 focus-visible:ring-offset-0"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Classes Grid */}
             {loading ? (
-                <div style={{ textAlign: 'center', padding: 'var(--spacing-3xl)' }}>
-                    <div className="spinner" style={{ margin: '0 auto var(--spacing-md)' }}></div>
-                    <p className="text-muted text-sm">Loading classes...</p>
+                <div className="py-20 text-center">
+                    <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
+                    <p className="font-black text-slate-900 dark:text-white uppercase tracking-widest text-xs">Syncing Class Data...</p>
                 </div>
-            ) : classes.length === 0 ? (
-                <div className="card" style={{ textAlign: 'center', padding: 'var(--spacing-3xl)' }}>
-                    <div style={{
-                        width: '80px', height: '80px',
-                        background: 'var(--neutral-50)',
-                        borderRadius: '50%',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        margin: '0 auto var(--spacing-lg)',
-                        color: 'var(--neutral-300)'
-                    }}>
-                        <Layers size={36} />
-                    </div>
-                    <h3 className="font-semibold" style={{ fontSize: '1.25rem', marginBottom: 'var(--spacing-xs)' }}>No classes yet</h3>
-                    <p className="text-muted text-sm" style={{ maxWidth: '360px', margin: '0 auto var(--spacing-lg)' }}>
-                        Add your first class to start setting up fee structures and enrolling students.
-                    </p>
-                    <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-                        <Plus size={18} />
-                        Add Your First Class
-                    </button>
-                </div>
+            ) : filteredClasses.length === 0 ? (
+                <Card className="border-dashed border-slate-300 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 rounded-3xl">
+                    <CardContent className="flex flex-col items-center justify-center p-20 text-center">
+                        <div className="h-24 w-24 bg-white dark:bg-slate-900 shadow-xl rounded-[2rem] flex items-center justify-center mb-8">
+                            <Layers className="h-12 w-12 text-slate-300 dark:text-slate-700" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase italic tracking-tight">Ecosystem Empty</h3>
+                        <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-8 font-medium italic">
+                            No classes have been registered in this system yet. Initialize your first class to begin enrollment.
+                        </p>
+                        <Button
+                            className="h-12 px-8 rounded-2xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={() => setShowAddModal(true)}
+                        >
+                            CREATE FIRST CLASS
+                        </Button>
+                    </CardContent>
+                </Card>
             ) : (
-                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                    <div className="table-wrapper">
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Class Name</th>
-                                    <th>Stream</th>
-                                    <th>Students</th>
-                                    <th style={{ textAlign: 'right' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {classes.map(cls => (
-                                    <tr key={cls.id}>
-                                        <td>
-                                            <span className="font-semibold" style={{ fontSize: '1rem' }}>{cls.name}</span>
-                                        </td>
-                                        <td>
-                                            {cls.stream ? (
-                                                <span className="badge badge-neutral">{cls.stream}</span>
-                                            ) : (
-                                                <span className="text-muted text-sm">—</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <Users size={16} style={{ color: 'var(--muted-foreground)' }} />
-                                                <span className="font-semibold">{cls._count?.students || 0}</span>
-                                                <span className="text-xs text-muted">enrolled</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ textAlign: 'right' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
-                                                <button
-                                                    className="btn btn-secondary btn-sm"
-                                                    onClick={() => openFeeModal(cls)}
-                                                >
-                                                    <Coins size={14} />
-                                                    Fees
-                                                </button>
-                                                <button
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="Edit Class"
-                                                    style={{ padding: '6px' }}
-                                                    onClick={() => openEditModal(cls)}
-                                                >
-                                                    <Edit2 size={14} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {filteredClasses.map(cls => (
+                        <Card key={cls.id} className="group hover:shadow-2xl hover:-translate-y-1 transition-all border-none bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden flex flex-col h-full shadow-xl shadow-slate-200/50 dark:shadow-none">
+                            <CardHeader className="p-8 pb-4 flex-none">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-[1.5rem] group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
+                                        <Layers size={24} />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-10 w-10 p-0 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+                                            onClick={() => openEditModal(cls)}
+                                        >
+                                            <Edit2 size={16} className="text-slate-400 dark:text-slate-600" />
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <CardTitle className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">
+                                            {cls.name}
+                                        </CardTitle>
+                                        {cls.stream && (
+                                            <Badge className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-none font-black text-[10px] items-center px-3 h-6 uppercase tracking-widest">
+                                                {cls.stream}
+                                            </Badge>
+                                        )}
+                                    </div>
+                                    <CardDescription className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">
+                                        Academic Unit ID: {cls.id.slice(0, 8)}
+                                    </CardDescription>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="px-8 py-4 flex-1">
+                                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse shadow-lg shadow-emerald-200"></div>
+                                        <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Enrollment Status</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Users className="h-4 w-4 text-blue-600" />
+                                        <span className="font-black text-slate-900 dark:text-white">{cls._count?.students || 0}</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                            <CardFooter className="p-8 pt-4">
+                                <Button
+                                    className="w-full h-14 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all text-slate-900 dark:text-white font-black text-[10px] uppercase tracking-[0.25em] group/btn shadow-sm"
+                                    onClick={() => openFeeModal(cls)}
+                                >
+                                    CONFIGURE FEES
+                                    <ChevronRight className="ml-2 h-4 w-4 transform group-hover/btn:translate-x-1 transition-transform" />
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
                 </div>
             )}
 
-            {/* Manage Fees Modal */}
-            {showFeeModal && selectedClass && (
-                <div className="modal-overlay" onClick={() => setShowFeeModal(false)}>
-                    <div className="modal-content" style={{ maxWidth: '600px', padding: 0 }} onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <div>
-                                <h3 className="modal-title">{selectedClass.name} — Fees</h3>
-                                <p className="text-xs text-muted">Set up the fee items for this class</p>
+            {/* Fee Management Modal (using Dialog) */}
+            <Dialog open={showFeeModal} onOpenChange={setShowFeeModal}>
+                <DialogContent className="max-w-2xl rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-white dark:bg-slate-950">
+                    <div className="bg-slate-900 p-8 text-white relative">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                        <div className="relative z-10 flex justify-between items-center">
+                            <div className="space-y-1">
+                                <p className="text-blue-400 font-black text-[10px] uppercase tracking-widest">Financial Configuration</p>
+                                <h3 className="text-3xl font-black uppercase tracking-tighter italic">{selectedClass?.name} Fees</h3>
                             </div>
-                            <button onClick={() => setShowFeeModal(false)} className="btn btn-ghost btn-sm">
-                                <X size={18} />
-                            </button>
+                            <Button variant="ghost" className="text-white/40 hover:text-white h-12 w-12 p-0 rounded-2xl" onClick={() => setShowFeeModal(false)}>
+                                <X size={24} />
+                            </Button>
                         </div>
+                    </div>
 
-                        <div className="modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                            {/* Current Fee Items */}
-                            <div style={{ marginBottom: 'var(--spacing-lg)' }}>
-                                <h4 className="text-xs text-muted font-semibold" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--spacing-sm)' }}>Current Fee Items</h4>
-                                {feeLoading ? (
-                                    <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}>
-                                        <div className="spinner" style={{ margin: '0 auto' }}></div>
-                                    </div>
-                                ) : classFees.length === 0 ? (
-                                    <div style={{
-                                        padding: 'var(--spacing-lg)',
-                                        background: 'var(--neutral-50)',
-                                        borderRadius: 'var(--radius-md)',
-                                        border: '1px dashed var(--border)',
-                                        textAlign: 'center'
-                                    }}>
-                                        <p className="text-sm text-muted">No fee items added yet for this class.</p>
-                                    </div>
-                                ) : (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
-                                        {classFees.map(fee => (
-                                            <div key={fee.id} style={{
-                                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                                padding: 'var(--spacing-md)',
-                                                background: 'var(--neutral-50)',
-                                                borderRadius: 'var(--radius-md)',
-                                                border: '1px solid var(--border)'
-                                            }}>
-                                                <div>
-                                                    <div className="font-semibold text-sm">{fee.name}</div>
-                                                    <span className="badge badge-neutral" style={{ fontSize: '0.625rem' }}>{fee.category}</span>
+                    <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+                        {/* Current Fee Items */}
+                        <div className="space-y-4">
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <div className="h-1 w-8 bg-blue-600 rounded-full"></div>
+                                Current Fee Ledger
+                            </h4>
+                            {feeLoading ? (
+                                <div className="py-12 text-center text-slate-400 font-bold italic text-xs animate-pulse">Syncing transactions...</div>
+                            ) : classFees.length === 0 ? (
+                                <div className="p-12 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-3xl text-center">
+                                    <p className="text-slate-400 font-medium italic">No fee structures initialized for this class unit.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {classFees.map(fee => (
+                                        <div key={fee.id} className="flex justify-between items-center p-5 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 group/fee animate-in slide-in-from-bottom duration-300">
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-10 w-10 bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center text-blue-600 shadow-sm">
+                                                    <Coins size={18} />
                                                 </div>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                                    <div style={{ textAlign: 'right' }}>
-                                                        <div className="font-semibold">{formatCurrency(fee.amount)}</div>
-                                                        <div className="text-xs text-muted">per term</div>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleRemoveFee(fee.id)}
-                                                        className="btn btn-ghost btn-xs text-error"
-                                                        style={{ padding: '4px' }}
-                                                    >
-                                                        <X size={14} />
-                                                    </button>
+                                                <div>
+                                                    <div className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-tight">{fee.name}</div>
+                                                    <Badge className="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-none font-black text-[8px] h-4 uppercase tracking-tighter px-2">
+                                                        {fee.category}
+                                                    </Badge>
                                                 </div>
                                             </div>
+                                            <div className="flex items-center gap-6">
+                                                <div className="text-right">
+                                                    <div className="font-black text-lg text-slate-900 dark:text-white tracking-tighter">
+                                                        {formatCurrency(fee.amount)}
+                                                    </div>
+                                                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">PER TERM CYCLE</div>
+                                                </div>
+                                                <button
+                                                    onClick={() => {
+                                                        if (confirm('Are you sure you want to remove this fee? It will be removed from all pending invoices.')) {
+                                                            handleRemoveFee(fee.id);
+                                                        }
+                                                    }}
+                                                    className="h-10 w-10 p-0 rounded-xl hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 text-slate-300 dark:text-slate-700 transition-colors flex items-center justify-center border-none bg-transparent"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Add New Fee Form */}
+                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800">
+                            <h4 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest mb-6 block">Manual Fee Addition</h4>
+                            <form onSubmit={handleAddFee} className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label className="uppercase text-[9px] font-black text-slate-400 tracking-widest ml-1">Fee Descriptor</Label>
+                                        <Input
+                                            className="h-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl font-medium"
+                                            placeholder="e.g. Science Laboratory Fee"
+                                            value={feeData.name}
+                                            onChange={e => setFeeData({ ...feeData, name: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="uppercase text-[9px] font-black text-slate-400 tracking-widest ml-1">Value (KES)</Label>
+                                        <Input
+                                            type="number"
+                                            className="h-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl font-medium"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            value={feeData.amount}
+                                            onChange={e => setFeeData({ ...feeData, amount: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <Label className="uppercase text-[9px] font-black text-slate-400 tracking-widest ml-1">Classification Category</Label>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        {['TUITION', 'BOARDING', 'TRANSPORT', 'OTHER'].map(cat => (
+                                            <button
+                                                key={cat}
+                                                type="button"
+                                                onClick={() => setFeeData({ ...feeData, category: cat })}
+                                                className={cn(
+                                                    "h-12 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                                    feeData.category === cat
+                                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                                                        : "bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-500"
+                                                )}
+                                            >
+                                                {cat}
+                                            </button>
                                         ))}
                                     </div>
-                                )}
-                            </div>
+                                </div>
 
-                            {/* Add New Fee Form */}
-                            <div style={{
-                                padding: 'var(--spacing-lg)',
-                                background: 'var(--neutral-50)',
-                                borderRadius: 'var(--radius-lg)',
-                                border: '1px solid var(--border)'
-                            }}>
-                                <h4 className="font-semibold" style={{ marginBottom: 'var(--spacing-md)' }}>Add Fee Item</h4>
-                                <form onSubmit={handleAddFee}>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-sm)', marginBottom: 'var(--spacing-sm)' }}>
-                                        <div className="form-group" style={{ marginBottom: 0 }}>
-                                            <label className="form-label">Name</label>
-                                            <input
-                                                className="form-input"
-                                                placeholder="e.g. Lab Fee"
-                                                value={feeData.name}
-                                                onChange={e => setFeeData({ ...feeData, name: e.target.value })}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="form-group" style={{ marginBottom: 0 }}>
-                                            <label className="form-label">Amount (KES)</label>
-                                            <input
-                                                type="number"
-                                                className="form-input"
-                                                placeholder="0.00"
-                                                step="0.01"
-                                                value={feeData.amount}
-                                                onChange={e => setFeeData({ ...feeData, amount: e.target.value })}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group" style={{ marginBottom: 'var(--spacing-md)' }}>
-                                        <label className="form-label">Category</label>
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-                                            {['TUITION', 'BOARDING', 'TRANSPORT', 'OTHER'].map(cat => (
-                                                <button
-                                                    key={cat}
-                                                    type="button"
-                                                    onClick={() => setFeeData({ ...feeData, category: cat })}
-                                                    style={{
-                                                        height: '36px',
-                                                        borderRadius: 'var(--radius-md)',
-                                                        fontSize: '0.6875rem',
-                                                        fontWeight: 600,
-                                                        textTransform: 'uppercase',
-                                                        letterSpacing: '0.03em',
-                                                        border: feeData.category === cat ? 'none' : '1px solid var(--border)',
-                                                        background: feeData.category === cat ? 'var(--primary-600)' : 'white',
-                                                        color: feeData.category === cat ? 'white' : 'var(--muted-foreground)',
-                                                        cursor: 'pointer',
-                                                        transition: 'all 0.15s'
-                                                    }}
-                                                >
-                                                    {cat}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4 border-t border-slate-200 dark:border-slate-800">
+                                    <label className="flex items-center gap-3 cursor-pointer group">
+                                        <div className={cn(
+                                            "h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                                            applyToGrade ? "bg-emerald-500 border-emerald-500" : "border-slate-200 dark:border-slate-800"
+                                        )}>
                                             <input
                                                 type="checkbox"
                                                 checked={applyToGrade}
                                                 onChange={e => setApplyToGrade(e.target.checked)}
-                                                style={{ width: '16px', height: '16px', accentColor: 'var(--primary-600)' }}
+                                                className="hidden"
                                             />
-                                            <span className="text-xs text-muted">Apply to all streams of this grade</span>
-                                        </label>
-                                        <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>
-                                            {submitting ? <Loader2 className="animate-spin" size={16} /> : 'Add Fee'}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                                            {applyToGrade && <CheckIcon />}
+                                        </div>
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Apply to Grade Level Cluster</span>
+                                    </label>
+                                    <Button type="submit" className="w-full sm:w-auto h-12 px-8 rounded-xl bg-blue-600 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-200" disabled={submitting}>
+                                        {submitting ? <Loader2 className="animate-spin mr-2" size={16} /> : <Plus className="mr-2 h-4 w-4" />}
+                                        Append Fee Item
+                                    </Button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </div>
-            )}
+                </DialogContent>
+            </Dialog>
 
-            {/* Add Class Modal */}
-            {showAddModal && (
-                <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-                    <div className="modal-content" style={{ maxWidth: '460px', padding: 0 }} onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h3 className="modal-title">Add Class</h3>
-                            <button onClick={() => setShowAddModal(false)} className="btn btn-ghost btn-sm">
-                                <X size={18} />
-                            </button>
+            {/* Add Class Modal (using Dialog) */}
+            <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+                <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-md bg-white dark:bg-slate-950">
+                    <DialogHeader className="mb-8">
+                        <DialogTitle className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Initialize Class</DialogTitle>
+                        <DialogDescription className="text-slate-500 font-medium italic">Define a new academic unit for institutional tracking.</DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Class Nomenclature</Label>
+                                <Input
+                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    required
+                                    placeholder="e.g. GRADE 1"
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                />
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Public visibility name in reports.</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Stream Designation (Optional)</Label>
+                                <Input
+                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    placeholder="e.g. ALPHA, NORTH, GREEN"
+                                    value={formData.stream}
+                                    onChange={e => setFormData({ ...formData, stream: e.target.value })}
+                                />
+                            </div>
                         </div>
 
-                        <form onSubmit={handleSubmit}>
-                            <div className="modal-body">
-                                <div className="form-group" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                                    <label className="form-label">Class Name</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        required
-                                        placeholder="e.g. Grade 1"
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        autoFocus
-                                    />
-                                    <p className="text-xs text-muted" style={{ marginTop: '4px' }}>The name students and parents will see</p>
-                                </div>
+                        <DialogFooter className="gap-4">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                className="h-14 flex-1 rounded-2xl font-black text-slate-400 uppercase tracking-widest"
+                                onClick={() => setShowAddModal(false)}
+                                disabled={submitting}
+                            >
+                                ABORT
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="h-14 flex-[2] rounded-2xl bg-blue-600 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200"
+                                disabled={submitting}
+                            >
+                                {submitting ? <Loader2 className="animate-spin mr-2" size={18} /> : <CheckIconLarge />}
+                                FINALIZE UNIT
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
-                                <div className="form-group">
-                                    <label className="form-label">Stream (Optional)</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        placeholder="e.g. East, Blue, A"
-                                        value={formData.stream}
-                                        onChange={e => setFormData({ ...formData, stream: e.target.value })}
-                                    />
-                                </div>
+            {/* Edit Class Modal (using Dialog) */}
+            <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+                <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-md bg-white dark:bg-slate-950">
+                    <DialogHeader className="mb-8">
+                        <DialogTitle className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Reconfigure Unit</DialogTitle>
+                        <DialogDescription className="text-slate-500 font-medium italic">Adjust the properties of an established academic stream.</DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleEditSubmit} className="space-y-8">
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Class Nomenclature</Label>
+                                <Input
+                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    required
+                                    placeholder="e.g. GRADE 1"
+                                    value={editData.name}
+                                    onChange={e => setEditData({ ...editData, name: e.target.value })}
+                                />
                             </div>
 
-                            <div className="modal-footer">
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => setShowAddModal(false)}
-                                    disabled={submitting}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    disabled={submitting}
-                                >
-                                    {submitting ? <Loader2 className="animate-spin" size={18} /> : 'Create Class'}
-                                </button>
+                            <div className="space-y-2">
+                                <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Stream Designation</Label>
+                                <Input
+                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    placeholder="e.g. ALPHA, NORTH, GREEN"
+                                    value={editData.stream}
+                                    onChange={e => setEditData({ ...editData, stream: e.target.value })}
+                                />
                             </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* Edit Class Modal */}
-            {showEditModal && (
-                <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
-                    <div className="modal-content" style={{ maxWidth: '460px', padding: 0 }} onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h3 className="modal-title">Edit Class</h3>
-                            <button onClick={() => setShowEditModal(false)} className="btn btn-ghost btn-sm">
-                                <X size={18} />
-                            </button>
                         </div>
 
-                        <form onSubmit={handleEditSubmit}>
-                            <div className="modal-body">
-                                <div className="form-group" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                                    <label className="form-label">Class Name</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        required
-                                        placeholder="e.g. Grade 1"
-                                        value={editData.name}
-                                        onChange={e => setEditData({ ...editData, name: e.target.value })}
-                                        autoFocus
-                                    />
-                                    <p className="text-xs text-muted" style={{ marginTop: '4px' }}>The name students and parents will see</p>
-                                </div>
+                        <DialogFooter className="gap-4">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                className="h-14 flex-1 rounded-2xl font-black text-slate-400 uppercase tracking-widest"
+                                onClick={() => setShowEditModal(false)}
+                                disabled={submitting}
+                            >
+                                CANCEL
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="h-14 flex-[2] rounded-2xl bg-blue-600 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200"
+                                disabled={submitting}
+                            >
+                                {submitting ? <Loader2 className="animate-spin mr-2" size={18} /> : <CheckIconLarge />}
+                                SYNC CHANGES
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
-                                <div className="form-group">
-                                    <label className="form-label">Stream (Optional)</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        placeholder="e.g. East, Blue, A"
-                                        value={editData.stream}
-                                        onChange={e => setEditData({ ...editData, stream: e.target.value })}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="modal-footer">
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => setShowEditModal(false)}
-                                    disabled={submitting}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    disabled={submitting}
-                                >
-                                    {submitting ? <Loader2 className="animate-spin" size={18} /> : 'Save Changes'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* Academic Period Manager Modal */}
+            {/* Academic Period Manager Modal (using Dialog or overlay) */}
             {showPeriodManager && (
-                <div className="modal-overlay" onClick={() => setShowPeriodManager(false)}>
-                    <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: '56rem', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-md" onClick={() => setShowPeriodManager(false)}></div>
+                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300">
                         <AcademicPeriodManager
                             onClose={() => setShowPeriodManager(false)}
                             onSuccess={() => { fetchClasses(); }}
@@ -574,5 +592,21 @@ export default function ClassManager() {
                 </div>
             )}
         </div>
+    )
+}
+
+function CheckIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
+    )
+}
+
+function CheckIconLarge() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
     )
 }

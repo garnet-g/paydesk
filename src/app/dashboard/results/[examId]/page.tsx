@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { format } from "date-fns"
-import { ArrowLeft, Save, Lock, AlertCircle, Award } from "lucide-react"
+import { ArrowLeft, Save, Lock, AlertCircle, Award, CheckCircle, ChevronRight, BookOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
+
+import DashboardLayout from "@/components/DashboardLayout"
 
 // Types
 type Class = { id: string; name: string }
@@ -136,174 +138,250 @@ export default function ExamResultsEntryPage() {
         }
     }
 
-    if (loading && !exam) return <div className="p-12 text-center text-muted-foreground">Loading...</div>
-    if (!exam) return <div className="p-12 text-center text-red-500">Exam not found.</div>
+    if (loading && !exam) {
+        return (
+            <DashboardLayout>
+                <div className="p-20 text-center">
+                    <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
+                    <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Accessing Result Sheets...</p>
+                </div>
+            </DashboardLayout>
+        )
+    }
+
+    if (!exam) {
+        return (
+            <DashboardLayout>
+                <div className="p-20 text-center">
+                    <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mb-6 mx-auto">
+                        <AlertCircle className="h-10 w-10 text-red-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2 uppercase">Exam Session Not Found</h3>
+                    <Button onClick={() => router.push('/dashboard/results')} variant="outline" className="rounded-xl border-slate-200">RETURN TO EXAMS</Button>
+                </div>
+            </DashboardLayout>
+        )
+    }
 
     const isFinalized = exam.status === 'FINALIZED'
 
     return (
-        <div className="flex-1 space-y-6 p-8 pt-6">
-            <div className="flex items-center gap-4 text-muted-foreground hover:text-foreground cursor-pointer w-fit mb-4 transition-colors" onClick={() => router.push('/dashboard/results')}>
-                <ArrowLeft className="h-4 w-4" />
-                <span className="text-sm font-medium">Back to Exams</span>
-            </div>
-
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <div className="flex items-center gap-3 mb-1">
-                        <h2 className="text-3xl font-bold tracking-tight">{exam.name}</h2>
-                        <Badge variant={isFinalized ? 'default' : 'secondary'} className={isFinalized ? 'bg-emerald-600' : ''}>
-                            {isFinalized ? <Lock className="w-3 h-3 mr-1" /> : null}
-                            {exam.status}
-                        </Badge>
+        <DashboardLayout>
+            <div className="flex-1 space-y-8 p-8 pt-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-3 text-slate-500 hover:text-blue-600 cursor-pointer w-fit mb-4 transition-all group" onClick={() => router.push('/dashboard/results')}>
+                            <div className="p-2 rounded-xl group-hover:bg-blue-50">
+                                <ArrowLeft className="h-4 w-4" />
+                            </div>
+                            <span className="text-xs font-black uppercase tracking-widest">Back to Exams</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <h2 className="text-3xl font-black tracking-tight text-slate-900 uppercase">{exam.name}</h2>
+                            <Badge variant={isFinalized ? 'default' : 'secondary'} className={cn(
+                                "h-6 px-3 rounded-full text-[10px] font-black uppercase tracking-widest border-none",
+                                isFinalized ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"
+                            )}>
+                                {isFinalized ? <Lock className="w-3 h-3 mr-1.5" /> : null}
+                                {exam.status}
+                            </Badge>
+                        </div>
+                        <p className="text-slate-500 font-medium max-w-lg">
+                            Performance entry for {format(new Date(exam.date), 'MMMM do, yyyy')}. Grades are automatically assigned based on percentage scores.
+                        </p>
                     </div>
-                    <p className="text-muted-foreground flex items-center gap-2">
-                        <span>Date: {format(new Date(exam.date), 'MMM do, yyyy')}</span>
-                    </p>
-                </div>
-            </div>
 
-            <Card className="border-border/40 shadow-sm">
-                <CardHeader className="bg-muted/30 pb-4 border-b">
-                    <div className="flex flex-col md:flex-row gap-4 items-end">
-                        <div className="space-y-1.5 flex-1 max-w-[300px]">
-                            <Label htmlFor="class">Select Class to Enter Marks</Label>
-                            <Select value={selectedClass} onValueChange={setSelectedClass}>
-                                <SelectTrigger id="class" className="w-full bg-background">
-                                    <SelectValue placeholder="Select a class..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {classes.map(c => (
-                                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                </CardHeader>
-
-                <CardContent className="p-0">
-                    {!selectedClass ? (
-                        <div className="p-12 text-center text-muted-foreground flex flex-col items-center">
-                            <AlertCircle className="h-10 w-10 mb-3 text-muted-foreground/50" />
-                            <p>Please select a class to load the result sheet.</p>
-                        </div>
-                    ) : loading ? (
-                        <div className="p-12 text-center text-muted-foreground">
-                            <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-3"></div>
-                            Loading roster...
-                        </div>
-                    ) : results.length === 0 ? (
-                        <div className="p-12 text-center text-muted-foreground">
-                            No active students found in this class.
-                        </div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left">
-                                <thead className="text-xs text-muted-foreground uppercase bg-muted/20 border-b">
-                                    <tr>
-                                        <th className="px-6 py-4 font-semibold">Student</th>
-                                        <th className="px-4 py-4 font-semibold w-[200px]">Subject</th>
-                                        <th className="px-4 py-4 font-semibold w-[120px]">Score</th>
-                                        <th className="px-4 py-4 font-semibold w-[120px]">Out Of</th>
-                                        <th className="px-4 py-4 font-semibold w-[100px]">Grade</th>
-                                        <th className="px-6 py-4 font-semibold w-[300px]">Remarks (Optional)</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-border/50">
-                                    {results.map((record, index) => (
-                                        <tr key={record.id} className="hover:bg-muted/10 transition-colors">
-                                            <td className="px-6 py-3">
-                                                <div className="font-medium text-foreground">
-                                                    {record.student.firstName} {record.student.lastName}
-                                                </div>
-                                                <div className="text-xs text-muted-foreground">
-                                                    ADM: {record.student.admissionNumber}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <Input
-                                                    placeholder="General"
-                                                    value={record.subject || ''}
-                                                    onChange={(e) => handleResultChange(record.id, 'subject', e.target.value)}
-                                                    disabled={isFinalized}
-                                                    className="h-8 text-sm"
-                                                />
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <Input
-                                                    type="number"
-                                                    placeholder="--"
-                                                    value={record.score ?? ''}
-                                                    disabled={isFinalized}
-                                                    className="h-8 font-semibold w-[80px] text-center"
-                                                    onChange={(e) => handleResultChange(record.id, 'score', e.target.value)}
-                                                />
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <Input
-                                                    type="number"
-                                                    value={record.maxScore ?? 100}
-                                                    disabled={isFinalized}
-                                                    className="h-8 text-sm w-[80px] text-center"
-                                                    onChange={(e) => handleResultChange(record.id, 'maxScore', e.target.value)}
-                                                />
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <Badge variant="outline" className="font-mono bg-background text-sm flex justify-center w-[40px] h-[32px] items-center">
-                                                    {record.grade || '-'}
-                                                </Badge>
-                                            </td>
-                                            <td className="px-6 py-3">
-                                                <Input
-                                                    placeholder="Good performance..."
-                                                    value={record.remarks || ''}
-                                                    onChange={(e) => handleResultChange(record.id, 'remarks', e.target.value)}
-                                                    disabled={isFinalized}
-                                                    className="h-8 text-sm w-full"
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                    {!isFinalized && (
+                        <div className="flex flex-wrap gap-3">
+                            <Button
+                                variant="outline"
+                                className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest border-slate-200 bg-white hover:bg-slate-50"
+                                onClick={() => handleSave(false)}
+                                disabled={saving}
+                            >
+                                <Save className="mr-2 h-4 w-4" />
+                                {saving ? "SYNCING..." : "SAVE DRAFT"}
+                            </Button>
+                            <Button
+                                className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-200"
+                                onClick={() => handleSave(true)}
+                                disabled={saving}
+                            >
+                                <Award className="mr-2 h-4 w-4" />
+                                FINALIZE & LOCK
+                            </Button>
                         </div>
                     )}
-                </CardContent>
+                </div>
 
-                {results.length > 0 && (
-                    <CardFooter className="bg-muted/30 p-4 border-t flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <div className="text-sm text-muted-foreground flex items-center gap-2">
-                            {isFinalized ? (
-                                <><Lock className="h-4 w-4" /> This exam is finalized and locked from futher editing.</>
-                            ) : (
-                                "Missing grades are ignored until entered."
-                            )}
+                <Card className="border-slate-200 shadow-xl overflow-hidden rounded-3xl">
+                    <CardHeader className="bg-slate-50 border-b border-slate-100 pb-6">
+                        <div className="flex flex-col md:flex-row gap-6 items-end">
+                            <div className="space-y-2 flex-1 max-w-[400px]">
+                                <Label htmlFor="class" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest ml-1">Select Active Class for Entry</Label>
+                                <Select value={selectedClass} onValueChange={setSelectedClass}>
+                                    <SelectTrigger id="class" className="h-12 bg-white border-slate-200 rounded-xl shadow-sm">
+                                        <div className="flex items-center gap-2">
+                                            <BookOpen className="h-4 w-4 text-blue-600" />
+                                            <SelectValue placeholder="Chose class roster..." />
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl">
+                                        {classes.map(c => (
+                                            <SelectItem key={c.id} value={c.id} className="font-medium">{c.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                        {!isFinalized && (
-                            <div className="flex gap-3 w-full sm:w-auto">
-                                <Button
-                                    variant="outline"
-                                    className="flex-1 sm:flex-none"
-                                    onClick={() => handleSave(false)}
-                                    disabled={saving}
-                                >
-                                    <Save className="mr-2 h-4 w-4" />
-                                    Save Draft
-                                </Button>
-                                <Button
-                                    className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700"
-                                    onClick={() => handleSave(true)}
-                                    disabled={saving}
-                                >
-                                    <Award className="mr-2 h-4 w-4" />
-                                    Finalize & Lock Results
-                                </Button>
+                    </CardHeader>
+
+                    <CardContent className="p-0 bg-white">
+                        {!selectedClass ? (
+                            <div className="p-24 text-center text-slate-500 flex flex-col items-center">
+                                <div className="w-24 h-24 bg-slate-50 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
+                                    <Award className="h-12 w-12 text-slate-300" />
+                                </div>
+                                <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Select a Class</h3>
+                                <p className="max-w-md text-slate-500 font-medium">Please select a class roster from the dropdown above to load the mark sheet and begin performance entry.</p>
+                            </div>
+                        ) : loading ? (
+                            <div className="p-24 text-center">
+                                <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
+                                <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Compiling Studen Data...</p>
+                            </div>
+                        ) : results.length === 0 ? (
+                            <div className="p-24 text-center">
+                                <div className="w-24 h-24 bg-amber-50 rounded-3xl flex items-center justify-center mb-8 mx-auto shadow-inner">
+                                    <AlertCircle className="h-12 w-12 text-amber-300" />
+                                </div>
+                                <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Class Empty</h3>
+                                <p className="max-w-md text-slate-500 font-medium mx-auto">This class roster does not contain any active student accounts. Enrollment is required before mark entry.</p>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto overflow-y-auto max-h-[65vh]">
+                                <table className="w-full text-left">
+                                    <thead className="sticky top-0 z-10 bg-slate-50/90 backdrop-blur-sm border-b border-slate-100">
+                                        <tr>
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest min-w-[250px]">Student Identity</th>
+                                            <th className="px-6 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest min-w-[200px]">Subject / Domain</th>
+                                            <th className="px-6 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center min-w-[120px]">Score</th>
+                                            <th className="px-6 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center min-w-[120px]">Target</th>
+                                            <th className="px-6 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center min-w-[100px]">Grade</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest min-w-[300px]">Strategic Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100 italic md:not-italic">
+                                        {results.map((record, index) => (
+                                            <tr key={record.id} className="hover:bg-blue-50/30 transition-all border-l-[4px] border-l-transparent hover:border-l-blue-600 group">
+                                                <td className="px-8 py-5">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                            {index + 1}
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-bold text-slate-900 text-base leading-tight">
+                                                                {record.student.firstName} {record.student.lastName}
+                                                            </div>
+                                                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-0.5">
+                                                                ADM: {record.student.admissionNumber}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-5">
+                                                    <Input
+                                                        placeholder="General Performance"
+                                                        value={record.subject || ''}
+                                                        onChange={(e) => handleResultChange(record.id, 'subject', e.target.value)}
+                                                        disabled={isFinalized}
+                                                        className="h-10 border-slate-200 rounded-xl bg-white shadow-sm focus:ring-blue-100"
+                                                    />
+                                                </td>
+                                                <td className="px-6 py-5">
+                                                    <Input
+                                                        type="number"
+                                                        placeholder="0"
+                                                        value={record.score ?? ''}
+                                                        disabled={isFinalized}
+                                                        className="h-10 font-bold w-[90px] text-center border-slate-200 rounded-xl bg-slate-50 focus:bg-white transition-all shadow-sm"
+                                                        onChange={(e) => handleResultChange(record.id, 'score', e.target.value)}
+                                                    />
+                                                </td>
+                                                <td className="px-6 py-5">
+                                                    <Input
+                                                        type="number"
+                                                        value={record.maxScore ?? 100}
+                                                        disabled={isFinalized}
+                                                        className="h-10 font-bold w-[90px] text-center border-slate-200 rounded-xl bg-slate-50 focus:bg-white transition-all shadow-sm"
+                                                        onChange={(e) => handleResultChange(record.id, 'maxScore', e.target.value)}
+                                                    />
+                                                </td>
+                                                <td className="px-6 py-5 text-center">
+                                                    <Badge className={cn(
+                                                        "font-black h-8 w-12 flex items-center justify-center rounded-xl border-none shadow-sm text-sm",
+                                                        record.grade ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-400"
+                                                    )}>
+                                                        {record.grade || '--'}
+                                                    </Badge>
+                                                </td>
+                                                <td className="px-8 py-5">
+                                                    <Input
+                                                        placeholder="Insights into academic progress..."
+                                                        value={record.remarks || ''}
+                                                        onChange={(e) => handleResultChange(record.id, 'remarks', e.target.value)}
+                                                        disabled={isFinalized}
+                                                        className="h-10 border-slate-200 rounded-xl bg-white shadow-sm focus:ring-blue-100 w-full"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         )}
-                    </CardFooter>
-                )}
-            </Card>
-        </div>
+                    </CardContent>
+
+                    {results.length > 0 && (
+                        <CardFooter className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6">
+                            <div className="flex items-center gap-4 text-xs font-black uppercase tracking-widest">
+                                {isFinalized ? (
+                                    <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl">
+                                        <CheckCircle className="h-4 w-4" /> Finalized & Secure
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2 text-blue-600 animate-pulse">
+                                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                        Draft Modification Mode
+                                    </div>
+                                )}
+                            </div>
+                            {!isFinalized && (
+                                <div className="flex gap-4 w-full sm:w-auto">
+                                    <Button
+                                        variant="outline"
+                                        className="h-11 px-6 rounded-xl font-bold text-xs uppercase tracking-widest border-slate-200 bg-white hover:bg-slate-50 w-full sm:w-auto"
+                                        onClick={() => handleSave(false)}
+                                        disabled={saving}
+                                    >
+                                        <Save className="mr-2 h-4 w-4" />
+                                        SAVE AS DRAFT
+                                    </Button>
+                                    <Button
+                                        className="h-11 px-6 rounded-xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-100 w-full sm:w-auto"
+                                        onClick={() => handleSave(true)}
+                                        disabled={saving}
+                                    >
+                                        <Award className="mr-2 h-4 w-4" />
+                                        FINALIZE SHEET
+                                    </Button>
+                                </div>
+                            )}
+                        </CardFooter>
+                    )}
+                </Card>
+            </div>
+        </DashboardLayout>
     )
 }
+

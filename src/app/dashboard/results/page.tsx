@@ -12,6 +12,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
+import { cn } from "@/lib/utils"
+
+import DashboardLayout from "@/components/DashboardLayout"
 
 type AcademicPeriod = { id: string; name: string; isActive: boolean }
 type Exam = { id: string; name: string; date: string; status: 'DRAFT' | 'FINALIZED'; academicPeriod: { name: string } }
@@ -82,8 +85,6 @@ export default function ResultsPage() {
             })
 
             if (res.ok) {
-                const newExam = await res.json()
-                // Fetch fresh list to get the nested academicPeriod name
                 const freshRes = await fetch(`/api/exams?academicPeriodId=${selectedPeriod}`)
                 if (freshRes.ok) setExams(await freshRes.json())
 
@@ -101,141 +102,161 @@ export default function ResultsPage() {
     }
 
     return (
-        <div className="flex-1 space-y-6 p-8 pt-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Results & Exams</h2>
-                    <p className="text-muted-foreground">
-                        Manage exams, enter student results, and lock grades.
-                    </p>
-                </div>
-
-                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-primary hover:bg-primary/90">
-                            <Plus className="mr-2 h-4 w-4" />
-                            Create Exam
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Create New Exam</DialogTitle>
-                            <DialogDescription>
-                                Set up a new examination entry for the selected academic term.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="term">Academic Term</Label>
-                                <Select disabled value={selectedPeriod}>
-                                    <SelectTrigger id="term">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                </Select>
-                                <p className="text-xs text-muted-foreground">Exams are always created in the currently selected view term.</p>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="name">Exam Name</Label>
-                                <Input
-                                    id="name"
-                                    placeholder="e.g. Mid-Term 1 2026, End of Year Maths"
-                                    value={newExamName}
-                                    onChange={(e) => setNewExamName(e.target.value)}
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="date">Date of Examination</Label>
-                                <Input
-                                    id="date"
-                                    type="date"
-                                    value={newExamDate}
-                                    onChange={(e) => setNewExamDate(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
-                            <Button onClick={handleCreateExam} disabled={isCreating}>
-                                {isCreating ? "Saving..." : "Create Exam"}
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            </div>
-
-            <div className="w-full md:w-[300px] mb-6">
-                <Label htmlFor="period-filter" className="sr-only">Filter by Term</Label>
-                <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                    <SelectTrigger id="period-filter">
-                        <SelectValue placeholder="Select Academic Term" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {academicPeriods.map(p => (
-                            <SelectItem key={p.id} value={p.id}>
-                                {p.name} {p.isActive && "(Active)"}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-
-            {loading ? (
-                <div className="p-12 text-center">
-                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-muted-foreground">Loading exams...</p>
-                </div>
-            ) : exams.length === 0 ? (
-                <Card className="border-dashed">
-                    <CardContent className="flex flex-col items-center justify-center p-12 text-center">
-                        <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                            <Award className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                        <h3 className="text-lg font-semibold mb-2">No Exams Found</h3>
-                        <p className="text-muted-foreground max-w-[400px] mb-6">
-                            There are no exams recorded for the selected academic term. Click the button above to create one.
+        <DashboardLayout>
+            <div className="flex-1 space-y-6 p-8 pt-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div>
+                        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Results & Exams</h2>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">
+                            Manage exams, enter student results, and lock grades for the term.
                         </p>
-                        <Button variant="outline" onClick={() => setIsCreateOpen(true)}>
-                            Create First Exam
-                        </Button>
-                    </CardContent>
+                    </div>
+
+                    <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Initiate New Exam
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="rounded-3xl border-none shadow-2xl">
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Create New Exam</DialogTitle>
+                                <DialogDescription className="text-slate-500 dark:text-slate-400 font-medium">
+                                    Set up a new examination entry for the selected academic term. Recording results will begin after creation.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-6 py-6">
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="term" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Academic Term</Label>
+                                    <Select disabled value={selectedPeriod}>
+                                        <SelectTrigger id="term" className="h-11 bg-slate-50 border-slate-200">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                    </Select>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="name" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Exam Name</Label>
+                                    <Input
+                                        id="name"
+                                        placeholder="e.g. Mid-Term 1 2026, End of Year Maths"
+                                        value={newExamName}
+                                        onChange={(e) => setNewExamName(e.target.value)}
+                                        className="h-11 border-slate-200"
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="date" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Date of Examination</Label>
+                                    <Input
+                                        id="date"
+                                        type="date"
+                                        value={newExamDate}
+                                        onChange={(e) => setNewExamDate(e.target.value)}
+                                        className="h-11 border-slate-200"
+                                    />
+                                </div>
+                            </div>
+                            <DialogFooter className="gap-3 sm:gap-0">
+                                <Button variant="ghost" onClick={() => setIsCreateOpen(false)} className="rounded-xl font-bold text-slate-500">Cancel</Button>
+                                <Button onClick={handleCreateExam} disabled={isCreating} className="rounded-xl bg-blue-600 font-black text-xs uppercase tracking-widest px-8">
+                                    {isCreating ? "SAVING..." : "CREATE EXAM"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+
+                <Card className="max-w-[320px] border-slate-200 shadow-sm rounded-2xl overflow-hidden">
+                    <div className="px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+                        <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">Viewing Data For</span>
+                    </div>
+                    <div className="p-4">
+                        <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                            <SelectTrigger id="period-filter" className="border-none bg-transparent h-auto p-0 focus:ring-0 shadow-none">
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="h-4 w-4 text-blue-600" />
+                                    <SelectValue className="font-bold text-slate-900 dark:text-white" />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent className="rounded-2xl border-slate-200">
+                                {academicPeriods.map(p => (
+                                    <SelectItem key={p.id} value={p.id} className="font-medium">
+                                        {p.name} {p.isActive && "(Active)"}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </Card>
-            ) : (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {exams.map(exam => (
-                        <Card
-                            key={exam.id}
-                            className="hover:shadow-md transition-all cursor-pointer border-border/50 overflow-hidden group"
-                            onClick={() => router.push(`/dashboard/results/${exam.id}`)}
-                        >
-                            <CardHeader className="pb-3 bg-muted/20 border-b border-border/50">
-                                <div className="flex justify-between items-start gap-4">
-                                    <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
+
+                {loading ? (
+                    <div className="p-20 text-center">
+                        <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
+                        <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Accessing Exam Records...</p>
+                    </div>
+                ) : exams.length === 0 ? (
+                    <Card className="border-dashed border-slate-300 bg-slate-50/50 rounded-3xl">
+                        <CardContent className="flex flex-col items-center justify-center p-20 text-center">
+                            <div className="h-20 w-20 bg-white shadow-xl rounded-3xl flex items-center justify-center mb-8">
+                                <Award className="h-10 w-10 text-slate-300" />
+                            </div>
+                            <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase">No Exam Sessions</h3>
+                            <p className="text-slate-500 max-w-sm mb-8 font-medium">
+                                There are no examinations recorded for the selected academic term. Click the button above to initiate your first exam.
+                            </p>
+                            <Button variant="outline" onClick={() => setIsCreateOpen(true)} className="rounded-xl border-slate-200 bg-white font-bold h-11 px-8">
+                                START FIRST SESSION
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {exams.map(exam => (
+                            <Card
+                                key={exam.id}
+                                className="group hover:shadow-2xl hover:-translate-y-1 transition-all cursor-pointer border-slate-200 rounded-3xl overflow-hidden flex flex-col h-full bg-white shadow-sm"
+                                onClick={() => router.push(`/dashboard/results/${exam.id}`)}
+                            >
+                                <CardHeader className="p-6 pb-4 flex-none border-b border-slate-50 bg-slate-50/30">
+                                    <div className="flex justify-between items-start gap-4 mb-3">
+                                        <Badge variant={exam.status === 'FINALIZED' ? 'default' : 'secondary'} className={cn(
+                                            "h-6 px-3 rounded-full text-[10px] font-black uppercase tracking-widest border-none",
+                                            exam.status === 'FINALIZED' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
+                                        )}>
+                                            {exam.status === 'FINALIZED' ? <Lock className="w-2.5 h-2.5 mr-1.5" /> : null}
+                                            {exam.status}
+                                        </Badge>
+                                        <div className="p-2 bg-white rounded-xl shadow-sm border border-slate-50">
+                                            <Award size={16} className="text-blue-600" />
+                                        </div>
+                                    </div>
+                                    <CardTitle className="text-xl font-black text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 transition-colors uppercase truncate">
                                         {exam.name}
                                     </CardTitle>
-                                    <Badge variant={exam.status === 'FINALIZED' ? 'default' : 'secondary'} className={exam.status === 'FINALIZED' ? 'bg-emerald-600' : ''}>
-                                        {exam.status === 'FINALIZED' ? <Lock className="w-3 h-3 mr-1" /> : null}
-                                        {exam.status}
-                                    </Badge>
-                                </div>
-                                <CardDescription className="flex items-center mt-2 text-xs">
-                                    <Calendar className="mr-1 h-3 w-3" />
-                                    {format(new Date(exam.date), 'MMMM do, yyyy')}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="pt-4 pb-4">
-                                <div className="flex items-center text-sm text-muted-foreground mb-4">
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    {exam.academicPeriod?.name}
-                                </div>
-                                <div className="flex items-center justify-between text-sm font-medium text-primary">
-                                    {exam.status === 'FINALIZED' ? 'View Results' : 'Enter Results'}
-                                    <ChevronRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            )}
-        </div>
+                                </CardHeader>
+                                <CardContent className="p-6 flex-1 flex flex-col justify-between">
+                                    <div className="space-y-4 mb-8">
+                                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                            <Calendar className="mr-3 h-4 w-4 text-slate-400" />
+                                            {format(new Date(exam.date), 'MMMM do, yyyy')}
+                                        </div>
+                                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                            <FileText className="mr-3 h-4 w-4 text-slate-400" />
+                                            {exam.academicPeriod?.name}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] border-t border-slate-50 pt-5">
+                                        <span>{exam.status === 'FINALIZED' ? 'VIEW ANALYTICS' : 'MANAGE SCORES'}</span>
+                                        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                            <ChevronRight size={14} className="transform group-hover:translate-x-0.5 transition-transform" />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </DashboardLayout>
     )
 }

@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -16,9 +15,20 @@ import {
     Award,
     Target,
     Zap,
-    ArrowUpRight
+    ArrowUpRight,
+    BarChart3,
+    PieChart as PieChartIcon,
+    Calendar,
+    Activity,
+    ShieldCheck,
+    Loader2
 } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { toast } from 'sonner'
 
 export default function ReportsPage() {
     const [execStats, setExecStats] = useState<any>(null)
@@ -26,7 +36,7 @@ export default function ReportsPage() {
     const [sendingReminders, setSendingReminders] = useState(false)
 
     const handleExportReport = () => {
-        if (!execStats) return alert('Report data is still loading, please wait.')
+        if (!execStats) return toast.error('Report data is still syncing. Please wait.')
         const rows = [
             ['Executive Summary Report', new Date().toLocaleDateString('en-KE')],
             [],
@@ -59,17 +69,18 @@ export default function ReportsPage() {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+        toast.success("Intelligence report exported successfully")
     }
 
     const handleBroadcastReminders = async () => {
-        if (!confirm('This will send SMS reminders to all parents with overdue balances. Proceed?')) return
+        if (!confirm('TRANSCRIPTION REQUIRED: This will send automated SMS reminders to all parents with overdue balances. Authorize broadcast?')) return
         setSendingReminders(true)
         try {
             const res = await fetch('/api/communication/reminders', { method: 'POST' })
             const data = await res.json()
-            alert(data.message || data.error || 'Done.')
+            toast(data.message || data.error || 'Broadcast sequence completed.')
         } catch (err) {
-            alert('Failed to send reminders. Please try again.')
+            toast.error('Tactical failure: Broadcast could not be dispatched.')
         } finally {
             setSendingReminders(false)
         }
@@ -94,248 +105,276 @@ export default function ReportsPage() {
 
     return (
         <DashboardLayout>
-            <div className="animate-fade-in" style={{ paddingBottom: 'var(--spacing-3xl)' }}>
+            <div className="flex-1 space-y-12 p-8 pt-6 animate-in fade-in duration-500 pb-20">
                 {/* Executive Header */}
-                <div style={{
-                    marginBottom: 'var(--spacing-2xl)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    flexWrap: 'wrap',
-                    gap: 'var(--spacing-md)'
-                }}>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary-600)', fontWeight: 700, fontSize: '0.875rem', marginBottom: '8px' }}>
-                            <TrendingUp size={16} />
-                            FINANCIAL INTELLIGENCE
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                                <TrendingUp size={24} className="text-blue-400" />
+                            </div>
+                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Strategic Intelligence</h2>
                         </div>
-                        <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>Executive Summary</h2>
-                        <p className="text-muted" style={{ fontSize: '1rem', marginTop: '4px' }}>Strategic insights for institutional financial health.</p>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium italic">
+                            High-level institutional analytics for <span className="text-blue-600 font-black uppercase not-italic">Administrative Decision-Making</span>
+                        </p>
                     </div>
-                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap' }}>
-                        <button className="btn btn-outline btn-sm" style={{ gap: '8px' }} onClick={handleExportReport} disabled={loading}>
-                            <Download size={16} /> Export Board Report
-                        </button>
-                        <button className="btn btn-primary btn-sm" style={{ gap: '8px' }} onClick={handleBroadcastReminders} disabled={sendingReminders}>
-                            <Mail size={16} /> {sendingReminders ? 'Sending...' : 'Broadcast Reminders'}
-                        </button>
+                    <div className="flex gap-4 flex-wrap">
+                        <Button
+                            variant="outline"
+                            className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest border-2 hover:bg-slate-50 transition-all border-slate-200 dark:border-slate-800"
+                            onClick={handleExportReport}
+                            disabled={loading}
+                        >
+                            <Download size={18} className="mr-2" />
+                            Export Dossier
+                        </Button>
+                        <Button
+                            className="h-12 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 dark:shadow-none transition-all"
+                            onClick={handleBroadcastReminders}
+                            disabled={sendingReminders}
+                        >
+                            {sendingReminders ? <Loader2 size={18} className="mr-2 animate-spin" /> : <Mail size={18} className="mr-2" />}
+                            {sendingReminders ? 'DISPATCHING...' : 'Authorize Reminders'}
+                        </Button>
                     </div>
                 </div>
 
-                {/* Pulse Score & Forecasting */}
-                <div className="reports-top-grid">
-                    {/* Collection Intelligence Card */}
-                    <div className="card" style={{
-                        background: 'linear-gradient(145deg, var(--background), var(--neutral-50))',
-                        border: '1px solid var(--border)',
-                        padding: 'var(--spacing-xl)',
-                        position: 'relative',
-                        overflow: 'hidden'
-                    }}>
-                        <div style={{ position: 'absolute', right: '-20px', top: '-20px', color: 'var(--primary-100)', opacity: 0.5 }}>
-                            <Target size={120} />
-                        </div>
-                        <div style={{ position: 'relative', zIndex: 1 }}>
-                            <div className="text-xs font-bold text-muted uppercase tracking-widest mb-md">Current Collection Velocity</div>
-                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                                <span style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--primary-700)' }}>
+                {/* Tactical Dashboard Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {/* Collection Velocity Intelligence */}
+                    <Card className="border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden group">
+                        <CardHeader className="p-8 pb-0 flex flex-row items-center justify-between">
+                            <div className="space-y-1">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Intelligence Stream</span>
+                                <CardTitle className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic">Collection Velocity</CardTitle>
+                            </div>
+                            <div className="h-12 w-12 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600 shadow-inner group-hover:scale-110 transition-transform">
+                                <Target size={24} />
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-8">
+                            <div className="flex items-baseline gap-2 mb-6">
+                                <span className="text-6xl font-black text-blue-600 leading-none tracking-tighter italic">
                                     {loading ? '—' : `${execStats?.collectionRate}%`}
                                 </span>
-                                <span className="text-sm font-bold text-success-600" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                                    <ArrowUpRight size={14} /> KPI Target
-                                </span>
+                                <Badge variant="outline" className="font-black text-[9px] uppercase tracking-widest border-blue-600 text-blue-600 h-6">KPI STATUS</Badge>
                             </div>
-                            <div style={{ width: '100%', height: '12px', background: 'var(--primary-50)', borderRadius: '6px', overflow: 'hidden', margin: 'var(--spacing-md) 0' }}>
-                                <div style={{
-                                    height: '100%',
-                                    width: `${execStats?.collectionRate || 0}%`,
-                                    background: 'linear-gradient(90deg, var(--primary-500), var(--primary-700))',
-                                    borderRadius: '6px'
-                                }} />
+                            <div className="space-y-4">
+                                <Progress
+                                    value={execStats?.collectionRate || 0}
+                                    className="h-4 bg-slate-50 dark:bg-slate-900"
+                                />
+                                <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
+                                    <span>Total Collected</span>
+                                    <span className="text-slate-900 dark:text-white font-black tracking-tight">{formatCurrency(execStats?.totalPaid || 0)}</span>
+                                </div>
+                                <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
+                                    <span>Target Capacity</span>
+                                    <span className="text-slate-900 dark:text-white font-black tracking-tight">{formatCurrency(execStats?.totalInvoiced || 0)}</span>
+                                </div>
                             </div>
-                            <p className="text-sm text-muted">
-                                Collected <b>{formatCurrency(execStats?.totalPaid || 0)}</b> of total <b>{formatCurrency(execStats?.totalInvoiced || 0)}</b> term billing.
-                            </p>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
-                    {/* Debt Exposure Card */}
-                    <div className="card" style={{ padding: 'var(--spacing-xl)' }}>
-                        <div className="text-xs font-bold text-muted uppercase tracking-widest mb-xl">Aging Debt Exposure</div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+                    {/* Aging Debt Analysis */}
+                    <Card className="border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden">
+                        <CardHeader className="p-8 pb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="h-8 w-8 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-red-600">
+                                    <Clock size={18} />
+                                </div>
+                                <CardTitle className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic">Aging Debt Exposure</CardTitle>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="px-8 pb-8 space-y-5">
                             {[
-                                { label: 'Active (Current)', value: execStats?.aging?.current, color: 'var(--success-500)' },
-                                { label: 'At Risk (31-60d)', value: execStats?.aging?.thirty, color: 'var(--warning-500)' },
-                                { label: 'Critical (61-90d)', value: execStats?.aging?.sixty, color: 'var(--error-500)' },
-                                { label: 'Recovery (90d+)', value: execStats?.aging?.ninetyPlus, color: 'var(--error-700)' },
+                                { label: 'Active (Current)', value: execStats?.aging?.current, color: 'bg-emerald-500', text: 'text-emerald-600' },
+                                { label: 'At Risk (31-60d)', value: execStats?.aging?.thirty, color: 'bg-amber-500', text: 'text-amber-600' },
+                                { label: 'Critical (61-90d)', value: execStats?.aging?.sixty, color: 'bg-red-500', text: 'text-red-600' },
+                                { label: 'Recovery (90d+)', value: execStats?.aging?.ninetyPlus, color: 'bg-slate-900', text: 'text-slate-900 dark:text-white' },
                             ].map((item, i) => (
-                                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: item.color }} />
-                                        <span className="text-sm font-medium">{item.label}</span>
+                                <div key={i} className="flex items-center justify-between group cursor-help">
+                                    <div className="flex items-center gap-3">
+                                        <div className={cn("h-2 w-2 rounded-full", item.color)} />
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{item.label}</span>
                                     </div>
-                                    <span className="text-sm font-bold">{formatCurrency(item.value || 0)}</span>
+                                    <span className={cn("text-xs font-black tracking-tight italic", item.text)}>{formatCurrency(item.value || 0)}</span>
                                 </div>
                             ))}
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
-                    {/* Revenue Forecast Card */}
-                    <div className="card" style={{ padding: 'var(--spacing-xl)', background: 'var(--neutral-900)', color: 'white', border: 'none' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--success-400)', marginBottom: 'var(--spacing-xl)' }}>
-                            <Zap size={18} fill="currentColor" />
-                            <span className="text-xs font-bold uppercase tracking-widest">Liquid Growth Forecast</span>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-                            <div>
-                                <div style={{ fontSize: '1.75rem', fontWeight: 800 }}>{formatCurrency(execStats?.forecast?.next30 || 0)}</div>
-                                <div className="text-xs" style={{ opacity: 0.6 }}>Projected Inflow (Next 30 Days)</div>
-                                <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', marginTop: '8px' }}>
-                                    <div style={{ width: '60%', height: '100%', background: 'var(--success-500)', borderRadius: '2px' }} />
+                    {/* Revenue Forecast Matrix */}
+                    <Card className="border-none shadow-2xl bg-slate-900 text-white rounded-[2.5rem] overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                        <CardHeader className="p-8 pb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="h-8 w-8 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center text-blue-400 border border-white/10">
+                                    <Zap size={18} />
+                                </div>
+                                <CardTitle className="text-xl font-black uppercase tracking-tight italic">Growth Matrix</CardTitle>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-8 space-y-8">
+                            <div className="space-y-4">
+                                <div className="space-y-1">
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Inbound Focus (T+30)</span>
+                                        <span className="text-lg font-black text-blue-400 tracking-tight">{formatCurrency(execStats?.forecast?.next30 || 0)}</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                        <div className="h-full bg-blue-500 w-[65%] shadow-[0_0_12px_rgba(59,130,246,0.6)]"></div>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Secondary Wave (T+60)</span>
+                                        <span className="text-lg font-black text-emerald-400 tracking-tight">{formatCurrency(execStats?.forecast?.next60 || 0)}</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                        <div className="h-full bg-emerald-500 w-[35%] shadow-[0_0_12px_rgba(16,185,129,0.6)]"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <div style={{ fontSize: '1.75rem', fontWeight: 800 }}>{formatCurrency(execStats?.forecast?.next60 || 0)}</div>
-                                <div className="text-xs" style={{ opacity: 0.6 }}>Projected Inflow (30-60 Days)</div>
-                                <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', marginTop: '8px' }}>
-                                    <div style={{ width: '30%', height: '100%', background: 'var(--primary-400)', borderRadius: '2px' }} />
+                            <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center gap-4">
+                                <Activity size={20} className="text-blue-400 animate-pulse" />
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight leading-relaxed italic">Algorithmically projected based on historical payment velocity and structural terms.</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Bottom Intelligence Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Class Performance Sector */}
+                    <Card className="lg:col-span-8 border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden">
+                        <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-900 flex flex-row items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+                            <div className="flex items-center gap-4">
+                                <div className="h-10 w-10 bg-blue-600/10 rounded-xl flex items-center justify-center text-blue-600">
+                                    <Award size={20} />
+                                </div>
+                                <div>
+                                    <CardTitle className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic leading-none mb-1">Sector Metrics</CardTitle>
+                                    <CardDescription className="text-[10px] uppercase font-black tracking-widest text-slate-400 leading-none m-0">Performance ranking by class collection</CardDescription>
                                 </div>
                             </div>
-                        </div>
+                            <BarChart3 size={20} className="text-slate-300" />
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="bg-slate-50 dark:bg-slate-900/30">
+                                            <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Rank</th>
+                                            <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Class Identifier</th>
+                                            <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency</th>
+                                            <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Liability (Outstanding)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
+                                        {loading ? (
+                                            [1, 2, 3, 4, 5].map(i => (
+                                                <tr key={i} className="animate-pulse">
+                                                    <td colSpan={4} className="px-8 py-5 h-20 bg-slate-50/30"></td>
+                                                </tr>
+                                            ))
+                                        ) : execStats?.classPerformance?.map((cls: any, i: number) => (
+                                            <tr key={cls.id} className="group hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                                                <td className="px-8 py-6">
+                                                    <div className={cn(
+                                                        "h-8 w-8 rounded-xl flex items-center justify-center text-[10px] font-black shadow-inner border-2 border-white dark:border-slate-800",
+                                                        i === 0 ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                                                    )}>
+                                                        #{i + 1}
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className="font-black text-slate-900 dark:text-white text-base leading-none uppercase tracking-tight italic transition-all group-hover:translate-x-1 underline decoration-blue-600/30 underline-offset-4">
+                                                        {cls.name}
+                                                    </div>
+                                                    <div className="text-[10px] font-bold text-slate-400 mt-2 uppercase italic tracking-widest">{cls.stream} Sector</div>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className="flex items-center gap-6">
+                                                        <span className="font-black text-sm text-slate-900 dark:text-white tabular-nums min-w-[3rem] italic">{cls.rate}%</span>
+                                                        <div className="flex-1 min-w-[8rem] h-2 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden shadow-inner">
+                                                            <div
+                                                                className={cn(
+                                                                    "h-full transition-all duration-1000",
+                                                                    cls.rate > 90 ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" :
+                                                                        cls.rate > 70 ? "bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.5)]" : "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]"
+                                                                )}
+                                                                style={{ width: `${cls.rate}%` }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6 text-right">
+                                                    <div className="text-sm font-black text-slate-900 dark:text-white tabular-nums tracking-tighter italic">
+                                                        {formatCurrency(cls.outstanding)}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Drill-down Navigation Sideboard */}
+                    <div className="lg:col-span-4 space-y-8">
+                        <Link href="/dashboard/reports/defaulters" className="block group">
+                            <Card className="border-none shadow-xl bg-red-50 dark:bg-red-950/20 rounded-[2.5rem] overflow-hidden border-2 border-red-100 dark:border-red-900/30 group-hover:bg-red-100/50 dark:group-hover:bg-red-950/40 transition-all group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:shadow-red-200">
+                                <CardContent className="p-8">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="h-14 w-14 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-red-200 group-hover:rotate-12 transition-transform">
+                                            <AlertCircle size={32} />
+                                        </div>
+                                        <ArrowUpRight className="text-red-400 opacity-0 group-hover:opacity-100 transition-all duration-300" size={24} />
+                                    </div>
+                                    <h4 className="text-2xl font-black text-red-900 dark:text-red-400 uppercase tracking-tighter italic mb-4">Arrears Analysis</h4>
+                                    <p className="text-sm font-medium text-red-700/70 dark:text-red-400/60 leading-relaxed italic uppercase tracking-tight mb-8">
+                                        Granular tracking of persistent liability cycles and automation for demanding financial compliance notices.
+                                    </p>
+                                    <div className="text-[10px] font-black text-red-600 uppercase tracking-widest flex items-center gap-2">
+                                        Explore Ledger <ChevronRight size={14} />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
+
+                        <Link href="/dashboard/reports/collections" className="block group">
+                            <Card className="border-none shadow-xl bg-blue-50 dark:bg-blue-950/20 rounded-[2.5rem] overflow-hidden border-2 border-blue-100 dark:border-blue-900/30 group-hover:bg-blue-100/50 dark:group-hover:bg-blue-950/40 transition-all group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:shadow-blue-200">
+                                <CardContent className="p-8">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="h-14 w-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-200 group-hover:-rotate-12 transition-transform">
+                                            <FileText size={32} />
+                                        </div>
+                                        <ArrowUpRight className="text-blue-400 opacity-0 group-hover:opacity-100 transition-all duration-300" size={24} />
+                                    </div>
+                                    <h4 className="text-2xl font-black text-blue-900 dark:text-blue-400 uppercase tracking-tighter italic mb-4">Audit Trails</h4>
+                                    <p className="text-sm font-medium text-blue-700/70 dark:text-blue-400/60 leading-relaxed italic uppercase tracking-tight mb-8">
+                                        Micro-level visibility into institutional capital flow. Comprehensive filtering by source, method, and period.
+                                    </p>
+                                    <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-2">
+                                        Review History <ChevronRight size={14} />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
                     </div>
                 </div>
 
-                <div className="reports-bottom-grid">
-                    {/* Class Performance Table */}
-                    <div className="lg:col-span-3 card" style={{ padding: 0 }}>
-                        <div style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <Award className="text-primary-600" size={20} />
-                                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>Top Performing Classes</h3>
-                            </div>
-                            <span className="text-xs text-muted font-bold">BY COLLECTION RATE</span>
-                        </div>
-                        <div className="table-wrapper">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>Rank</th>
-                                        <th>Class Name</th>
-                                        <th>Rate</th>
-                                        <th style={{ textAlign: 'right' }}>Outstanding</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {loading ? (
-                                        [1, 2, 3].map(i => <tr key={i}><td colSpan={4} className="skeleton" style={{ height: '40px' }}></td></tr>)
-                                    ) : execStats?.classPerformance?.map((cls: any, i: number) => (
-                                        <tr key={cls.id}>
-                                            <td style={{ width: '60px' }}>
-                                                <div style={{
-                                                    width: '28px', height: '28px',
-                                                    background: i === 0 ? 'var(--warning-100)' : 'var(--neutral-100)',
-                                                    color: i === 0 ? 'var(--warning-700)' : 'var(--neutral-700)',
-                                                    borderRadius: '50%',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    fontSize: '0.75rem', fontWeight: 800
-                                                }}>
-                                                    #{i + 1}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div style={{ fontWeight: 700 }}>{cls.name}</div>
-                                                <div className="text-xs text-muted">{cls.stream}</div>
-                                            </td>
-                                            <td>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                    <span style={{ fontWeight: 700, minWidth: '40px' }}>{cls.rate}%</span>
-                                                    <div style={{ flex: 1, minWidth: '60px', height: '6px', background: 'var(--neutral-100)', borderRadius: '3px', overflow: 'hidden' }}>
-                                                        <div style={{ height: '100%', width: `${cls.rate}%`, background: 'var(--success-500)' }} />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td style={{ textAlign: 'right', fontWeight: 600 }}>
-                                                {formatCurrency(cls.outstanding)}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {/* Drill-down Navigation */}
-                    <div className="reports-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-                        <Link href="/dashboard/reports/defaulters" className="card hover-card group" style={{ textDecoration: 'none', color: 'inherit', padding: 'var(--spacing-xl)', border: '1px solid var(--error-200)', background: 'var(--error-50)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-md)' }}>
-                                <div style={{
-                                    padding: '12px', background: 'var(--error-600)', color: 'white', borderRadius: 'var(--radius-lg)'
-                                }}><AlertCircle size={24} /></div>
-                                <ArrowUpRight className="text-error-600 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
-                            </div>
-                            <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--error-900)' }}>Arrears Analysis</h4>
-                            <p className="text-sm" style={{ color: 'var(--error-700)', margin: '8px 0 var(--spacing-md)' }}>Deep dive into chronic defaulters and generate legal demand notices.</p>
-                            <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--error-600)' }}>Generate Statements →</span>
-                        </Link>
-
-                        <Link href="/dashboard/reports/collections" className="card hover-card group" style={{ textDecoration: 'none', color: 'inherit', padding: 'var(--spacing-xl)', border: '1px solid var(--primary-200)', background: 'var(--primary-50)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-md)' }}>
-                                <div style={{
-                                    padding: '12px', background: 'var(--primary-600)', color: 'white', borderRadius: 'var(--radius-lg)'
-                                }}><FileText size={24} /></div>
-                                <ArrowUpRight className="text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
-                            </div>
-                            <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary-900)' }}>Audit Trails</h4>
-                            <p className="text-sm" style={{ color: 'var(--primary-700)', margin: '8px 0 var(--spacing-md)' }}>Full record of every shilling collected. Sort by item, date, or method.</p>
-                            <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--primary-600)' }}>View Full Ledger →</span>
-                        </Link>
+                {/* Footer Assurance */}
+                <div className="flex items-center justify-center pt-8 border-t border-slate-100 dark:border-slate-900">
+                    <div className="flex items-center gap-4 text-slate-400">
+                        <ShieldCheck size={18} />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] italic">Encrypted Strategic intelligence Layer • {new Date().getFullYear()} School Operating System</span>
                     </div>
                 </div>
             </div>
-
-            <style jsx>{`
-                .reports-top-grid {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: var(--spacing-xl);
-                    margin-bottom: var(--spacing-2xl);
-                }
-                .reports-bottom-grid {
-                    display: grid;
-                    grid-template-columns: 3fr 2fr;
-                    gap: var(--spacing-xl);
-                }
-                .reports-sidebar {
-                    /* default: flows in grid */
-                }
-                .hover-card {
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-                .hover-card:hover {
-                    transform: translateY(-4px);
-                    box-shadow: var(--shadow-xl);
-                }
-                .group:hover .group-hover\:opacity-100 {
-                    opacity: 1;
-                }
-                @media (max-width: 1024px) {
-                    .reports-top-grid {
-                        grid-template-columns: 1fr;
-                    }
-                    .reports-bottom-grid {
-                        grid-template-columns: 1fr;
-                    }
-                }
-                @media (max-width: 768px) {
-                    .reports-top-grid {
-                        gap: var(--spacing-md);
-                        margin-bottom: var(--spacing-xl);
-                    }
-                    .reports-bottom-grid {
-                        gap: var(--spacing-md);
-                    }
-                }
-            `}</style>
         </DashboardLayout>
     )
 }

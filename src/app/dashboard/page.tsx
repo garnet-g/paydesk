@@ -1,12 +1,45 @@
-'use client'
+"use client"
 
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
-import DashboardLayout from '@/components/DashboardLayout'
-import Link from 'next/link'
-import { School, DollarSign, Users, TrendingUp, FileText, Upload, Layers, BarChart3, Smartphone, AlertTriangle, Activity, Wifi, Server, Mail as MailIcon, PlusCircle, Settings, ShieldCheck, PieChart as PieChartIcon } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie } from 'recharts'
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import DashboardLayout from "@/components/DashboardLayout"
+import Link from "next/link"
+import {
+    School,
+    DollarSign,
+    Users,
+    TrendingUp,
+    FileText,
+    Activity,
+    AlertTriangle,
+    BarChart3,
+    Layers,
+    PlusCircle,
+    Wifi,
+    Mail as MailIcon,
+    Server,
+    PieChart as PieChartIcon,
+    ChevronRight,
+    ArrowUpRight,
+    Search
+} from "lucide-react"
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    PieChart,
+    Pie,
+    Cell
+} from "recharts"
+import { cn } from "@/lib/utils"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 export default function DashboardPage() {
     const { data: session, status } = useSession()
@@ -23,16 +56,16 @@ export default function DashboardPage() {
     }, [])
 
     useEffect(() => {
-        if (mounted && status === 'unauthenticated') {
-            router.push('/login')
+        if (mounted && status === "unauthenticated") {
+            router.push("/login")
         }
     }, [status, router, mounted])
 
     useEffect(() => {
-        if (mounted && status === 'authenticated') {
+        if (mounted && status === "authenticated") {
             fetchStats()
             fetchPayments()
-            if (session.user.role === 'PRINCIPAL' || session.user.role === 'FINANCE_MANAGER') {
+            if (session.user.role === "PRINCIPAL" || session.user.role === "FINANCE_MANAGER") {
                 fetchApprovals()
             }
         }
@@ -40,11 +73,11 @@ export default function DashboardPage() {
 
     const fetchStats = async () => {
         try {
-            const res = await fetch('/api/dashboard/stats')
+            const res = await fetch("/api/dashboard/stats")
             const data = await res.json()
             setDashboardStats(data)
         } catch (error) {
-            console.error('Failed to fetch stats:', error)
+            console.error("Failed to fetch stats:", error)
         } finally {
             setStatsLoading(false)
         }
@@ -52,11 +85,11 @@ export default function DashboardPage() {
 
     const fetchPayments = async () => {
         try {
-            const res = await fetch('/api/dashboard/payments')
+            const res = await fetch("/api/dashboard/payments")
             const data = await res.json()
             setRecentPayments(data)
         } catch (error) {
-            console.error('Failed to fetch payments:', error)
+            console.error("Failed to fetch payments:", error)
         } finally {
             setPaymentsLoading(false)
         }
@@ -64,659 +97,319 @@ export default function DashboardPage() {
 
     const fetchApprovals = async () => {
         try {
-            const res = await fetch('/api/approvals')
+            const res = await fetch("/api/approvals")
             if (res.ok) {
                 const data = await res.json()
-                setPendingApprovals(data.filter((r: any) => r.status === 'PENDING'))
+                setPendingApprovals(data.filter((r: any) => r.status === "PENDING"))
             }
         } catch (error) {
-            console.error('Failed to fetch approvals:', error)
+            console.error("Failed to fetch approvals:", error)
         }
     }
 
-    if (!mounted || status === 'loading') {
+    if (!mounted || status === "loading") {
         return (
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '100vh',
-                background: 'var(--neutral-50)'
-            }}>
-                <div className="spinner" style={{ width: '40px', height: '40px' }}></div>
+            <div className="flex items-center justify-center min-h-screen bg-slate-50">
+                <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
             </div>
         )
     }
 
-    if (!session) {
-        return null
-    }
+    if (!session) return null
 
     const role = session.user.role
 
-    // Stats configuration
-    const statsConfig = role === 'SUPER_ADMIN' ? [
-        { label: 'Total Schools', value: dashboardStats?.totalSchools || '0', icon: School, color: 'var(--primary-600)', bg: 'var(--primary-50)' },
-        { label: 'Total Collections', value: `KES ${(dashboardStats?.totalCollections || 0).toLocaleString()}`, icon: DollarSign, color: 'var(--success-600)', bg: 'var(--success-50)' },
-        { label: 'Active Students', value: (dashboardStats?.totalStudents || 0).toLocaleString(), icon: Users, color: 'var(--secondary-600)', bg: 'var(--secondary-50)' },
-        { label: 'Growth', value: dashboardStats?.growth || '0%', icon: TrendingUp, color: 'var(--warning-600)', bg: 'var(--warning-50)' },
-    ] : role === 'PRINCIPAL' || role === 'FINANCE_MANAGER' ? [
-        { label: 'Total Students', value: (dashboardStats?.totalStudents || 0).toLocaleString(), icon: Users, color: 'var(--primary-600)', bg: 'var(--primary-50)' },
-        { label: 'Total Collections', value: `KES ${(dashboardStats?.totalCollections || 0).toLocaleString()}`, icon: DollarSign, color: 'var(--success-600)', bg: 'var(--success-50)' },
-        { label: 'Outstanding', value: dashboardStats?.outstanding || 'KES 0', icon: TrendingUp, color: 'var(--warning-600)', bg: 'var(--warning-50)' },
-        { label: 'This Month', value: dashboardStats?.thisMonth || 'KES 0', icon: DollarSign, color: 'var(--secondary-600)', bg: 'var(--secondary-50)' },
+    const statsConfig = role === "SUPER_ADMIN" ? [
+        { label: "Total Schools", value: dashboardStats?.totalSchools || "0", icon: School, color: "text-blue-600", bg: "bg-blue-100" },
+        { label: "Total Collections", value: `KES ${(dashboardStats?.totalCollections || 0).toLocaleString()}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-100" },
+        { label: "Active Students", value: (dashboardStats?.totalStudents || 0).toLocaleString(), icon: Users, color: "text-indigo-600", bg: "bg-indigo-100" },
+        { label: "Growth", value: dashboardStats?.growth || "0%", icon: TrendingUp, color: "text-amber-600", bg: "bg-amber-100" },
+    ] : role === "PRINCIPAL" || role === "FINANCE_MANAGER" ? [
+        { label: "Total Students", value: (dashboardStats?.totalStudents || 0).toLocaleString(), icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
+        { label: "Total Collections", value: `KES ${(dashboardStats?.totalCollections || 0).toLocaleString()}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-100" },
+        { label: "Outstanding", value: dashboardStats?.outstanding || "KES 0", icon: TrendingUp, color: "text-red-600", bg: "bg-red-100" },
+        { label: "This Month", value: dashboardStats?.thisMonth || "KES 0", icon: DollarSign, color: "text-indigo-600", bg: "bg-indigo-100" },
     ] : [
-        { label: 'My Children', value: dashboardStats?.myChildren || '0', icon: Users, color: 'var(--primary-600)', bg: 'var(--primary-50)' },
-        { label: 'Total Balance', value: `KES ${(dashboardStats?.totalBalance || 0).toLocaleString()}`, icon: DollarSign, color: 'var(--warning-600)', bg: 'var(--warning-50)' },
-        { label: 'Total Paid', value: `KES ${(dashboardStats?.paidThisTerm || 0).toLocaleString()}`, icon: DollarSign, color: 'var(--success-600)', bg: 'var(--success-50)' },
-        { label: 'Next Payment', value: dashboardStats?.nextPayment || 'N/A', icon: TrendingUp, color: 'var(--secondary-600)', bg: 'var(--secondary-50)' },
+        { label: "My Children", value: dashboardStats?.myChildren || "0", icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
+        { label: "Total Balance", value: `KES ${(dashboardStats?.totalBalance || 0).toLocaleString()}`, icon: DollarSign, color: "text-red-600", bg: "bg-red-100" },
+        { label: "Total Paid", value: `KES ${(dashboardStats?.paidThisTerm || 0).toLocaleString()}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-100" },
+        { label: "Next Payment", value: dashboardStats?.nextPayment || "N/A", icon: TrendingUp, color: "text-amber-600", bg: "bg-amber-100" },
     ]
+
+    const pieData = dashboardStats ? [
+        { name: "Collected", value: dashboardStats.totalCollections || 0, color: "#10b981" },
+        { name: "Outstanding", value: parseInt(dashboardStats.outstanding?.replace(/[^0-9]/g, '') || '0'), color: "#6366f1" },
+    ] : []
 
     return (
         <DashboardLayout>
-            <div className="animate-fade-in">
+            <div className="flex-1 space-y-8 p-8 pt-6 animate-in fade-in duration-700">
+                {/* Global Notification for Approvals */}
+                {pendingApprovals.length > 0 && (role === "PRINCIPAL" || role === "FINANCE_MANAGER") && (
+                    <div className="flex items-center justify-between p-4 bg-amber-50 border border-amber-200 rounded-3xl shadow-sm text-amber-800">
+                        <div className="flex items-center gap-4">
+                            <div className="p-2 bg-amber-100 rounded-xl">
+                                <AlertTriangle className="h-5 w-5 text-amber-600" />
+                            </div>
+                            <div>
+                                <p className="font-black text-xs uppercase tracking-widest">Action Required</p>
+                                <p className="text-xs font-semibold">{pendingApprovals.length} Payment adjustments are awaiting your authorization.</p>
+                            </div>
+                        </div>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="rounded-xl border-amber-200 font-bold text-[10px] uppercase tracking-widest hover:bg-amber-100 text-amber-800"
+                            onClick={() => router.push('/dashboard/payments?tab=approvals')}
+                        >
+                            Authorize Now
+                        </Button>
+                    </div>
+                )}
+
                 {/* Welcome Banner */}
-                <div className="card banner-card" style={{
-                    background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%)',
-                    color: 'white',
-                    marginBottom: 'var(--spacing-xl)',
-                    border: 'none',
-                    position: 'relative',
-                    overflow: 'hidden'
-                }}>
-                    <div style={{ position: 'relative', zIndex: 1 }}>
-                        <h2 className="banner-title" style={{ fontWeight: 800, marginBottom: 'var(--spacing-xs)', color: 'white' }}>
-                            Welcome back, {session.user.name}! 👋
-                        </h2>
-                        <p className="banner-subtitle" style={{ opacity: 0.9, fontWeight: 500 }}>
-                            {role === 'SUPER_ADMIN' && 'Here\'s an overview of all schools on the platform'}
-                            {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && `Here's how ${session.user.schoolName} is doing today`}
-                            {role === 'PARENT' && 'Track your children\'s fee balances and payments'}
-                        </p>
-                    </div>
-                    <div style={{
-                        position: 'absolute',
-                        right: '-50px',
-                        top: '-50px',
-                        width: '200px',
-                        height: '200px',
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        borderRadius: '50%',
-                        zIndex: 0
-                    }} />
-                </div>
-                {/* Pulse Stats Board (Principal Only) */}
-                {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && dashboardStats && (
-                    <div className="card" style={{
-                        marginBottom: 'var(--spacing-xl)',
-                        background: 'var(--background)',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: 'var(--spacing-xl)',
-                        border: '1px solid var(--border)',
-                        padding: 'var(--spacing-xl)'
-                    }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-                            <span className="text-xs font-bold text-muted uppercase tracking-wider">Total Term Billing</span>
-                            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0 }}>{dashboardStats.totalExpected}</h3>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', color: 'var(--primary-600)' }}>
-                                <Activity size={12} />
-                                <span className="text-xs font-semibold">Projected Revenue</span>
-                            </div>
-                        </div>
+                <div className="relative overflow-hidden bg-slate-900 rounded-[2.5rem] p-8 md:p-12 shadow-2xl shadow-slate-200">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-600/5 rounded-full blur-3xl -ml-20 -mb-20"></div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-                            <span className="text-xs font-bold text-muted uppercase tracking-wider">Collections</span>
-                            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: 'var(--success-600)' }}>
-                                KES {dashboardStats.totalCollections?.toLocaleString()}
-                            </h3>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', color: 'var(--success-600)' }}>
-                                <TrendingUp size={12} />
-                                <span className="text-xs font-semibold">Cash in Hand</span>
+                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 w-8 bg-blue-600 rounded-full"></div>
+                                <span className="text-blue-400 font-black text-[10px] uppercase tracking-[0.3em]">Institutional Pulse</span>
                             </div>
-                        </div>
-
-                        <div className="collection-rate-container" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', paddingLeft: 'var(--spacing-xl)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span className="text-xs font-bold text-muted uppercase tracking-wider">Collection Rate</span>
-                                <span className="badge badge-success">{dashboardStats.collectionRate}%</span>
-                            </div>
-                            <div style={{ width: '100%', height: '8px', background: 'var(--neutral-100)', borderRadius: '4px', overflow: 'hidden', marginTop: '4px' }}>
-                                <div style={{
-                                    height: '100%',
-                                    width: `${dashboardStats.collectionRate}%`,
-                                    background: 'linear-gradient(90deg, var(--success-500), var(--success-600))',
-                                    borderRadius: '4px',
-                                    transition: 'width 1s ease'
-                                }} />
-                            </div>
-                            <p className="text-xs text-muted" style={{ margin: 0 }}>
-                                Goal: 100% by end of term
+                            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase leading-none">
+                                GREETINGS, <br className="md:hidden" /> {session.user.name?.split(' ')[0]}!
+                            </h1>
+                            <p className="text-slate-400 font-medium text-lg max-w-lg leading-relaxed">
+                                {role === 'SUPER_ADMIN' && 'Global orchestration of your school ecosystem.'}
+                                {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && `Performance analysis for ${session.user.schoolName}.`}
+                                {role === 'PARENT' && 'Real-time academic and financial tracking for your children.'}
                             </p>
-                            <button
-                                onClick={async () => {
-                                    if (confirm('This will send SMS reminders to all parents with overdue balances. Proceed?')) {
-                                        const res = await fetch('/api/communication/reminders', { method: 'POST' });
-                                        const data = await res.json();
-                                        alert(data.message || 'Reminders sent!');
-                                    }
-                                }}
-                                className="btn btn-secondary btn-sm"
-                                style={{ marginTop: 'var(--spacing-md)', fontSize: '0.7rem' }}
-                            >
-                                Send Auto-Reminders
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-
-                {/* Pending Approvals Banner */}
-                {pendingApprovals.length > 0 && (role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && (
-                    <div className="card" style={{
-                        marginBottom: 'var(--spacing-xl)',
-                        background: 'var(--warning-50)',
-                        borderColor: 'var(--warning-200)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 'var(--spacing-md)',
-                        flexWrap: 'wrap'
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                            <div style={{
-                                width: '44px', height: '44px',
-                                background: 'var(--warning-600)', color: 'white',
-                                borderRadius: 'var(--radius-lg)',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                flexShrink: 0
-                            }}>
-                                <AlertTriangle size={22} />
-                            </div>
-                            <div>
-                                <div className="font-semibold" style={{ color: 'var(--warning-900)' }}>
-                                    {pendingApprovals.length} payment{pendingApprovals.length !== 1 ? 's' : ''} pending your approval
-                                </div>
-                                <p className="text-xs" style={{ color: 'var(--warning-700)', margin: 0 }}>
-                                    Cancellations and adjustments that need to be reviewed before they take effect.
-                                </p>
-                            </div>
-                        </div>
-                        <Link href="/dashboard/payments?tab=approvals" className="btn btn-primary btn-sm" style={{
-                            background: 'var(--warning-600)',
-                            borderColor: 'var(--warning-600)',
-                            flexShrink: 0
-                        }}>
-                            Review Now
-                        </Link>
-                    </div>
-                )}
-
-                {/* Parent Payment Plan Tracker */}
-                {dashboardStats?.hasActivePlan && role === 'PARENT' && (
-                    <div className="card" style={{
-                        marginBottom: 'var(--spacing-xl)',
-                        padding: 0,
-                        overflow: 'hidden'
-                    }}>
-                        <div className="payment-plan-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 3fr' }}>
-                            <div style={{
-                                padding: 'var(--spacing-xl)',
-                                background: 'var(--primary-900)',
-                                color: 'white',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'space-between'
-                            }}>
-                                <div>
-                                    <div className="text-xs" style={{ opacity: 0.6, marginBottom: '4px' }}>Payment Plan</div>
-                                    <h4 style={{ fontSize: '1.25rem', fontWeight: 700 }}>On Track ✓</h4>
-                                </div>
-                                <div style={{ marginTop: 'var(--spacing-lg)' }}>
-                                    <div className="text-xs" style={{ opacity: 0.5, marginBottom: '2px' }}>Instalment</div>
-                                    <div style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                                        KES {Number(dashboardStats.commitmentVolume).toLocaleString()} / cycle
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{ padding: 'var(--spacing-xl)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--spacing-md)' }}>
-                                    <div>
-                                        <div className="text-xs text-muted" style={{ marginBottom: '2px' }}>Fee Completion</div>
-                                        <div style={{ fontSize: '2rem', fontWeight: 700 }}>45<span style={{ fontSize: '1.25rem' }}>%</span></div>
-                                    </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div className="text-xs" style={{ color: 'var(--success-600)' }}>● On Track</div>
-                                    </div>
-                                </div>
-                                <div style={{ width: '100%', height: '8px', background: 'var(--neutral-100)', borderRadius: '4px', overflow: 'hidden' }}>
-                                    <div style={{ height: '100%', width: '45%', background: 'var(--primary-600)', borderRadius: '4px', transition: 'width 1s ease' }} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Quick Actions (Principal/Finance Manager Only) */}
-                {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && (
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                        gap: 'var(--spacing-md)',
-                        marginBottom: 'var(--spacing-xl)'
-                    }}>
-                        <Link href="/dashboard/invoices/bulk" className="card hover-card" style={{
-                            padding: 'var(--spacing-md)',
-                            display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)',
-                            textDecoration: 'none', color: 'inherit'
-                        }}>
-                            <div style={{
-                                padding: '8px', background: 'var(--primary-100)', color: 'var(--primary-600)',
-                                borderRadius: 'var(--radius-md)', flexShrink: 0
-                            }}><FileText size={20} /></div>
-                            <div>
-                                <div className="font-semibold text-sm">Generate Invoices</div>
-                                <div className="text-xs text-muted">New billing run</div>
-                            </div>
-                        </Link>
-                        <Link href="/dashboard/students" className="card hover-card" style={{
-                            padding: 'var(--spacing-md)',
-                            display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)',
-                            textDecoration: 'none', color: 'inherit'
-                        }}>
-                            <div style={{
-                                padding: '8px', background: 'var(--success-100)', color: 'var(--success-600)',
-                                borderRadius: 'var(--radius-md)', flexShrink: 0
-                            }}><Users size={20} /></div>
-                            <div>
-                                <div className="font-semibold text-sm">Add Students</div>
-                                <div className="text-xs text-muted">Enrol or import</div>
-                            </div>
-                        </Link>
-                        <Link href="/dashboard/fee-setup" className="card hover-card" style={{
-                            padding: 'var(--spacing-md)',
-                            display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)',
-                            textDecoration: 'none', color: 'inherit'
-                        }}>
-                            <div style={{
-                                padding: '8px', background: 'var(--warning-100)', color: 'var(--warning-600)',
-                                borderRadius: 'var(--radius-md)', flexShrink: 0
-                            }}><Layers size={20} /></div>
-                            <div>
-                                <div className="font-semibold text-sm">Fee Setup</div>
-                                <div className="text-xs text-muted">Terms & structures</div>
-                            </div>
-                        </Link>
-                        <Link href="/dashboard/reports" className="card hover-card" style={{
-                            padding: 'var(--spacing-md)',
-                            display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)',
-                            textDecoration: 'none', color: 'inherit'
-                        }}>
-                            <div style={{
-                                padding: '8px', background: 'var(--secondary-100)', color: 'var(--secondary-600)',
-                                borderRadius: 'var(--radius-md)', flexShrink: 0
-                            }}><BarChart3 size={20} /></div>
-                            <div>
-                                <div className="font-semibold text-sm">View Reports</div>
-                                <div className="text-xs text-muted">Collections & defaulters</div>
-                            </div>
-                        </Link>
-                    </div>
-                )}
-
-                {/* Parent Quick Actions */}
-                {role === 'PARENT' && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--spacing-xl)', marginBottom: 'var(--spacing-xl)' }}>
-                        <Link href="/dashboard/receipts" className="card hover-card" style={{ padding: 'var(--spacing-xl)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)', textDecoration: 'none', color: 'inherit', border: '1px solid var(--border)' }}>
-                            <div style={{ padding: '16px', background: 'var(--success-100)', color: 'var(--success-600)', borderRadius: 'var(--radius-lg)' }}>
-                                <FileText size={28} />
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <div className="font-semibold" style={{ fontSize: '1.125rem' }}>Receipt Wallet</div>
-                                <div className="text-sm text-muted">Download official fee payment slips</div>
-                            </div>
-                        </Link>
-
-                        <Link href="/dashboard/payments" className="card hover-card" style={{ padding: 'var(--spacing-xl)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)', textDecoration: 'none', color: 'inherit', border: '1px solid var(--border)' }}>
-                            <div style={{ padding: '16px', background: 'var(--primary-100)', color: 'var(--primary-600)', borderRadius: 'var(--radius-lg)' }}>
-                                <DollarSign size={28} />
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <div className="font-semibold" style={{ fontSize: '1.125rem' }}>Pay Fees</div>
-                                <div className="text-sm text-muted">Make direct payments via M-Pesa</div>
-                            </div>
-                        </Link>
-
-                        <Link href="/dashboard/children" className="card hover-card" style={{ padding: 'var(--spacing-xl)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)', textDecoration: 'none', color: 'inherit', border: '1px solid var(--border)' }}>
-                            <div style={{ padding: '16px', background: 'var(--secondary-100)', color: 'var(--secondary-600)', borderRadius: 'var(--radius-lg)' }}>
-                                <Users size={28} />
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <div className="font-semibold" style={{ fontSize: '1.125rem' }}>My Children</div>
-                                <div className="text-sm text-muted">View academic and fee statements</div>
-                            </div>
-                        </Link>
-                    </div>
-                )}
-
-                {/* Super Admin Quick Actions & Health */}
-                {role === 'SUPER_ADMIN' && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-xl)', marginBottom: 'var(--spacing-xl)' }}>
-                        {/* Quick Actions */}
-                        <div>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: 'var(--spacing-lg)' }}>Global Actions</h3>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
-                                <Link href="/dashboard/schools" className="card hover-card" style={{ padding: 'var(--spacing-md)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', textDecoration: 'none', color: 'inherit' }}>
-                                    <div style={{ padding: '12px', background: 'var(--primary-100)', color: 'var(--primary-600)', borderRadius: 'var(--radius-lg)' }}><PlusCircle size={22} /></div>
-                                    <div style={{ flex: 1 }}>
-                                        <div className="font-semibold" style={{ fontSize: '1rem' }}>Onboard New School</div>
-                                        <div className="text-sm text-muted">Register and configure institution</div>
-                                    </div>
-                                </Link>
-                                <Link href="/dashboard/logs" className="card hover-card" style={{ padding: 'var(--spacing-md)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', textDecoration: 'none', color: 'inherit' }}>
-                                    <div style={{ padding: '12px', background: 'var(--warning-100)', color: 'var(--warning-600)', borderRadius: 'var(--radius-lg)' }}><Activity size={22} /></div>
-                                    <div style={{ flex: 1 }}>
-                                        <div className="font-semibold" style={{ fontSize: '1rem' }}>System Logs</div>
-                                        <div className="text-sm text-muted">View platform-wide activity</div>
-                                    </div>
-                                </Link>
-                            </div>
                         </div>
 
-                        {/* System Health */}
-                        <div>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: 'var(--spacing-lg)' }}>System Health</h3>
-                            <div className="card" style={{ padding: 'var(--spacing-lg)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                        <div style={{ padding: '8px', background: 'var(--success-50)', color: 'var(--success-600)', borderRadius: 'var(--radius-md)' }}>
-                                            <Wifi size={18} />
-                                        </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="font-semibold text-sm">Daraja API (M-Pesa)</span>
-                                            <span className="text-xs text-muted">Callbacks & STK Push</span>
-                                        </div>
+                        {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && dashboardStats && (
+                            <div className="bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex items-center gap-8 shadow-inner">
+                                <div className="space-y-1">
+                                    <p className="text-white/40 font-black text-[9px] uppercase tracking-widest">Collection Rate</p>
+                                    <div className="flex items-end gap-2">
+                                        <span className="text-4xl font-black text-emerald-400 leading-none">{dashboardStats.collectionRate}%</span>
+                                        <ArrowUpRight className="text-emerald-400 h-5 w-5 mb-1" />
                                     </div>
-                                    <span className="badge badge-success text-xs">Operational</span>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                        <div style={{ padding: '8px', background: 'var(--success-50)', color: 'var(--success-600)', borderRadius: 'var(--radius-md)' }}>
-                                            <MailIcon size={18} />
-                                        </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="font-semibold text-sm">SMTP Gateway</span>
-                                            <span className="text-xs text-muted">Email Notifications</span>
-                                        </div>
+                                    <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mt-2">
+                                        <div
+                                            className="h-full bg-emerald-400 transition-all duration-1000"
+                                            style={{ width: `${dashboardStats.collectionRate}%` }}
+                                        ></div>
                                     </div>
-                                    <span className="badge badge-success text-xs">Operational</span>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                        <div style={{ padding: '8px', background: 'var(--neutral-100)', color: 'var(--neutral-600)', borderRadius: 'var(--radius-md)' }}>
-                                            <Server size={18} />
-                                        </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="font-semibold text-sm">Database Clusters</span>
-                                            <span className="text-xs text-muted">eu-west-2 (PostgreSQL)</span>
-                                        </div>
-                                    </div>
-                                    <span className="text-sm font-mono" style={{ color: 'var(--success-600)', fontWeight: 600 }}>~34ms</span>
-                                </div>
+                                <Button
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest h-14 px-8 rounded-2xl shadow-xl shadow-blue-500/20"
+                                    onClick={() => router.push('/dashboard/reports')}
+                                >
+                                    View Reports
+                                </Button>
                             </div>
-                        </div>
+                        )}
                     </div>
-                )}
+                </div>
 
                 {/* Stats Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-xl)' }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {statsLoading ? (
-                        [1, 2, 3, 4].map(i => <div key={i} className="card skeleton" style={{ height: '100px' }}></div>)
-                    ) : statsConfig.map((stat, index) => {
-                        const Icon = stat.icon
-                        return (
-                            <div key={index} className="card" style={{
-                                animation: `slideUp ${0.3 + index * 0.1}s ease-out`,
-                            }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-sm)' }}>
-                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                        <p className="text-muted text-xs" style={{ marginBottom: 'var(--spacing-xs)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                            {stat.label}
-                                        </p>
-                                        <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: 0 }}>
-                                            {stat.value}
-                                        </h3>
+                        [1, 2, 3, 4].map(i => (
+                            <div key={i} className="h-32 bg-slate-100 animate-pulse rounded-3xl"></div>
+                        ))
+                    ) : statsConfig.map((stat, index) => (
+                        <Card key={index} className="border-none shadow-xl shadow-slate-200/50 rounded-3xl hover:translate-y-[-4px] transition-all overflow-hidden group">
+                            <CardContent className="p-6">
+                                <div className="flex justify-between items-start">
+                                    <div className="space-y-1">
+                                        <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest">{stat.label}</p>
+                                        <p className="text-2xl font-black text-slate-900 tracking-tight">{stat.value}</p>
                                     </div>
-                                    <div style={{
-                                        width: '36px',
-                                        height: '36px',
-                                        borderRadius: 'var(--radius-md)',
-                                        background: stat.bg,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color: stat.color,
-                                        flexShrink: 0
-                                    }}>
-                                        <Icon size={18} />
+                                    <div className={cn("p-3 rounded-2xl group-hover:scale-110 transition-transform", stat.bg, stat.color)}>
+                                        <stat.icon size={20} />
                                     </div>
                                 </div>
-                            </div>
-                        )
-                    })}
+                                <div className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-blue-600 transition-colors">
+                                    <span>Detailed Analytics</span>
+                                    <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
 
-                {/* Visual Analytics Section */}
-                {(role === 'PRINCIPAL' || role === 'SUPER_ADMIN') && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--spacing-xl)', marginBottom: 'var(--spacing-xl)' }}>
-                        <div className="card" style={{ height: '400px', display: 'flex', flexDirection: 'column' }}>
-                            <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {/* Quick Actions (Principal Only) */}
+                {(role === "PRINCIPAL" || role === "FINANCE_MANAGER") && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {[
+                            { label: "Invoice Run", desc: "Batch billing", icon: FileText, href: "/dashboard/invoices/bulk", color: "text-blue-600", bg: "bg-blue-50" },
+                            { label: "Enrol Student", desc: "New admissions", icon: Users, href: "/dashboard/students", color: "text-emerald-600", bg: "bg-emerald-50" },
+                            { label: "Fee Structure", desc: "Configure terms", icon: Layers, href: "/dashboard/fee-setup", color: "text-amber-600", bg: "bg-amber-50" },
+                            { label: "Communication", desc: "Broadcast SMS", icon: MailIcon, href: "/dashboard/broadcast", color: "text-indigo-600", bg: "bg-indigo-50" }
+                        ].map((action, i) => (
+                            <Link key={i} href={action.href}>
+                                <div className="p-4 bg-white border border-slate-100 rounded-2xl hover:border-blue-200 hover:shadow-lg hover:shadow-blue-50 transition-all flex items-center gap-4 group">
+                                    <div className={cn("p-3 rounded-xl", action.bg, action.color)}>
+                                        <action.icon size={18} />
+                                    </div>
                                     <div>
-                                        <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>Revenue & Collections</h3>
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', margin: 0 }}>Trend analysis for the current term</p>
-                                    </div>
-                                    <div style={{ padding: '8px', background: 'var(--primary-50)', color: 'var(--primary-600)', borderRadius: '10px' }}>
-                                        <Activity size={18} />
+                                        <p className="font-bold text-slate-900 text-sm">{action.label}</p>
+                                        <p className="text-[10px] font-medium text-slate-400">{action.desc}</p>
                                     </div>
                                 </div>
-                            </div>
-                            <div style={{ flex: 1, padding: 'var(--spacing-xl) var(--spacing-md) var(--spacing-md) 0' }}>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={[
-                                        { name: 'Jan', revenue: 450000, collections: 320000 },
-                                        { name: 'Feb', revenue: 520000, collections: 410000 },
-                                        { name: 'Mar', revenue: 480000, collections: 440000 },
-                                        { name: 'Apr', revenue: 610000, collections: 520000 },
-                                        { name: 'May', revenue: 550000, collections: 510000 },
-                                        { name: 'Jun', revenue: 670000, collections: 610000 },
-                                    ]}>
-                                        <defs>
-                                            <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="var(--primary-500)" stopOpacity={0.1} />
-                                                <stop offset="95%" stopColor="var(--primary-500)" stopOpacity={0} />
-                                            </linearGradient>
-                                            <linearGradient id="colorColl" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="var(--success-500)" stopOpacity={0.1} />
-                                                <stop offset="95%" stopColor="var(--success-500)" stopOpacity={0} />
-                                            </linearGradient>
-                                        </defs>
-                                        <XAxis dataKey="name" fontSize={10} axisLine={false} tickLine={false} />
-                                        <YAxis fontSize={10} axisLine={false} tickLine={false} tickFormatter={(v) => `K${v / 1000}k`} />
-                                        <Tooltip
-                                            contentStyle={{
-                                                background: 'var(--card-bg)',
-                                                border: '1px solid var(--border)',
-                                                borderRadius: '12px',
-                                                boxShadow: 'var(--shadow-lg)',
-                                                fontSize: '12px'
-                                            }}
-                                        />
-                                        <Area type="monotone" dataKey="revenue" stroke="var(--primary-600)" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />
-                                        <Area type="monotone" dataKey="collections" stroke="var(--success-600)" fillOpacity={1} fill="url(#colorColl)" strokeWidth={3} />
-                                    </AreaChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-
-                        <div className="card" style={{ height: '400px', display: 'flex', flexDirection: 'column' }}>
-                            <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div>
-                                        <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>Fee Breakdown</h3>
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', margin: 0 }}>Category distribution</p>
-                                    </div>
-                                    <div style={{ padding: '8px', background: 'var(--warning-50)', color: 'var(--warning-600)', borderRadius: '10px' }}>
-                                        <PieChartIcon size={18} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{ flex: 1, position: 'relative' }}>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={[
-                                                { name: 'Tuition', value: 400, color: '#4f46e5' },
-                                                { name: 'Transport', value: 300, color: '#10b981' },
-                                                { name: 'Feeding', value: 300, color: '#f59e0b' },
-                                                { name: 'Activities', value: 200, color: '#ec4899' },
-                                            ]}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={100}
-                                            paddingAngle={5}
-                                            dataKey="value"
-                                        >
-                                            {[
-                                                { name: 'Tuition', value: 400, color: '#4f46e5' },
-                                                { name: 'Transport', value: 300, color: '#10b981' },
-                                                { name: 'Feeding', value: 300, color: '#f59e0b' },
-                                                { name: 'Activities', value: 200, color: '#ec4899' },
-                                            ].map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={entry.color} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    textAlign: 'center'
-                                }}>
-                                    <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>1.2M</div>
-                                    <div style={{ fontSize: '0.65rem', color: 'var(--neutral-500)', fontWeight: 700, textTransform: 'uppercase' }}>Total</div>
-                                </div>
-                            </div>
-                            <div style={{ padding: 'var(--spacing-lg)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                                {[
-                                    { name: 'Tuition', color: '#4f46e5' },
-                                    { name: 'Transport', color: '#10b981' },
-                                    { name: 'Feeding', color: '#f59e0b' },
-                                    { name: 'Other', color: '#ec4899' },
-                                ].map(item => (
-                                    <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: item.color }} />
-                                        <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{item.name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                            </Link>
+                        ))}
                     </div>
                 )}
 
-                {/* Recent Payments */}
-                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                    <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)' }}>
-                        <h3 className="card-title">Recent Payments</h3>
-                        <p className="card-description">Latest transactions across the school</p>
-                    </div>
-                    <div className="responsive-container">
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    {role === 'SUPER_ADMIN' && <th>School</th>}
-                                    <th>Amount</th>
-                                    <th className="hide-mobile">Method</th>
-                                    <th>Status</th>
-                                    <th className="hide-mobile">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {paymentsLoading ? (
-                                    <tr><td colSpan={role === 'SUPER_ADMIN' ? 6 : 5} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}><div className="spinner" style={{ margin: '0 auto' }}></div></td></tr>
-                                ) : recentPayments.length === 0 ? (
-                                    <tr><td colSpan={role === 'SUPER_ADMIN' ? 6 : 5} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }} className="text-muted">No recent payments yet.</td></tr>
-                                ) : recentPayments.map((payment) => (
-                                    <tr key={payment.id}>
-                                        <td className="font-semibold">{payment.student.firstName} {payment.student.lastName}</td>
-                                        {role === 'SUPER_ADMIN' && <td className="text-xs">{payment.school?.name}</td>}
-                                        <td className="font-semibold">KES {payment.amount.toLocaleString()}</td>
-                                        <td className="hide-mobile">
-                                            <span className="badge badge-neutral">{payment.method}</span>
-                                        </td>
-                                        <td>
-                                            <span className={`badge ${payment.status === 'COMPLETED' ? 'badge-success' : payment.status === 'PENDING' ? 'badge-warning' : 'badge-error'}`}>
-                                                {payment.status}
-                                            </span>
-                                        </td>
-                                        <td className="text-muted text-sm hide-mobile">{new Date(payment.createdAt).toLocaleDateString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    {recentPayments.length > 0 && (
-                        <div style={{ padding: 'var(--spacing-md) var(--spacing-xl)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-                            <button className="btn btn-ghost btn-sm" onClick={() => router.push('/dashboard/payments')}>View All Payments</button>
-                        </div>
-                    )}
-                </div>
-            </div>
+                {/* Analytics & Table Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Recent Payments Table */}
+                    <Card className="lg:col-span-2 border-none shadow-2xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
+                        <CardHeader className="bg-slate-50/50 border-b border-slate-50 p-8 flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-tight">Financial Stream</CardTitle>
+                                <CardDescription className="text-slate-500 font-medium">Recent transactions across monitoring portals</CardDescription>
+                            </div>
+                            <Button variant="ghost" className="rounded-xl text-blue-600 font-bold hover:bg-blue-50" onClick={() => router.push('/dashboard/payments')}>
+                                VIEW ALL <ChevronRight size={16} className="ml-1" />
+                            </Button>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left">
+                                    <thead>
+                                        <tr className="bg-slate-50/30">
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Student</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-50">
+                                        {paymentsLoading ? (
+                                            <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Ledger...</td></tr>
+                                        ) : recentPayments.length === 0 ? (
+                                            <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-medium">No transactions found.</td></tr>
+                                        ) : (
+                                            recentPayments.map((p) => (
+                                                <tr key={p.id} className="hover:bg-slate-50 transition-colors group">
+                                                    <td className="px-8 py-5">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="h-8 w-8 bg-slate-100 rounded-lg flex items-center justify-center text-[10px] font-bold text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                                {p.student.firstName[0]}
+                                                            </div>
+                                                            <div className="font-bold text-slate-900 leading-tight">
+                                                                {p.student.firstName} {p.student.lastName}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-5 font-bold text-slate-900">KES {p.amount.toLocaleString()}</td>
+                                                    <td className="px-8 py-5">
+                                                        <Badge variant="outline" className={cn(
+                                                            "font-black text-[9px] uppercase tracking-widest h-6 rounded-lg",
+                                                            p.status === 'COMPLETED' ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-amber-50 text-amber-700 border-amber-100"
+                                                        )}>
+                                                            {p.status}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-right text-xs font-bold text-slate-400">
+                                                        {new Date(p.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-            <style jsx>{`
-                .banner-card {
-                    padding: var(--spacing-2xl);
-                }
-                .banner-title {
-                    font-size: 2rem;
-                }
-                .banner-subtitle {
-                    font-size: 1.125rem;
-                }
-                .collection-rate-container {
-                    border-left: 1px solid var(--border);
-                }
-                @media (max-width: 768px) {
-                    .banner-card {
-                        padding: var(--spacing-lg);
-                    }
-                    .banner-title {
-                        font-size: 1.5rem;
-                    }
-                    .banner-subtitle {
-                        font-size: 0.9375rem;
-                    }
-                    .collection-rate-container {
-                        border-left: none !important;
-                        padding-left: 0 !important;
-                        padding-top: var(--spacing-lg);
-                        border-top: 1px solid var(--border);
-                    }
-                    .payment-plan-grid {
-                        grid-template-columns: 1fr !important;
-                    }
-                }
-                @media (max-width: 640px) {
-                    .hide-mobile {
-                        display: none;
-                    }
-                }
-            `}</style>
-        </DashboardLayout >
+                    {/* Chart Container */}
+                    <div className="space-y-8">
+                        {/* Collection Chart */}
+                        <Card className="border-none shadow-2xl shadow-slate-200/50 rounded-[2rem] overflow-hidden bg-white h-full flex flex-col">
+                            <CardHeader className="p-8 pb-4">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <CardTitle className="text-lg font-black text-slate-900 uppercase tracking-tight">Collection Mix</CardTitle>
+                                        <CardDescription className="text-slate-500 font-medium italic">Revenue distribution</CardDescription>
+                                    </div>
+                                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+                                        <PieChartIcon size={20} />
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="flex-1 flex flex-col items-center justify-center p-8">
+                                <div className="w-full h-64 relative">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={pieData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={8}
+                                                dataKey="value"
+                                            >
+                                                {pieData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip
+                                                contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
+                                            />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span className="text-3xl font-black text-slate-900 leading-none">{dashboardStats?.collectionRate || 0}%</span>
+                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">RATE</span>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4 w-full mt-6">
+                                    {pieData.map((item, i) => (
+                                        <div key={i} className="flex items-center gap-2">
+                                            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                                            <div>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{item.name}</p>
+                                                <p className="text-sm font-bold text-slate-900">KES {(item.value / 1000).toFixed(1)}k</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+
+                {/* System Health Board (Super Admin Only) */}
+                {role === "SUPER_ADMIN" && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {[
+                            { label: "M-Pesa Webhook", status: "Active", icon: Wifi, color: "text-emerald-500" },
+                            { label: "Email Server", status: "Operational", icon: MailIcon, color: "text-emerald-500" },
+                            { label: "DB Latency", status: "14ms", icon: Server, color: "text-blue-500" }
+                        ].map((h, i) => (
+                            <div key={i} className="p-6 bg-white border border-slate-100 rounded-3xl flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-slate-50 text-slate-400 rounded-2xl">
+                                        <h.icon size={20} />
+                                    </div>
+                                    <span className="font-bold text-slate-900 text-sm">{h.label}</span>
+                                </div>
+                                <span className={cn("font-black text-[10px] uppercase tracking-widest px-3 py-1 bg-slate-50 rounded-lg", h.color)}>
+                                    {h.status}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </DashboardLayout>
     )
 }
+

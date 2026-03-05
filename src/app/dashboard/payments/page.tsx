@@ -4,9 +4,55 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import DashboardLayout from '@/components/DashboardLayout'
-import { DollarSign, CreditCard, Smartphone, CheckCircle, ArrowRight, Search, Download, ShieldAlert, X, Loader2, TrendingUp, RefreshCw, Calendar, Plus, Landmark } from 'lucide-react'
-import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils'
+import {
+    DollarSign,
+    CreditCard,
+    Smartphone,
+    CheckCircle,
+    ArrowRight,
+    Search,
+    Download,
+    ShieldAlert,
+    X,
+    Loader2,
+    TrendingUp,
+    RefreshCw,
+    Calendar,
+    Plus,
+    Landmark,
+    Filter,
+    ArrowUpRight,
+    ArrowDownRight,
+    Receipt,
+    Wallet,
+    History,
+    ShieldCheck,
+    Clock,
+    User,
+    ChevronRight,
+    MoreVertical,
+    FileText,
+    AlertCircle
+} from 'lucide-react'
+import { formatCurrency, formatDate, formatDateTime, cn } from '@/lib/utils'
 import { generateReceiptPDF } from '@/lib/pdf-utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter
+} from '@/components/ui/dialog'
+import { toast } from 'sonner'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function PaymentsPage() {
     const { data: session } = useSession()

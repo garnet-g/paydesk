@@ -1,8 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calendar, Plus, Check, Trash2, AlertCircle, X, Loader2 } from 'lucide-react'
-import { formatDate } from '@/lib/utils'
+import { Calendar, Plus, Check, Trash2, AlertCircle, X, Loader2, Clock, CalendarDays } from 'lucide-react'
+import { formatDate, cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from 'sonner'
 
 export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?: () => void, onSuccess?: () => void }) {
     const [periods, setPeriods] = useState<any[]>([])
@@ -53,12 +60,15 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                     endDate: '',
                     isActive: false
                 })
+                toast.success("Academic period initialized")
             } else {
                 const txt = await res.text()
                 setError(txt)
+                toast.error(txt || "Failed to create period")
             }
         } catch (e) {
             setError('Failed to create period')
+            toast.error("An error occurred")
         } finally {
             setLoading(false)
         }
@@ -75,6 +85,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
             if (res.ok) {
                 await fetchPeriods()
                 if (onSuccess) onSuccess()
+                toast.success("Period activated")
             }
         } catch (e) { console.error(e) }
     }
@@ -83,112 +94,114 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
         if (!confirm('Delete this period? This cannot be undone.')) return
         try {
             const res = await fetch(`/api/academic-periods/${id}`, { method: 'DELETE' })
-            if (res.ok) fetchPeriods()
-            else alert('Cannot delete an active period or one that has associated data.')
+            if (res.ok) {
+                fetchPeriods()
+                toast.success("Period deleted")
+            }
+            else {
+                toast.error('Cannot delete: Period has associated data or is active.')
+            }
         } catch (e) { console.error(e) }
     }
 
     return (
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            {/* Card Header */}
-            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                    <div style={{
-                        width: '40px',
-                        height: '40px',
-                        background: 'var(--primary-50)',
-                        color: 'var(--primary-600)',
-                        borderRadius: 'var(--radius-md)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <Calendar size={20} />
+        <Card className="border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden">
+            {/* Header */}
+            <div className="bg-slate-900 p-8 text-white flex justify-between items-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <div className="relative z-10 flex items-center gap-6">
+                    <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-blue-400 border border-white/10 shadow-xl">
+                        <CalendarDays size={28} />
                     </div>
                     <div>
-                        <h3 className="card-title">Academic Periods</h3>
-                        <p className="card-description">Manage terms and academic year cycles</p>
+                        <h3 className="text-3xl font-black uppercase tracking-tighter italic">Term Cycles</h3>
+                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1">Institutional Academic Calendar</p>
                     </div>
                 </div>
-                <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+                <div className="relative z-10 flex items-center gap-4">
                     {!showForm && (
-                        <button
-                            className="btn btn-primary"
+                        <Button
+                            className="h-12 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-900/40 border-none"
                             onClick={() => setShowForm(true)}
                         >
-                            <Plus size={18} />
+                            <Plus size={18} className="mr-2" />
                             New Period
-                        </button>
+                        </Button>
                     )}
                     {onClose && (
-                        <button className="btn btn-ghost btn-sm" onClick={onClose}>
-                            <X size={20} />
-                        </button>
+                        <Button variant="ghost" className="text-white/40 hover:text-white h-12 w-12 p-0 rounded-xl" onClick={onClose}>
+                            <X size={24} />
+                        </Button>
                     )}
                 </div>
             </div>
 
-            <div className="card-content">
+            <CardContent className="p-8">
                 {error && (
-                    <div className="alert alert-error" style={{ marginBottom: 'var(--spacing-lg)' }}>
+                    <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-2xl flex items-center gap-3 text-red-600 dark:text-red-400 text-sm font-bold animate-in slide-in-from-top duration-300">
                         <AlertCircle size={18} />
                         {error}
                     </div>
                 )}
 
                 {showForm && (
-                    <div className="card" style={{ marginBottom: 'var(--spacing-lg)', border: '1px solid var(--primary-200)', background: 'var(--primary-50)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-lg)' }}>
-                            <h4 style={{ margin: 0, fontWeight: 600 }}>Define New Academic Period</h4>
-                            <button
-                                type="button"
-                                className="btn btn-ghost btn-sm"
+                    <div className="mb-12 p-8 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-[2rem] animate-in zoom-in-95 duration-300">
+                        <div className="flex justify-between items-center mb-8">
+                            <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                                <span className="h-1 w-8 bg-blue-600 rounded-full"></span>
+                                Configure Academic Window
+                            </h4>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800"
                                 onClick={() => setShowForm(false)}
                             >
                                 <X size={16} />
-                            </button>
+                            </Button>
                         </div>
-                        <form onSubmit={handleCreate}>
-                            <div className="grid grid-cols-2 gap-md">
-                                <div className="form-group">
-                                    <label className="form-label">Academic Term</label>
-                                    <select
-                                        className="form-select"
-                                        value={form.term}
-                                        onChange={e => setForm({ ...form, term: e.target.value })}
-                                    >
-                                        <option value="TERM_1">Term 1</option>
-                                        <option value="TERM_2">Term 2</option>
-                                        <option value="TERM_3">Term 3</option>
-                                        <option value="SUMMER">Summer / Special</option>
-                                    </select>
+                        <form onSubmit={handleCreate} className="space-y-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Term Designation</Label>
+                                    <Select value={form.term} onValueChange={v => setForm({ ...form, term: v })}>
+                                        <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
+                                            <SelectItem value="TERM_1" className="font-bold">TERM 1</SelectItem>
+                                            <SelectItem value="TERM_2" className="font-bold">TERM 2</SelectItem>
+                                            <SelectItem value="TERM_3" className="font-bold">TERM 3</SelectItem>
+                                            <SelectItem value="SUMMER" className="font-bold">SUMMER / SPECIAL</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                                <div className="form-group">
-                                    <label className="form-label">School Year</label>
-                                    <input
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Academic Year</Label>
+                                    <Input
                                         type="number"
-                                        className="form-input"
+                                        className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-lg text-slate-900 dark:text-white"
                                         placeholder="2026"
                                         required
                                         value={form.academicYear}
                                         onChange={e => setForm({ ...form, academicYear: e.target.value })}
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label className="form-label">Start Date</label>
-                                    <input
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Commencement Date</Label>
+                                    <Input
                                         type="date"
-                                        className="form-input"
+                                        className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white"
                                         required
                                         value={form.startDate}
                                         onChange={e => setForm({ ...form, startDate: e.target.value })}
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label className="form-label">End Date</label>
-                                    <input
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Conclusion Date</Label>
+                                    <Input
                                         type="date"
-                                        className="form-input"
+                                        className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white"
                                         required
                                         value={form.endDate}
                                         onChange={e => setForm({ ...form, endDate: e.target.value })}
@@ -196,48 +209,47 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                 </div>
                             </div>
 
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 'var(--spacing-md)',
-                                padding: 'var(--spacing-md)',
-                                background: 'var(--neutral-50)',
-                                borderRadius: 'var(--radius-md)',
-                                border: '1px solid var(--border)',
-                                marginBottom: 'var(--spacing-lg)',
-                                cursor: 'pointer'
-                            }}>
-                                <input
-                                    type="checkbox"
-                                    id="isActive"
-                                    className="form-checkbox"
-                                    checked={form.isActive}
-                                    onChange={e => setForm({ ...form, isActive: e.target.checked })}
-                                />
-                                <label htmlFor="isActive" style={{ cursor: 'pointer', marginBottom: 0 }}>
-                                    <div className="font-semibold text-sm">Set as Active Period</div>
-                                    <div className="text-xs text-muted">This will deactivate any currently active period</div>
-                                </label>
-                            </div>
-
-                            <div style={{ display: 'flex', gap: 'var(--spacing-md)', justifyContent: 'flex-end' }}>
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => setShowForm(false)}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    disabled={loading}
-                                >
-                                    {loading
-                                        ? <div className="spinner" style={{ width: '18px', height: '18px' }}></div>
-                                        : <><Check size={16} /> Create Period</>
-                                    }
-                                </button>
+                            <div className="flex items-center justify-between p-6 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[1.5rem] shadow-sm">
+                                <div className="flex items-center gap-4">
+                                    <div className={cn(
+                                        "h-8 w-8 rounded-xl border-2 flex items-center justify-center transition-all cursor-pointer",
+                                        form.isActive ? "bg-emerald-500 border-emerald-500" : "border-slate-200 dark:border-slate-800"
+                                    )} onClick={() => setForm({ ...form, isActive: !form.isActive })}>
+                                        <input
+                                            type="checkbox"
+                                            className="hidden"
+                                            checked={form.isActive}
+                                            onChange={() => { }}
+                                        />
+                                        {form.isActive && <Check size={18} className="text-white" />}
+                                    </div>
+                                    <div className="cursor-pointer" onClick={() => setForm({ ...form, isActive: !form.isActive })}>
+                                        <div className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.2em]">Deploy As Active Lifecycle</div>
+                                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Deactivates current system default</div>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                                        onClick={() => setShowForm(false)}
+                                    >
+                                        ABORT
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        className="h-12 px-8 rounded-xl bg-blue-600 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-200"
+                                        disabled={loading}
+                                    >
+                                        {loading ? <Loader2 className="animate-spin" size={18} /> : (
+                                            <>
+                                                <Check size={18} className="mr-2" />
+                                                INITIALIZE CYCLE
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -245,59 +257,89 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
 
                 {/* Periods Table */}
                 {periods.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                        <Calendar size={48} style={{ opacity: 0.2, marginBottom: 'var(--spacing-md)', margin: '0 auto var(--spacing-md)' }} />
-                        <p className="font-semibold" style={{ marginBottom: 'var(--spacing-xs)' }}>No academic periods defined</p>
-                        <p className="text-muted text-sm">Create your first term to start managing billing cycles.</p>
+                    <div className="py-24 text-center">
+                        <div className="h-24 w-24 bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                            <Calendar size={48} className="text-slate-200 dark:text-slate-800" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase italic tracking-tight">Timeline Empty</h3>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium italic max-w-sm mx-auto">
+                            No academic periods have been defined for this institution yet. Define a term to start the mission.
+                        </p>
                     </div>
                 ) : (
-                    <div className="table-wrapper">
-                        <table className="table">
+                    <div className="border border-slate-100 dark:border-slate-900 rounded-[2rem] overflow-hidden bg-white dark:bg-slate-950 shadow-inner">
+                        <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr>
-                                    <th>Period</th>
-                                    <th>Year</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Status</th>
-                                    <th style={{ textAlign: 'right' }}>Actions</th>
+                                <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900">
+                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Descriptor</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Year</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Boundary Dates</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Matrix</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Operations</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
                                 {periods.map((p) => (
-                                    <tr key={p.id}>
-                                        <td>
-                                            <span className="font-semibold">{p.term.replace('_', ' ')}</span>
+                                    <tr key={p.id} className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-2 w-2 bg-blue-600 rounded-full"></div>
+                                                <span className="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm">{p.term.replace('_', ' ')}</span>
+                                            </div>
                                         </td>
-                                        <td>{p.academicYear}</td>
-                                        <td>{formatDate(p.startDate)}</td>
-                                        <td>{formatDate(p.endDate)}</td>
-                                        <td>
-                                            <span className={`badge ${p.isActive ? 'badge-success' : 'badge-neutral'}`}>
-                                                {p.isActive ? 'Active' : 'Inactive'}
-                                            </span>
+                                        <td className="px-6 py-5">
+                                            <span className="font-bold text-slate-600 dark:text-slate-400">{p.academicYear}</span>
                                         </td>
-                                        <td style={{ textAlign: 'right' }}>
-                                            <div style={{ display: 'flex', gap: 'var(--spacing-xs)', justifyContent: 'flex-end' }}>
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-2 text-xs font-black text-slate-500 dark:text-slate-500 uppercase tracking-tighter">
+                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-900 rounded-lg">{formatDate(p.startDate)}</div>
+                                                <ChevronRightIcon />
+                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-900 rounded-lg">{formatDate(p.endDate)}</div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <Badge className={cn(
+                                                "font-black text-[9px] px-3 h-6 uppercase tracking-widest border-none",
+                                                p.isActive
+                                                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                                    : "bg-slate-100 text-slate-500 dark:bg-slate-900 dark:text-slate-500"
+                                            )}>
+                                                {p.isActive ? (
+                                                    <span className="flex items-center gap-1.5 leading-none">
+                                                        <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                                        ACTIVE MISSION
+                                                    </span>
+                                                ) : 'INACTIVE'}
+                                            </Badge>
+                                        </td>
+                                        <td className="px-6 py-5 text-right">
+                                            <div className="flex gap-2 justify-end">
                                                 {!p.isActive && (
-                                                    <button
-                                                        className="btn btn-ghost btn-sm"
-                                                        title="Set as Active"
-                                                        style={{ color: 'var(--success-600)' }}
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-10 w-10 p-0 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-900/20 text-slate-300 transition-colors"
                                                         onClick={() => activatePeriod(p.id)}
+                                                        title="Deploy As Primary"
                                                     >
-                                                        <Check size={15} />
-                                                    </button>
+                                                        <Check size={18} />
+                                                    </Button>
                                                 )}
-                                                <button
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="Delete"
-                                                    style={{ color: p.isActive ? 'var(--muted-foreground)' : 'var(--error-600)', opacity: p.isActive ? 0.4 : 1, cursor: p.isActive ? 'not-allowed' : 'pointer' }}
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className={cn(
+                                                        "h-10 w-10 p-0 rounded-xl transition-colors",
+                                                        p.isActive
+                                                            ? "text-slate-100 dark:text-slate-800 cursor-not-allowed opacity-20"
+                                                            : "hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 text-slate-300"
+                                                    )}
                                                     onClick={() => !p.isActive && deletePeriod(p.id)}
                                                     disabled={p.isActive}
+                                                    title="Purge Cycle"
                                                 >
-                                                    <Trash2 size={15} />
-                                                </button>
+                                                    <Trash2 size={16} />
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>
@@ -306,7 +348,15 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                         </table>
                     </div>
                 )}
-            </div>
-        </div>
+            </CardContent>
+        </Card>
+    )
+}
+
+function ChevronRightIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-slate-300">
+            <polyline points="9 18 15 12 9 6" />
+        </svg>
     )
 }

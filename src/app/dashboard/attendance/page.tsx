@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
-import { Calendar as CalendarIcon, Save, Mail, AlertCircle, CheckCircle } from "lucide-react"
+import { Calendar as CalendarIcon, Save, Mail, AlertCircle, CheckCircle, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
+
+import DashboardLayout from "@/components/DashboardLayout"
 
 // Types
 type Class = { id: string; name: string }
@@ -26,6 +28,7 @@ type AttendanceRecord = {
         firstName: string
         lastName: string
         admissionNumber: string
+        class?: { name: string }
     }
     academicPeriodId: string
 }
@@ -49,7 +52,11 @@ export default function AttendancePage() {
                     fetch('/api/classes'),
                     fetch('/api/academic-periods')
                 ])
-                if (classRes.ok) setClasses(await classRes.json())
+                if (classRes.ok) {
+                    const data = await classRes.json()
+                    console.log('Fetched classes:', data)
+                    setClasses(data)
+                }
                 if (periodRes.ok) {
                     const periods = await periodRes.json()
                     setAcademicPeriods(periods)
@@ -79,7 +86,6 @@ export default function AttendancePage() {
                 if (res.ok) {
                     const data = await res.json()
                     setRecords(data)
-                    // If the first record doesn't start with 'new-', it means data already existed in the DB
                     setIsExistingData(data.length > 0 && !data[0].id.startsWith('new-'))
                 } else {
                     toast.error("Failed to fetch attendance data")
@@ -104,7 +110,6 @@ export default function AttendancePage() {
     const handleSave = async (sendSMS: boolean) => {
         if (records.length === 0) return
 
-        // Ensure all students are marked if we are saving for the first time
         const unmarkedCount = records.filter(r => r.status === '').length
         if (unmarkedCount > 0 && !isExistingData) {
             toast.error(`Please mark attendance for all ${unmarkedCount} remaining students.`)
@@ -141,173 +146,200 @@ export default function AttendancePage() {
     }
 
     return (
-        <div className="flex-1 space-y-6 p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Attendance</h2>
-                    <p className="text-muted-foreground">
-                        Mark daily student attendance and notify parents of absences.
-                    </p>
+        <DashboardLayout>
+            <div className="flex-1 space-y-6 p-8 pt-6">
+                <div className="flex items-center justify-between space-y-2">
+                    <div>
+                        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Attendance</h2>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">
+                            Mark daily student attendance and notify parents of absences.
+                        </p>
+                    </div>
+                    {activePeriod && (
+                        <Badge variant="outline" className="text-sm bg-blue-50 text-blue-700 border-blue-200">
+                            Active Term: {activePeriod.name}
+                        </Badge>
+                    )}
                 </div>
-                {activePeriod && (
-                    <Badge variant="outline" className="text-sm">
-                        Active Term: {activePeriod.name}
-                    </Badge>
-                )}
-            </div>
 
-            <Card className="border-border/40 shadow-sm">
-                <CardHeader className="bg-muted/30 pb-4">
-                    <div className="flex flex-col md:flex-row gap-4 items-end">
-                        <div className="space-y-1.5 flex-1">
-                            <Label htmlFor="class">Select Class</Label>
-                            <Select value={selectedClass} onValueChange={setSelectedClass}>
-                                <SelectTrigger id="class" className="w-full md:w-[280px] bg-background">
-                                    <SelectValue placeholder="Select a class..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {classes.map(c => (
-                                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-1.5">
-                            <Label htmlFor="date">Date</Label>
-                            <div className="relative">
-                                <Input
-                                    id="date"
-                                    type="date"
-                                    value={selectedDate}
-                                    onChange={(e) => setSelectedDate(e.target.value)}
-                                    className="w-full md:w-[200px] bg-background pl-10"
-                                />
-                                <CalendarIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Card className="border-slate-200 shadow-xl overflow-hidden rounded-2xl">
+                    <CardHeader className="bg-slate-50 border-b border-slate-100 pb-6">
+                        <div className="flex flex-col md:flex-row gap-6 items-end">
+                            <div className="space-y-2 flex-1">
+                                <Label htmlFor="class" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Select Class</Label>
+                                <Select value={selectedClass} onValueChange={setSelectedClass}>
+                                    <SelectTrigger id="class" className="w-full md:w-[280px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm h-11">
+                                        <SelectValue placeholder="Choose a class roster..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {classes.length > 0 ? (
+                                            classes.map(c => (
+                                                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                                            ))
+                                        ) : (
+                                            <div className="p-2 text-center text-slate-400 text-xs italic">No classes found</div>
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="date" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Date</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="date"
+                                        type="date"
+                                        value={selectedDate}
+                                        onChange={(e) => setSelectedDate(e.target.value)}
+                                        className="w-full md:w-[200px] bg-white border-slate-200 h-11 pl-10 shadow-sm"
+                                    />
+                                    <CalendarIcon className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                    {!selectedClass ? (
-                        <div className="p-12 text-center text-muted-foreground flex flex-col items-center">
-                            <AlertCircle className="h-10 w-10 mb-3 text-muted-foreground/50" />
-                            <p>Please select a class to view the attendance roster.</p>
-                        </div>
-                    ) : loading ? (
-                        <div className="p-12 text-center text-muted-foreground">
-                            <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-3"></div>
-                            Loading roster...
-                        </div>
-                    ) : records.length === 0 ? (
-                        <div className="p-12 text-center text-muted-foreground">
-                            No students found in this class.
-                        </div>
-                    ) : (
-                        <div className="divide-y divide-border/50">
-                            <div className="p-4 bg-muted/10 flex justify-between items-center">
-                                <span className="text-sm font-medium text-muted-foreground">
-                                    {records.length} Students listed
-                                </span>
-                                {!isExistingData && (
-                                    <Button variant="outline" size="sm" onClick={allPresent} className="h-8">
-                                        <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                        Mark All Present
-                                    </Button>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        {!selectedClass ? (
+                            <div className="p-20 text-center text-slate-500 flex flex-col items-center bg-white">
+                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                                    <Users className="h-10 w-10 text-slate-300" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800 mb-2">Ready to take roll?</h3>
+                                <p className="max-w-xs mx-auto">Please select a class roster from the dropdown above to begin marking attendance.</p>
+                            </div>
+                        ) : loading ? (
+                            <div className="p-20 text-center text-slate-500">
+                                <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
+                                <p className="font-bold text-slate-800">Compiling class roster...</p>
+                                <p className="text-sm">Fetching student details from database</p>
+                            </div>
+                        ) : records.length === 0 ? (
+                            <div className="p-20 text-center text-slate-500">
+                                <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-6 mx-auto">
+                                    <AlertCircle className="h-10 w-10 text-amber-500" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800 mb-2">No Students Found</h3>
+                                <p className="max-w-xs mx-auto">This class doesn't seem to have any students assigned to it yet.</p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-slate-100 bg-white">
+                                <div className="p-6 bg-slate-50/50 flex justify-between items-center border-b border-slate-100">
+                                    <div>
+                                        <span className="text-xs font-black text-slate-900 uppercase tracking-widest bg-blue-100/50 px-2 py-1 rounded">
+                                            {records.length} Students active
+                                        </span>
+                                    </div>
+                                    {!isExistingData && (
+                                        <Button variant="outline" size="sm" onClick={allPresent} className="h-9 font-bold text-xs bg-white border-slate-200 group">
+                                            <CheckCircle className="h-4 w-4 mr-2 text-green-500 group-hover:scale-110 transition-transform" />
+                                            ALL PRESENT (QUICK MARK)
+                                        </Button>
+                                    )}
+                                </div>
+
+                                <div className="max-h-[60vh] overflow-y-auto">
+                                    {records.map((record, index) => (
+                                        <div key={record.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-slate-50 transition-all border-l-[4px] border-l-transparent hover:border-l-blue-500 group gap-4">
+                                            <div className="flex items-center gap-5">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-sm font-black text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                    {index + 1}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-lg text-slate-900">
+                                                        {record.student.firstName} {record.student.lastName}
+                                                    </p>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                                                            ADM: {record.student.admissionNumber}
+                                                        </span>
+                                                        <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                                                            {record.student.class?.name || 'Unassigned'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                                                <Button
+                                                    variant={record.status === 'PRESENT' ? 'default' : 'ghost'}
+                                                    size="sm"
+                                                    className={cn(
+                                                        "px-5 h-9 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+                                                        record.status === 'PRESENT' ? "bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-200" : "text-slate-500 hover:bg-white"
+                                                    )}
+                                                    onClick={() => handleStatusChange(record.id, 'PRESENT')}
+                                                >
+                                                    Present
+                                                </Button>
+                                                <Button
+                                                    variant={record.status === 'ABSENT' ? 'default' : 'ghost'}
+                                                    size="sm"
+                                                    className={cn(
+                                                        "px-5 h-9 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+                                                        record.status === 'ABSENT' ? "bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-200" : "text-slate-500 hover:bg-white"
+                                                    )}
+                                                    onClick={() => handleStatusChange(record.id, 'ABSENT')}
+                                                >
+                                                    Absent
+                                                </Button>
+                                                <Button
+                                                    variant={record.status === 'LATE' ? 'default' : 'ghost'}
+                                                    size="sm"
+                                                    className={cn(
+                                                        "px-5 h-9 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+                                                        record.status === 'LATE' ? "bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-200" : "text-slate-500 hover:bg-white"
+                                                    )}
+                                                    onClick={() => handleStatusChange(record.id, 'LATE')}
+                                                >
+                                                    Late
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+
+                    {records.length > 0 && (
+                        <CardFooter className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6">
+                            <div className="flex items-center gap-4">
+                                <div className={cn(
+                                    "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest",
+                                    isExistingData ? "bg-slate-200 text-slate-600" : "bg-blue-100 text-blue-700 animate-pulse"
+                                )}>
+                                    {isExistingData ? "Viewing History" : "Recording Draft"}
+                                </div>
+                                {records.filter(r => r.status === 'ABSENT').length > 0 && (
+                                    <div className="flex items-center gap-1.5 text-xs font-black text-red-600 uppercase tracking-widest">
+                                        <div className="w-2 h-2 bg-red-600 rounded-full animate-ping"></div>
+                                        {records.filter(r => r.status === 'ABSENT').length} Absentees Detected
+                                    </div>
                                 )}
                             </div>
-
-                            {/* Roster List */}
-                            <div className="max-h-[60vh] overflow-y-auto">
-                                {records.map((record, index) => (
-                                    <div key={record.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-muted/20 transition-colors gap-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
-                                                {index + 1}
-                                            </div>
-                                            <div>
-                                                <p className="font-medium">
-                                                    {record.student.firstName} {record.student.lastName}
-                                                </p>
-                                                <p className="text-xs text-muted-foreground uppercase tracking-wider">
-                                                    ADM: {record.student.admissionNumber}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Button
-                                                variant={record.status === 'PRESENT' ? 'default' : 'outline'}
-                                                size="sm"
-                                                className={cn(
-                                                    "w-24 font-medium transition-all",
-                                                    record.status === 'PRESENT' && "bg-green-600 hover:bg-green-700 text-white border-transparent shadow-sm"
-                                                )}
-                                                onClick={() => handleStatusChange(record.id, 'PRESENT')}
-                                            >
-                                                Present
-                                            </Button>
-                                            <Button
-                                                variant={record.status === 'ABSENT' ? 'default' : 'outline'}
-                                                size="sm"
-                                                className={cn(
-                                                    "w-24 font-medium transition-all",
-                                                    record.status === 'ABSENT' && "bg-red-600 hover:bg-red-700 text-white border-transparent shadow-sm"
-                                                )}
-                                                onClick={() => handleStatusChange(record.id, 'ABSENT')}
-                                            >
-                                                Absent
-                                            </Button>
-                                            <Button
-                                                variant={record.status === 'LATE' ? 'default' : 'outline'}
-                                                size="sm"
-                                                className={cn(
-                                                    "w-24 font-medium transition-all",
-                                                    record.status === 'LATE' && "bg-amber-500 hover:bg-amber-600 text-white border-transparent shadow-sm"
-                                                )}
-                                                onClick={() => handleStatusChange(record.id, 'LATE')}
-                                            >
-                                                Late
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="flex gap-4 w-full sm:w-auto">
+                                <Button
+                                    variant="outline"
+                                    className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest border-slate-200 bg-white hover:bg-slate-50 w-full sm:w-auto"
+                                    onClick={() => handleSave(false)}
+                                    disabled={saving}
+                                >
+                                    <Save className="mr-2 h-4 w-4" />
+                                    {saving ? "SYNCING..." : "SAVE ROSTER"}
+                                </Button>
+                                <Button
+                                    className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200 w-full sm:w-auto"
+                                    onClick={() => handleSave(true)}
+                                    disabled={saving || records.filter(r => r.status === 'ABSENT').length === 0}
+                                >
+                                    <Mail className="mr-2 h-4 w-4" />
+                                    SAVE & BROADCAST (SMS)
+                                </Button>
                             </div>
-                        </div>
+                        </CardFooter>
                     )}
-                </CardContent>
-
-                {records.length > 0 && (
-                    <CardFooter className="bg-muted/30 p-4 border-t flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <div className="text-sm text-muted-foreground">
-                            {isExistingData ? "Viewing previously saved attendance" : "Unsaved attendance record"}
-                            {records.filter(r => r.status === 'ABSENT').length > 0 && (
-                                <span className="ml-2 font-medium text-red-600">
-                                    ({records.filter(r => r.status === 'ABSENT').length} Absent)
-                                </span>
-                            )}
-                        </div>
-                        <div className="flex gap-3 w-full sm:w-auto">
-                            <Button
-                                variant="outline"
-                                className="flex-1 sm:flex-none"
-                                onClick={() => handleSave(false)}
-                                disabled={saving}
-                            >
-                                <Save className="mr-2 h-4 w-4" />
-                                Save Only
-                            </Button>
-                            <Button
-                                className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700"
-                                onClick={() => handleSave(true)}
-                                disabled={saving || records.filter(r => r.status === 'ABSENT').length === 0}
-                            >
-                                <Mail className="mr-2 h-4 w-4" />
-                                Save & Alert Absentees
-                            </Button>
-                        </div>
-                    </CardFooter>
-                )}
-            </Card>
-        </div>
+                </Card>
+            </div>
+        </DashboardLayout>
     )
 }
