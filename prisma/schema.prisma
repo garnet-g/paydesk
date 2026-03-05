@@ -30,6 +30,7 @@ model User {
   inquiries              Inquiry[]
   paymentCommitments     PaymentCommitment[]
   guardianships          StudentGuardian[]
+  teacherProfile         Teacher?
   school                 School?             @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
   @@index([email])
@@ -91,6 +92,10 @@ model School {
   subscriptionPayments SubscriptionPayment[]
   students           Student[]
   users              User[]
+  transportRoutes    TransportRoute[]
+  transportRuns      TransportRun[]
+  teachers           Teacher[]
+  subjects           Subject[]
 
   @@index([code])
 }
@@ -121,7 +126,9 @@ model Class {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   schoolId        String
+  homeroomTeacherId String?      @unique
   school          School         @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  homeroomTeacher Teacher?       @relation("ClassHomeroom", fields: [homeroomTeacherId], references: [id])
   feeStructures   FeeStructure[]
   students        Student[]
   fromHistories   GradeHistory[] @relation("FromClass")
@@ -156,10 +163,14 @@ model Student {
   school             School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   guardians          StudentGuardian[]
   gradeHistories     GradeHistory[]
+  transportRouteId   String?
+  transportRoute     TransportRoute?     @relation("StudentTransport", fields: [transportRouteId], references: [id])
+  transportRunPassengers TransportRunPassenger[]
 
   @@unique([schoolId, admissionNumber])
   @@index([schoolId])
   @@index([classId])
+  @@index([transportRouteId])
 }
 
 model FeeRiskProfile {
@@ -514,4 +525,115 @@ model SystemSetting {
   id    String @id @default(cuid())
   key   String @unique
   value String
+}
+
+model TransportRoute {
+  id              String      @id @default(cuid())
+  name            String
+  driver          String?
+  vehicleNumber   String?
+  monthlyFee      Decimal     @default(0) @db.Decimal(10, 2)
+  capacity        Int         @default(40)
+  stops           String      @default("[]") // JSON string array
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  schoolId        String
+  school          School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  students        Student[]   @relation("StudentTransport")
+  runs            TransportRun[]
+
+  @@index([schoolId])
+}
+
+model TransportRun {
+  id              String      @id @default(cuid())
+  routeId         String
+  schoolId        String
+  driverName      String?
+  vehicleNumber   String?
+  status          String      @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  direction       String      @default("PICKUP") // PICKUP, DROPOFF
+  startedAt       DateTime    @default(now())
+  completedAt     DateTime?
+  updatedAt       DateTime    @updatedAt
+  
+  route           TransportRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  school          School         @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  passengers      TransportRunPassenger[]
+
+  @@index([routeId])
+  @@index([schoolId])
+  @@index([status])
+}
+
+model TransportRunPassenger {
+  id              String       @id @default(cuid())
+  runId           String
+  studentId       String
+  status          String       @default("PENDING") // PENDING, BOARDED, DROPPED_OFF, ABSENT
+  getOnStop       String?
+  getOffStop      String?
+  boardedAt       DateTime?
+  droppedOffAt    DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  run             TransportRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  student         Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, studentId])
+  @@index([runId])
+  @@index([studentId])
+}
+
+model Teacher {
+  id              String           @id @default(cuid())
+  userId          String           @unique
+  schoolId        String
+  qualifications  String?
+  department      String?
+  hireDate        DateTime?        @default(now())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  school          School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  homeroomClass   Class?           @relation("ClassHomeroom")
+  subjectTeachers SubjectTeacher[]
+
+  @@index([schoolId])
+}
+
+model Subject {
+  id              String           @id @default(cuid())
+  name            String
+  code            String?
+  category        String?          // e.g., "Sciences", "Humanities", "Languages"
+  schoolId        String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  school          School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  subjectTeachers SubjectTeacher[]
+
+  @@unique([schoolId, name])
+  @@index([schoolId])
+}
+
+model SubjectTeacher {
+  id              String   @id @default(cuid())
+  teacherId       String
+  subjectId       String
+  classId         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  teacher         Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  subject         Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, subjectId, classId])
+  @@index([teacherId])
+  @@index([subjectId])
+  @@index([classId])
 }

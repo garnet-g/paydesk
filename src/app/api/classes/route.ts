@@ -16,6 +16,9 @@ export async function GET() {
         include: {
             _count: {
                 select: { students: true }
+            },
+            homeroomTeacher: {
+                include: { user: true }
             }
         }
     })

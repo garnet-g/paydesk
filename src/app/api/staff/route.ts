@@ -82,6 +82,17 @@ export async function POST(req: Request) {
             }
         })
 
+        if (role === 'TEACHER') {
+            await prisma.teacher.create({
+                data: {
+                    userId: newStaff.id,
+                    schoolId: session.user.schoolId,
+                    qualifications: 'Pending Review',
+                    department: 'General'
+                }
+            })
+        }
+
         await prisma.auditLog.create({
             data: {
                 action: 'STAFF_CREATED',

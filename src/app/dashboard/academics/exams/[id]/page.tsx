@@ -101,68 +101,70 @@ export default function ExamResultsEntryPage() {
         }
     }
 
-    if (loading) return <DashboardLayout><div className="spinner mx-auto" /></DashboardLayout>
-
     return (
         <DashboardLayout>
-            <div className="animate-fade-in">
-                <div className="flex justify-between items-end mb-xl">
-                    <div>
-                        <button onClick={() => router.back()} className="text-primary-600 flex items-center gap-xs mb-sm no-underline hover:underline text-sm font-bold">
-                            <ChevronLeft size={16} /> Back
+            {loading ? (
+                <div className="flex justify-center py-20"><div className="spinner mx-auto" /></div>
+            ) : (
+                <div className="animate-fade-in">
+                    <div className="flex justify-between items-end mb-xl">
+                        <div>
+                            <button onClick={() => router.back()} className="text-primary-600 flex items-center gap-xs mb-sm no-underline hover:underline text-sm font-bold">
+                                <ChevronLeft size={16} /> Back
+                            </button>
+                            <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-900)', letterSpacing: '-0.025em' }}>
+                                {exam?.name}
+                            </h2>
+                            <p className="text-muted font-medium  text-[10px] ">Mark Sheet Registry</p>
+                        </div>
+                        <button
+                            className="btn btn-primary px-xl shadow-xl shadow-primary-100 font-semibold  text-xs  flex items-center gap-md"
+                            onClick={handleSave}
+                            disabled={saving}
+                        >
+                            {saving ? 'Saving...' : <><Save size={18} /> Commit to Ledger</>}
                         </button>
-                        <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-900)', letterSpacing: '-0.025em' }}>
-                            {exam?.name}
-                        </h2>
-                        <p className="text-muted font-medium  text-[10px] ">Mark Sheet Registry</p>
                     </div>
-                    <button
-                        className="btn btn-primary px-xl shadow-xl shadow-primary-100 font-semibold  text-xs  flex items-center gap-md"
-                        onClick={handleSave}
-                        disabled={saving}
-                    >
-                        {saving ? 'Saving...' : <><Save size={18} /> Commit to Ledger</>}
-                    </button>
-                </div>
 
-                <div className="card overflow-x-auto p-0 border-none shadow-2xl">
-                    <table className="table-modern w-full border-collapse">
-                        <thead>
-                            <tr className="bg-neutral-900 text-white">
-                                <th className="p-lg text-left text-[10px] font-semibold   border-r border-white/10 sticky left-0 bg-neutral-900 z-10 w-64">Student Registry</th>
-                                {subjects.map(subject => (
-                                    <th key={subject} className="p-lg text-center text-[10px] font-semibold   border-r border-white/10 min-w-[120px]">
-                                        {subject}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-neutral-100">
-                            {students.map(student => (
-                                <tr key={student.id} className="hover:bg-primary-50/30 transition-colors group">
-                                    <td className="p-md sticky left-0 bg-white group-hover:bg-primary-50/50 z-10 border-r border-neutral-100 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
-                                        <div className="font-bold text-primary-900 truncate">{student.firstName} {student.lastName}</div>
-                                        <div className="text-[9px] font-bold text-muted ">{student.admissionNumber}</div>
-                                    </td>
+                    <div className="card overflow-x-auto p-0 border-none shadow-2xl">
+                        <table className="table-modern w-full border-collapse">
+                            <thead>
+                                <tr className="bg-neutral-900 text-white">
+                                    <th className="p-lg text-left text-[10px] font-semibold   border-r border-white/10 sticky left-0 bg-neutral-900 z-10 w-64">Student Registry</th>
                                     {subjects.map(subject => (
-                                        <td key={subject} className="p-md text-center border-r border-neutral-50 last:border-r-0">
-                                            <input
-                                                type="number"
-                                                className="form-input text-center font-semibold p-xs bg-transparent border-transparent hover:border-neutral-200 focus:bg-white focus:border-primary-500 transition-all text-sm w-20 mx-auto"
-                                                placeholder="-"
-                                                min="0"
-                                                max="100"
-                                                value={scores[student.id]?.[subject] || ''}
-                                                onChange={(e) => handleScoreChange(student.id, subject, e.target.value)}
-                                            />
-                                        </td>
+                                        <th key={subject} className="p-lg text-center text-[10px] font-semibold   border-r border-white/10 min-w-[120px]">
+                                            {subject}
+                                        </th>
                                     ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-neutral-100">
+                                {students.map(student => (
+                                    <tr key={student.id} className="hover:bg-primary-50/30 transition-colors group">
+                                        <td className="p-md sticky left-0 bg-white group-hover:bg-primary-50/50 z-10 border-r border-neutral-100 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
+                                            <div className="font-bold text-primary-900 truncate">{student.firstName} {student.lastName}</div>
+                                            <div className="text-[9px] font-bold text-muted ">{student.admissionNumber}</div>
+                                        </td>
+                                        {subjects.map(subject => (
+                                            <td key={subject} className="p-md text-center border-r border-neutral-50 last:border-r-0">
+                                                <input
+                                                    type="number"
+                                                    className="form-input text-center font-semibold p-xs bg-transparent border-transparent hover:border-neutral-200 focus:bg-white focus:border-primary-500 transition-all text-sm w-20 mx-auto"
+                                                    placeholder="-"
+                                                    min="0"
+                                                    max="100"
+                                                    value={scores[student.id]?.[subject] || ''}
+                                                    onChange={(e) => handleScoreChange(student.id, subject, e.target.value)}
+                                                />
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            )}
         </DashboardLayout>
     )
 }
