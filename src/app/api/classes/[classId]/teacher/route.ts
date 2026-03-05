@@ -3,8 +3,9 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-export async function PATCH(request: Request, { params }: { params: { classId: string } }) {
+export async function PATCH(request: Request, context: { params: Promise<{ classId: string }> }) {
     try {
+        const { classId } = await context.params
         const session = await getServerSession(authOptions)
         if (!session?.user?.schoolId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -17,7 +18,7 @@ export async function PATCH(request: Request, { params }: { params: { classId: s
         const { teacherId } = data // Can be null to unassign
 
         const updatedClass = await prisma.class.update({
-            where: { id: params.classId, schoolId: session.user.schoolId },
+            where: { id: classId, schoolId: session.user.schoolId },
             data: { homeroomTeacherId: teacherId || null },
             include: { homeroomTeacher: { include: { user: true } } }
         })
