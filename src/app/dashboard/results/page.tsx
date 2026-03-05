@@ -106,7 +106,7 @@ export default function ResultsPage() {
             <div className="flex-1 space-y-6 p-8 pt-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div>
-                        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Results & Exams</h2>
+                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white ">Results & Exams</h2>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">
                             Manage exams, enter student results, and lock grades for the term.
                         </p>
@@ -114,21 +114,21 @@ export default function ResultsPage() {
 
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200">
+                            <Button className="h-12 px-6 rounded-2xl font-semibold text-xs   bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200">
                                 <Plus className="mr-2 h-4 w-4" />
                                 Initiate New Exam
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="rounded-3xl border-none shadow-2xl">
                             <DialogHeader>
-                                <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Create New Exam</DialogTitle>
+                                <DialogTitle className="text-2xl font-semibold text-slate-900 dark:text-white  tracking-tight">Create New Exam</DialogTitle>
                                 <DialogDescription className="text-slate-500 dark:text-slate-400 font-medium">
                                     Set up a new examination entry for the selected academic term. Recording results will begin after creation.
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-6 py-6">
                                 <div className="flex flex-col gap-2">
-                                    <Label htmlFor="term" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Academic Term</Label>
+                                    <Label htmlFor="term" className="text-slate-700 font-bold  text-[10px] ">Academic Term</Label>
                                     <Select disabled value={selectedPeriod}>
                                         <SelectTrigger id="term" className="h-11 bg-slate-50 border-slate-200">
                                             <SelectValue />
@@ -136,7 +136,7 @@ export default function ResultsPage() {
                                     </Select>
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <Label htmlFor="name" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Exam Name</Label>
+                                    <Label htmlFor="name" className="text-slate-700 font-bold  text-[10px] ">Exam Name</Label>
                                     <Input
                                         id="name"
                                         placeholder="e.g. Mid-Term 1 2026, End of Year Maths"
@@ -146,7 +146,7 @@ export default function ResultsPage() {
                                     />
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <Label htmlFor="date" className="text-slate-700 font-bold uppercase text-[10px] tracking-widest">Date of Examination</Label>
+                                    <Label htmlFor="date" className="text-slate-700 font-bold  text-[10px] ">Date of Examination</Label>
                                     <Input
                                         id="date"
                                         type="date"
@@ -158,7 +158,7 @@ export default function ResultsPage() {
                             </div>
                             <DialogFooter className="gap-3 sm:gap-0">
                                 <Button variant="ghost" onClick={() => setIsCreateOpen(false)} className="rounded-xl font-bold text-slate-500">Cancel</Button>
-                                <Button onClick={handleCreateExam} disabled={isCreating} className="rounded-xl bg-blue-600 font-black text-xs uppercase tracking-widest px-8">
+                                <Button onClick={handleCreateExam} disabled={isCreating} className="rounded-xl bg-blue-600 font-semibold text-xs   px-8">
                                     {isCreating ? "SAVING..." : "CREATE EXAM"}
                                 </Button>
                             </DialogFooter>
@@ -168,7 +168,7 @@ export default function ResultsPage() {
 
                 <Card className="max-w-[320px] border-slate-200 shadow-sm rounded-2xl overflow-hidden">
                     <div className="px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-                        <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">Viewing Data For</span>
+                        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500   leading-none">Viewing Data For</span>
                     </div>
                     <div className="p-4">
                         <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
@@ -192,7 +192,7 @@ export default function ResultsPage() {
                 {loading ? (
                     <div className="p-20 text-center">
                         <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
-                        <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Accessing Exam Records...</p>
+                        <p className="font-semibold text-slate-900   text-xs">Accessing Exam Records...</p>
                     </div>
                 ) : exams.length === 0 ? (
                     <Card className="border-dashed border-slate-300 bg-slate-50/50 rounded-3xl">
@@ -200,7 +200,7 @@ export default function ResultsPage() {
                             <div className="h-20 w-20 bg-white shadow-xl rounded-3xl flex items-center justify-center mb-8">
                                 <Award className="h-10 w-10 text-slate-300" />
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase">No Exam Sessions</h3>
+                            <h3 className="text-2xl font-semibold text-slate-900 mb-2 ">No Exam Sessions</h3>
                             <p className="text-slate-500 max-w-sm mb-8 font-medium">
                                 There are no examinations recorded for the selected academic term. Click the button above to initiate your first exam.
                             </p>
@@ -220,7 +220,7 @@ export default function ResultsPage() {
                                 <CardHeader className="p-6 pb-4 flex-none border-b border-slate-50 bg-slate-50/30">
                                     <div className="flex justify-between items-start gap-4 mb-3">
                                         <Badge variant={exam.status === 'FINALIZED' ? 'default' : 'secondary'} className={cn(
-                                            "h-6 px-3 rounded-full text-[10px] font-black uppercase tracking-widest border-none",
+                                            "h-6 px-3 rounded-full text-[10px] font-semibold   border-none",
                                             exam.status === 'FINALIZED' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
                                         )}>
                                             {exam.status === 'FINALIZED' ? <Lock className="w-2.5 h-2.5 mr-1.5" /> : null}
@@ -230,22 +230,22 @@ export default function ResultsPage() {
                                             <Award size={16} className="text-blue-600" />
                                         </div>
                                     </div>
-                                    <CardTitle className="text-xl font-black text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 transition-colors uppercase truncate">
+                                    <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 transition-colors  truncate">
                                         {exam.name}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-6 flex-1 flex flex-col justify-between">
                                     <div className="space-y-4 mb-8">
-                                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                        <div className="flex items-center text-xs font-bold text-slate-500  ">
                                             <Calendar className="mr-3 h-4 w-4 text-slate-400" />
                                             {format(new Date(exam.date), 'MMMM do, yyyy')}
                                         </div>
-                                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                        <div className="flex items-center text-xs font-bold text-slate-500  ">
                                             <FileText className="mr-3 h-4 w-4 text-slate-400" />
                                             {exam.academicPeriod?.name}
                                         </div>
                                     </div>
-                                    <div className="flex items-center justify-between text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] border-t border-slate-50 pt-5">
+                                    <div className="flex items-center justify-between text-[10px] font-semibold text-blue-600  tracking-[0.2em] border-t border-slate-50 pt-5">
                                         <span>{exam.status === 'FINALIZED' ? 'VIEW ANALYTICS' : 'MANAGE SCORES'}</span>
                                         <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
                                             <ChevronRight size={14} className="transform group-hover:translate-x-0.5 transition-transform" />

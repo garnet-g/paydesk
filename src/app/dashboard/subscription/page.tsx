@@ -113,7 +113,7 @@ export default function SubscriptionPage() {
                             }}
                         >
                             {isPastDue && (
-                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, background: 'var(--error-600)', color: 'white', padding: '8px', textAlign: 'center', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, background: 'var(--error-600)', color: 'white', padding: '8px', textAlign: 'center', fontSize: '0.75rem', fontWeight: 800, textTransform: '', letterSpacing: '0.05em' }}>
                                     <AlertCircle size={14} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
                                     Subscription Past Due - Action Required
                                 </div>
@@ -133,7 +133,7 @@ export default function SubscriptionPage() {
                                         <Calendar size={20} />
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', fontWeight: 600, textTransform: 'uppercase', margin: 0 }}>Billing Cycle</p>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', fontWeight: 600, textTransform: '', margin: 0 }}>Billing Cycle</p>
                                         <p style={{ fontWeight: 700 }}>{school.billingCycle || 'Monthly'}</p>
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@ export default function SubscriptionPage() {
                                         <ShieldCheck size={20} />
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', fontWeight: 600, textTransform: 'uppercase', margin: 0 }}>Plan Status</p>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', fontWeight: 600, textTransform: '', margin: 0 }}>Plan Status</p>
                                         <p style={{ fontWeight: 700, color: isPastDue ? 'var(--error-600)' : 'var(--success-600)' }}>{school.planStatus}</p>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@ export default function SubscriptionPage() {
 
                             <hr style={{ margin: 'var(--spacing-2xl) 0', border: 'none', borderTop: '1px solid var(--neutral-100)' }} />
 
-                            <h4 style={{ fontSize: '0.875rem', fontWeight: 800, marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--neutral-400)' }}>What's included in your plan</h4>
+                            <h4 style={{ fontSize: '0.875rem', fontWeight: 800, marginBottom: '16px', textTransform: '', letterSpacing: '0.05em', color: 'var(--neutral-400)' }}>What's included in your plan</h4>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <FeatureItem text="Unlimited Students" />
                                 <FeatureItem text="Unlimited Parent Portals" />
@@ -193,7 +193,7 @@ export default function SubscriptionPage() {
                             </p>
 
                             <div style={{ marginBottom: '20px' }}>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px', color: 'var(--neutral-500)' }}>
+                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, textTransform: '', marginBottom: '8px', color: 'var(--neutral-500)' }}>
                                     M-Pesa Phone Number
                                 </label>
                                 <div style={{ position: 'relative' }}>

@@ -173,7 +173,7 @@ export default function LogsPage() {
                                                     <span className="text-xs text-muted block">{log.user.email}</span>
                                                 </div>
                                             ) : (
-                                                <span className="text-xs text-muted italic">System Automated</span>
+                                                <span className="text-xs text-muted ">System Automated</span>
                                             )}
                                         </td>
                                     </tr>

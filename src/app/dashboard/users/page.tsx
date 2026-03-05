@@ -204,7 +204,7 @@ export default function AppUsersPage() {
                                                         {user.school.name}
                                                     </span>
                                                 ) : (
-                                                    <span className="text-muted text-xs italic">Platform Wide</span>
+                                                    <span className="text-muted text-xs ">Platform Wide</span>
                                                 )}
                                             </td>
                                             <td className="hide-mobile">

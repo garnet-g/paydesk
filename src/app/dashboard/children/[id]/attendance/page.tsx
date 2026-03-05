@@ -53,20 +53,20 @@ export default function StudentAttendancePage() {
                 {/* Summary Stats */}
                 <div className="grid grid-cols-4 gap-lg mb-xl">
                     <div className="card p-lg text-center">
-                        <div className="text-2xl font-black text-primary-900">{attendanceRate}%</div>
-                        <div className="text-xs font-bold text-muted uppercase">Attendance Rate</div>
+                        <div className="text-2xl font-semibold text-primary-900">{attendanceRate}%</div>
+                        <div className="text-xs font-bold text-muted ">Attendance Rate</div>
                     </div>
                     <div className="card p-lg text-center">
-                        <div className="text-2xl font-black text-success-600">{stats['PRESENT'] || 0}</div>
-                        <div className="text-xs font-bold text-muted uppercase">Present</div>
+                        <div className="text-2xl font-semibold text-success-600">{stats['PRESENT'] || 0}</div>
+                        <div className="text-xs font-bold text-muted ">Present</div>
                     </div>
                     <div className="card p-lg text-center">
-                        <div className="text-2xl font-black text-error-600">{stats['ABSENT'] || 0}</div>
-                        <div className="text-xs font-bold text-muted uppercase">Absent</div>
+                        <div className="text-2xl font-semibold text-error-600">{stats['ABSENT'] || 0}</div>
+                        <div className="text-xs font-bold text-muted ">Absent</div>
                     </div>
                     <div className="card p-lg text-center">
-                        <div className="text-2xl font-black text-warning-600">{stats['LATE'] || 0}</div>
-                        <div className="text-xs font-bold text-muted uppercase">Late</div>
+                        <div className="text-2xl font-semibold text-warning-600">{stats['LATE'] || 0}</div>
+                        <div className="text-xs font-bold text-muted ">Late</div>
                     </div>
                 </div>
 

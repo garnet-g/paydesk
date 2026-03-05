@@ -280,7 +280,7 @@ export default function PlatformAdminsPage() {
                                                 </div>
                                             )}
                                             {admin.email === session?.user?.email && (
-                                                <span style={{ fontSize: '0.75rem', color: 'var(--neutral-400)', fontStyle: 'italic' }}>Root Admin</span>
+                                                <span style={{ fontSize: '0.75rem', color: 'var(--neutral-400)', fontStyle: '' }}>Root Admin</span>
                                             )}
                                         </td>
                                     </tr>

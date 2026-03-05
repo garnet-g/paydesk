@@ -62,8 +62,8 @@ export default function StudentResultsPage() {
                             <div key={exam.id} className="card p-0 overflow-hidden">
                                 <div className="p-lg bg-neutral-900 text-white flex justify-between items-center">
                                     <div>
-                                        <h3 className="text-lg font-black uppercase tracking-tight">{exam.name}</h3>
-                                        <p className="text-[10px] font-bold text-white/50 uppercase">{exam.academicPeriod.term} • {exam.academicPeriod.academicYear}</p>
+                                        <h3 className="text-lg font-semibold  tracking-tight">{exam.name}</h3>
+                                        <p className="text-[10px] font-bold text-white/50 ">{exam.academicPeriod.term} • {exam.academicPeriod.academicYear}</p>
                                     </div>
                                     <Award size={24} className="text-warning-500" />
                                 </div>
@@ -72,16 +72,16 @@ export default function StudentResultsPage() {
                                         {exam.results.map((result: any) => (
                                             <div key={result.id} className="p-md bg-neutral-50 rounded-2xl border border-neutral-100 flex justify-between items-center">
                                                 <div>
-                                                    <div className="text-[10px] font-black uppercase text-muted mb-xs flex items-center gap-xs">
+                                                    <div className="text-[10px] font-semibold  text-muted mb-xs flex items-center gap-xs">
                                                         <BookOpen size={10} /> {result.subject}
                                                     </div>
-                                                    <div className="text-xl font-black text-primary-900">
+                                                    <div className="text-xl font-semibold text-primary-900">
                                                         {Number(result.score)} / {Number(result.maxScore)}
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className="text-sm font-black text-primary-600">{result.grade || '-'}</div>
-                                                    <div className="text-[9px] font-bold text-muted uppercase">Grade</div>
+                                                    <div className="text-sm font-semibold text-primary-600">{result.grade || '-'}</div>
+                                                    <div className="text-[9px] font-bold text-muted ">Grade</div>
                                                 </div>
                                             </div>
                                         ))}
@@ -100,7 +100,7 @@ export default function StudentResultsPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a href={`/api/report-cards/${studentId}?examId=${exam.id}`} target="_blank" rel="noreferrer" className="btn btn-ghost text-xs font-black uppercase tracking-widest">
+                                            <a href={`/api/report-cards/${studentId}?examId=${exam.id}`} target="_blank" rel="noreferrer" className="btn btn-ghost text-xs font-semibold  ">
                                                 Download Report Card
                                             </a>
                                         </div>

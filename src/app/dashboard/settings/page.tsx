@@ -554,7 +554,7 @@ export default function SettingsPage() {
                                     )}
                                     <div className="grid grid-cols-1 md:grid-cols-4 gap-2xl">
                                         <div style={{ textAlign: 'center' }}>
-                                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '12px', color: 'var(--neutral-500)' }}>Institutional Logo</label>
+                                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, textTransform: '', marginBottom: '12px', color: 'var(--neutral-500)' }}>Institutional Logo</label>
                                             <div style={{ width: '140px', height: '140px', margin: '0 auto', borderRadius: '24px', border: '2px dashed var(--neutral-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#fff' }}>
                                                 {logoPreview ? <img src={logoPreview} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <Building2 size={48} className="text-neutral-200" />}
                                             </div>

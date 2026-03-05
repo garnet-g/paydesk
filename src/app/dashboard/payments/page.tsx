@@ -661,7 +661,7 @@ export default function PaymentsPage() {
                                             </div>
                                             <div>
                                                 <div className="text-xs text-muted" style={{ marginBottom: '4px' }}>Reason</div>
-                                                <div className="text-sm" style={{ fontStyle: 'italic' }}>"{req.reason || 'No reason provided'}"</div>
+                                                <div className="text-sm" style={{ fontStyle: '' }}>"{req.reason || 'No reason provided'}"</div>
                                             </div>
                                         </div>
 

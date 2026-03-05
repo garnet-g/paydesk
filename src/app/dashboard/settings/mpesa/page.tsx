@@ -176,7 +176,7 @@ export default function MpesaTestingPage() {
                             </p>
                             <form onSubmit={simulateC2b} className="space-y-md">
                                 <div className="form-group">
-                                    <label className="text-xs font-bold uppercase block mb-xs">Account Number (BillRefNumber)</label>
+                                    <label className="text-xs font-bold  block mb-xs">Account Number (BillRefNumber)</label>
                                     <div className="relative">
                                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                                         <input
@@ -187,10 +187,10 @@ export default function MpesaTestingPage() {
                                             required
                                         />
                                     </div>
-                                    <p className="text-xs text-muted mt-xs italic">System will try to match this to an invoice automatically.</p>
+                                    <p className="text-xs text-muted mt-xs ">System will try to match this to an invoice automatically.</p>
                                 </div>
                                 <div className="form-group">
-                                    <label className="text-xs font-bold uppercase block mb-xs">Amount Paid (KES)</label>
+                                    <label className="text-xs font-bold  block mb-xs">Amount Paid (KES)</label>
                                     <input
                                         type="number"
                                         className="form-input"

@@ -152,14 +152,14 @@ export default function DashboardPage() {
                                 <AlertTriangle className="h-5 w-5 text-amber-600" />
                             </div>
                             <div>
-                                <p className="font-black text-xs uppercase tracking-widest">Action Required</p>
+                                <p className="font-semibold text-xs  ">Action Required</p>
                                 <p className="text-xs font-semibold">{pendingApprovals.length} Payment adjustments are awaiting your authorization.</p>
                             </div>
                         </div>
                         <Button
                             size="sm"
                             variant="outline"
-                            className="rounded-xl border-amber-200 font-bold text-[10px] uppercase tracking-widest hover:bg-amber-100 text-amber-800"
+                            className="rounded-xl border-amber-200 font-bold text-[10px]   hover:bg-amber-100 text-amber-800"
                             onClick={() => router.push('/dashboard/payments?tab=approvals')}
                         >
                             Authorize Now
@@ -176,9 +176,9 @@ export default function DashboardPage() {
                         <div className="space-y-3">
                             <div className="flex items-center gap-2">
                                 <div className="h-2 w-8 bg-blue-600 rounded-full"></div>
-                                <span className="text-blue-400 font-black text-[10px] uppercase tracking-[0.3em]">Institutional Pulse</span>
+                                <span className="text-blue-400 font-semibold text-[10px]  tracking-[0.3em]">Institutional Pulse</span>
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase leading-none">
+                            <h1 className="text-4xl md:text-5xl font-semibold text-white tracking-tight  leading-none">
                                 GREETINGS, <br className="md:hidden" /> {session.user.name?.split(' ')[0]}!
                             </h1>
                             <p className="text-slate-400 font-medium text-lg max-w-lg leading-relaxed">
@@ -191,9 +191,9 @@ export default function DashboardPage() {
                         {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && dashboardStats && (
                             <div className="bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex items-center gap-8 shadow-inner">
                                 <div className="space-y-1">
-                                    <p className="text-white/40 font-black text-[9px] uppercase tracking-widest">Collection Rate</p>
+                                    <p className="text-white/40 font-semibold text-[9px]  ">Collection Rate</p>
                                     <div className="flex items-end gap-2">
-                                        <span className="text-4xl font-black text-emerald-400 leading-none">{dashboardStats.collectionRate}%</span>
+                                        <span className="text-4xl font-semibold text-emerald-400 leading-none">{dashboardStats.collectionRate}%</span>
                                         <ArrowUpRight className="text-emerald-400 h-5 w-5 mb-1" />
                                     </div>
                                     <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mt-2">
@@ -204,7 +204,7 @@ export default function DashboardPage() {
                                     </div>
                                 </div>
                                 <Button
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest h-14 px-8 rounded-2xl shadow-xl shadow-blue-500/20"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[10px]   h-14 px-8 rounded-2xl shadow-xl shadow-blue-500/20"
                                     onClick={() => router.push('/dashboard/reports')}
                                 >
                                     View Reports
@@ -225,14 +225,14 @@ export default function DashboardPage() {
                             <CardContent className="p-6">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest">{stat.label}</p>
-                                        <p className="text-2xl font-black text-slate-900 tracking-tight">{stat.value}</p>
+                                        <p className="text-slate-500 font-semibold text-[10px]  ">{stat.label}</p>
+                                        <p className="text-2xl font-semibold text-slate-900 tracking-tight">{stat.value}</p>
                                     </div>
                                     <div className={cn("p-3 rounded-2xl group-hover:scale-110 transition-transform", stat.bg, stat.color)}>
                                         <stat.icon size={20} />
                                     </div>
                                 </div>
-                                <div className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-blue-600 transition-colors">
+                                <div className="mt-4 flex items-center gap-2 text-[10px] font-semibold   text-slate-400 group-hover:text-blue-600 transition-colors">
                                     <span>Detailed Analytics</span>
                                     <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
                                 </div>
@@ -271,7 +271,7 @@ export default function DashboardPage() {
                     <Card className="lg:col-span-2 border-none shadow-2xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
                         <CardHeader className="bg-slate-50/50 border-b border-slate-50 p-8 flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-tight">Financial Stream</CardTitle>
+                                <CardTitle className="text-xl font-semibold text-slate-900  tracking-tight">Financial Stream</CardTitle>
                                 <CardDescription className="text-slate-500 font-medium">Recent transactions across monitoring portals</CardDescription>
                             </div>
                             <Button variant="ghost" className="rounded-xl text-blue-600 font-bold hover:bg-blue-50" onClick={() => router.push('/dashboard/payments')}>
@@ -283,15 +283,15 @@ export default function DashboardPage() {
                                 <table className="w-full text-left">
                                     <thead>
                                         <tr className="bg-slate-50/30">
-                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Student</th>
-                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
-                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
-                                            <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Date</th>
+                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500  ">Student</th>
+                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500  ">Amount</th>
+                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500  ">Status</th>
+                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500   text-right">Date</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
                                         {paymentsLoading ? (
-                                            <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Ledger...</td></tr>
+                                            <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-bold animate-pulse   text-xs">Syncing Ledger...</td></tr>
                                         ) : recentPayments.length === 0 ? (
                                             <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-medium">No transactions found.</td></tr>
                                         ) : (
@@ -310,7 +310,7 @@ export default function DashboardPage() {
                                                     <td className="px-8 py-5 font-bold text-slate-900">KES {p.amount.toLocaleString()}</td>
                                                     <td className="px-8 py-5">
                                                         <Badge variant="outline" className={cn(
-                                                            "font-black text-[9px] uppercase tracking-widest h-6 rounded-lg",
+                                                            "font-semibold text-[9px]   h-6 rounded-lg",
                                                             p.status === 'COMPLETED' ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-amber-50 text-amber-700 border-amber-100"
                                                         )}>
                                                             {p.status}
@@ -335,8 +335,8 @@ export default function DashboardPage() {
                             <CardHeader className="p-8 pb-4">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <CardTitle className="text-lg font-black text-slate-900 uppercase tracking-tight">Collection Mix</CardTitle>
-                                        <CardDescription className="text-slate-500 font-medium italic">Revenue distribution</CardDescription>
+                                        <CardTitle className="text-lg font-semibold text-slate-900  tracking-tight">Collection Mix</CardTitle>
+                                        <CardDescription className="text-slate-500 font-medium ">Revenue distribution</CardDescription>
                                     </div>
                                     <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
                                         <PieChartIcon size={20} />
@@ -366,8 +366,8 @@ export default function DashboardPage() {
                                         </PieChart>
                                     </ResponsiveContainer>
                                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                        <span className="text-3xl font-black text-slate-900 leading-none">{dashboardStats?.collectionRate || 0}%</span>
-                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">RATE</span>
+                                        <span className="text-3xl font-semibold text-slate-900 leading-none">{dashboardStats?.collectionRate || 0}%</span>
+                                        <span className="text-[8px] font-semibold text-slate-400   mt-1">RATE</span>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4 w-full mt-6">
@@ -375,7 +375,7 @@ export default function DashboardPage() {
                                         <div key={i} className="flex items-center gap-2">
                                             <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }}></div>
                                             <div>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{item.name}</p>
+                                                <p className="text-[10px] font-semibold text-slate-400  tracking-tight">{item.name}</p>
                                                 <p className="text-sm font-bold text-slate-900">KES {(item.value / 1000).toFixed(1)}k</p>
                                             </div>
                                         </div>
@@ -401,7 +401,7 @@ export default function DashboardPage() {
                                     </div>
                                     <span className="font-bold text-slate-900 text-sm">{h.label}</span>
                                 </div>
-                                <span className={cn("font-black text-[10px] uppercase tracking-widest px-3 py-1 bg-slate-50 rounded-lg", h.color)}>
+                                <span className={cn("font-semibold text-[10px]   px-3 py-1 bg-slate-50 rounded-lg", h.color)}>
                                     {h.status}
                                 </span>
                             </div>

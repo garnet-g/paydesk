@@ -24,10 +24,10 @@ export default function FeeSetupPage() {
                             <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                                 <Settings size={24} className="text-blue-400" />
                             </div>
-                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Configurator</h2>
+                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white  ">Configurator</h2>
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium italic">
-                            Architecting financial obligations and <span className="text-blue-600 font-black uppercase not-italic">Academic Terminology</span>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium ">
+                            Architecting financial obligations and <span className="text-blue-600 font-semibold  not-">Academic Terminology</span>
                         </p>
                     </div>
                 </div>
@@ -38,7 +38,7 @@ export default function FeeSetupPage() {
                             <TabsTrigger
                                 value="fees"
                                 className={cn(
-                                    "h-12 px-8 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300",
+                                    "h-12 px-8 rounded-xl font-semibold text-[10px]   transition-all duration-300",
                                     "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-200/50",
                                     "hover:bg-slate-50 dark:hover:bg-slate-900"
                                 )}
@@ -49,7 +49,7 @@ export default function FeeSetupPage() {
                             <TabsTrigger
                                 value="periods"
                                 className={cn(
-                                    "h-12 px-8 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300",
+                                    "h-12 px-8 rounded-xl font-semibold text-[10px]   transition-all duration-300",
                                     "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-200/50",
                                     "hover:bg-slate-50 dark:hover:bg-slate-900"
                                 )}
@@ -77,21 +77,21 @@ export default function FeeSetupPage() {
                             <Info size={20} className="text-blue-400" />
                         </div>
                         <div>
-                            <div className="text-xs font-black uppercase tracking-widest">Architectural Note</div>
-                            <div className="text-[10px] text-slate-400 uppercase italic font-bold">Modifying fee structures will not affect existing invoices. Only future deployments will be influenced.</div>
+                            <div className="text-xs font-semibold  ">Architectural Note</div>
+                            <div className="text-[10px] text-slate-400   font-bold">Modifying fee structures will not affect existing invoices. Only future invoices will be affected.</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-8 relative z-10">
                         <div className="text-right">
-                            <div className="text-xs font-black uppercase tracking-widest text-blue-400">Institutional Plan</div>
-                            <div className="text-xl font-black uppercase italic tracking-tighter">{session?.user?.planTier || 'FREE'} PHASE</div>
+                            <div className="text-xs font-semibold   text-blue-400">Institutional Plan</div>
+                            <div className="text-xl font-semibold   tracking-tight">{session?.user?.planTier || 'FREE'} PHASE</div>
                         </div>
                         <div className="h-10 w-[1px] bg-white/10 hidden md:block"></div>
                         <div className="flex -space-x-3">
-                            <div className="h-10 w-10 rounded-full border-2 border-slate-900 bg-blue-600 flex items-center justify-center text-[10px] font-black">
+                            <div className="h-10 w-10 rounded-full border-2 border-slate-900 bg-blue-600 flex items-center justify-center text-[10px] font-semibold">
                                 AG
                             </div>
-                            <div className="h-10 w-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[10px] font-black">
+                            <div className="h-10 w-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[10px] font-semibold">
                                 {session?.user?.schoolName?.substring(0, 2).toUpperCase() || 'SC'}
                             </div>
                         </div>

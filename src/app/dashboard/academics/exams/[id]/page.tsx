@@ -114,10 +114,10 @@ export default function ExamResultsEntryPage() {
                         <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-900)', letterSpacing: '-0.025em' }}>
                             {exam?.name}
                         </h2>
-                        <p className="text-muted font-medium uppercase text-[10px] tracking-widest">Mark Sheet Registry</p>
+                        <p className="text-muted font-medium  text-[10px] ">Mark Sheet Registry</p>
                     </div>
                     <button
-                        className="btn btn-primary px-xl shadow-xl shadow-primary-100 font-black uppercase text-xs tracking-widest flex items-center gap-md"
+                        className="btn btn-primary px-xl shadow-xl shadow-primary-100 font-semibold  text-xs  flex items-center gap-md"
                         onClick={handleSave}
                         disabled={saving}
                     >
@@ -129,9 +129,9 @@ export default function ExamResultsEntryPage() {
                     <table className="table-modern w-full border-collapse">
                         <thead>
                             <tr className="bg-neutral-900 text-white">
-                                <th className="p-lg text-left text-[10px] font-black uppercase tracking-widest border-r border-white/10 sticky left-0 bg-neutral-900 z-10 w-64">Student Registry</th>
+                                <th className="p-lg text-left text-[10px] font-semibold   border-r border-white/10 sticky left-0 bg-neutral-900 z-10 w-64">Student Registry</th>
                                 {subjects.map(subject => (
-                                    <th key={subject} className="p-lg text-center text-[10px] font-black uppercase tracking-widest border-r border-white/10 min-w-[120px]">
+                                    <th key={subject} className="p-lg text-center text-[10px] font-semibold   border-r border-white/10 min-w-[120px]">
                                         {subject}
                                     </th>
                                 ))}
@@ -142,13 +142,13 @@ export default function ExamResultsEntryPage() {
                                 <tr key={student.id} className="hover:bg-primary-50/30 transition-colors group">
                                     <td className="p-md sticky left-0 bg-white group-hover:bg-primary-50/50 z-10 border-r border-neutral-100 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
                                         <div className="font-bold text-primary-900 truncate">{student.firstName} {student.lastName}</div>
-                                        <div className="text-[9px] font-bold text-muted uppercase">{student.admissionNumber}</div>
+                                        <div className="text-[9px] font-bold text-muted ">{student.admissionNumber}</div>
                                     </td>
                                     {subjects.map(subject => (
                                         <td key={subject} className="p-md text-center border-r border-neutral-50 last:border-r-0">
                                             <input
                                                 type="number"
-                                                className="form-input text-center font-black p-xs bg-transparent border-transparent hover:border-neutral-200 focus:bg-white focus:border-primary-500 transition-all text-sm w-20 mx-auto"
+                                                className="form-input text-center font-semibold p-xs bg-transparent border-transparent hover:border-neutral-200 focus:bg-white focus:border-primary-500 transition-all text-sm w-20 mx-auto"
                                                 placeholder="-"
                                                 min="0"
                                                 max="100"

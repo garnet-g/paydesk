@@ -99,7 +99,7 @@ export default function PlatformBillingPage() {
                     <div style={{ width: '80px', height: '80px', background: 'var(--error-50)', color: 'var(--error-600)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                         <AlertCircle size={40} />
                     </div>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Restricted Command Center</h2>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Restricted Dashboard</h2>
                     <p style={{ color: 'var(--neutral-500)', marginTop: '8px' }}>Institutional billing is restricted to Super Administrators.</p>
                 </div>
             </DashboardLayout>
@@ -126,7 +126,7 @@ export default function PlatformBillingPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: 'var(--spacing-2xl)' }}>
                     <div style={{ minWidth: 0, flex: '1 1 auto' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                            <div style={{ background: 'var(--primary-600)', color: 'white', padding: '4px 8px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            <div style={{ background: 'var(--primary-600)', color: 'white', padding: '4px 8px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 800, textTransform: '', letterSpacing: '0.05em' }}>
                                 Platform
                             </div>
                             <span style={{ fontSize: '0.875rem', color: 'var(--neutral-400)', fontWeight: 600 }}>/ Revenue Intelligence</span>
@@ -362,7 +362,7 @@ function MetricCard({ label, value, trend, icon, color, bg, highlight, variants 
                     </div>
                 )}
             </div>
-            <p className="text-xs text-muted font-bold uppercase tracking-wider">{label}</p>
+            <p className="text-xs text-muted font-bold  tracking-wider">{label}</p>
             <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginTop: '4px', letterSpacing: '-0.02em' }}>{value}</h3>
         </motion.div>
     )

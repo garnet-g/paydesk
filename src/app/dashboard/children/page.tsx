@@ -161,12 +161,12 @@ export default function ChildrenPage() {
                                                 </div>
                                                 {totalBalance > 0 ? (
                                                     <div style={{ textAlign: 'right' }}>
-                                                        <div className="text-xs text-error font-bold tracking-wider uppercase mb-xs" style={{ background: 'var(--error-50)', padding: '4px 8px', borderRadius: '4px', display: 'inline-block' }}>Fees Unpaid</div>
+                                                        <div className="text-xs text-error font-bold tracking-wider  mb-xs" style={{ background: 'var(--error-50)', padding: '4px 8px', borderRadius: '4px', display: 'inline-block' }}>Fees Unpaid</div>
                                                         <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>{formatCurrency(totalBalance)}</div>
                                                     </div>
                                                 ) : (
                                                     <div style={{ textAlign: 'right' }}>
-                                                        <div className="text-xs text-success font-bold tracking-wider uppercase mb-xs" style={{ background: 'var(--success-50)', padding: '4px 8px', borderRadius: '4px', display: 'inline-block' }}>All Cleared</div>
+                                                        <div className="text-xs text-success font-bold tracking-wider  mb-xs" style={{ background: 'var(--success-50)', padding: '4px 8px', borderRadius: '4px', display: 'inline-block' }}>All Cleared</div>
                                                         <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>{formatCurrency(0)}</div>
                                                     </div>
                                                 )}
@@ -176,13 +176,13 @@ export default function ChildrenPage() {
 
                                     <div className="grid grid-cols-2 gap-md" style={{ marginBottom: 'var(--spacing-lg)' }}>
                                         <div style={{ padding: 'var(--spacing-md)', background: 'var(--neutral-50)', borderRadius: 'var(--radius-md)' }}>
-                                            <div className="text-xs text-muted uppercase font-bold mb-xs">Status</div>
+                                            <div className="text-xs text-muted  font-bold mb-xs">Status</div>
                                             <span className={`badge ${child.status === 'ACTIVE' ? 'badge-success' : 'badge-warning'}`}>
                                                 {child.status}
                                             </span>
                                         </div>
                                         <div style={{ padding: 'var(--spacing-md)', background: 'var(--neutral-50)', borderRadius: 'var(--radius-md)' }}>
-                                            <div className="text-xs text-muted uppercase font-bold mb-xs">School</div>
+                                            <div className="text-xs text-muted  font-bold mb-xs">School</div>
                                             <div className="text-sm font-semibold truncate">{child.school?.name}</div>
                                         </div>
                                     </div>

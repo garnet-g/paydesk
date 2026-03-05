@@ -330,7 +330,7 @@ export default function InquiriesPage() {
                                 border: '1px solid var(--border)'
                             }}>
                                 <div className="text-xs text-muted" style={{ marginBottom: '4px', fontWeight: 600 }}>Original Message:</div>
-                                <p className="text-sm" style={{ fontStyle: 'italic', margin: 0 }}>{replyingTo.message}</p>
+                                <p className="text-sm" style={{ fontStyle: '', margin: 0 }}>{replyingTo.message}</p>
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Your Response</label>

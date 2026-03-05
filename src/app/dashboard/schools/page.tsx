@@ -220,17 +220,17 @@ function SchoolListItem({ school, index, onEdit, onDelete, router }: any) {
                 {/* Stats & Meta */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }} className="hide-mobile">
                     <div>
-                        <p style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--neutral-400)', marginBottom: '2px' }}>Tier</p>
+                        <p style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: '', color: 'var(--neutral-400)', marginBottom: '2px' }}>Tier</p>
                         <span className={`badge ${school.planTier === 'ENTERPRISE' ? 'badge-primary' : school.planTier === 'PRO' ? 'badge-secondary' : 'badge-neutral'}`} style={{ fontSize: '0.65rem', fontWeight: 800 }}>
                             {school.planTier || 'FREE'}
                         </span>
                     </div>
                     <div>
-                        <p style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--neutral-400)', marginBottom: '2px' }}>Students</p>
+                        <p style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: '', color: 'var(--neutral-400)', marginBottom: '2px' }}>Students</p>
                         <span style={{ fontWeight: 700, fontSize: '0.875rem' }}>{school._count?.students || 0}</span>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                        <p style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--neutral-400)', marginBottom: '2px' }}>Status</p>
+                        <p style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: '', color: 'var(--neutral-400)', marginBottom: '2px' }}>Status</p>
                         {school.isActive ? <CheckCircle2 size={16} className="text-success-500" /> : <XCircle size={16} className="text-error-500" />}
                     </div>
                 </div>
@@ -255,7 +255,7 @@ function SchoolListItem({ school, index, onEdit, onDelete, router }: any) {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-xl mt-xl">
                                 {/* Contact Cluster */}
                                 <div>
-                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--neutral-400)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: '', color: 'var(--neutral-400)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <Globe size={14} /> Contact Information
                                     </h4>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -267,7 +267,7 @@ function SchoolListItem({ school, index, onEdit, onDelete, router }: any) {
 
                                 {/* Principal / Admin Cluster */}
                                 <div>
-                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--neutral-400)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: '', color: 'var(--neutral-400)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <KeyRound size={14} /> Principal Account
                                     </h4>
                                     <div style={{ padding: '16px', background: 'var(--neutral-50)', borderRadius: '12px', border: '1px solid var(--neutral-100)' }}>
@@ -290,14 +290,14 @@ function SchoolListItem({ school, index, onEdit, onDelete, router }: any) {
                                                 </button>
                                             </>
                                         ) : (
-                                            <p style={{ fontSize: '0.875rem', color: 'var(--neutral-500)', fontStyle: 'italic' }}>No principal linked to this school.</p>
+                                            <p style={{ fontSize: '0.875rem', color: 'var(--neutral-500)', fontStyle: '' }}>No principal linked to this school.</p>
                                         )}
                                     </div>
                                 </div>
 
                                 {/* Internal Actions Cluster */}
                                 <div>
-                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--neutral-400)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: '', color: 'var(--neutral-400)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <Settings size={14} /> Critical Actions
                                     </h4>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

@@ -98,13 +98,13 @@ export default function AcademicsPage() {
 
                 <div className="flex gap-md mb-xl border-b border-neutral-100">
                     <button
-                        className={`pb-md px-lg font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'attendance' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-neutral-400'}`}
+                        className={`pb-md px-lg font-bold text-xs   transition-all ${activeTab === 'attendance' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-neutral-400'}`}
                         onClick={() => setActiveTab('attendance')}
                     >
                         Daily Attendance
                     </button>
                     <button
-                        className={`pb-md px-lg font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'results' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-neutral-400'}`}
+                        className={`pb-md px-lg font-bold text-xs   transition-all ${activeTab === 'results' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-neutral-400'}`}
                         onClick={() => setActiveTab('results')}
                     >
                         Examination Results
@@ -140,9 +140,9 @@ export default function AcademicsPage() {
                             <table className="table-modern w-full">
                                 <thead>
                                     <tr className="bg-neutral-50/50">
-                                        <th className="text-[10px] font-black uppercase tracking-widest text-muted p-md border-b">Student</th>
-                                        <th className="text-[10px] font-black uppercase tracking-widest text-muted p-md border-b">Class</th>
-                                        <th className="text-[10px] font-black uppercase tracking-widest text-muted p-md border-b text-center">Protocol Actions</th>
+                                        <th className="text-[10px] font-semibold   text-muted p-md border-b">Student</th>
+                                        <th className="text-[10px] font-semibold   text-muted p-md border-b">Class</th>
+                                        <th className="text-[10px] font-semibold   text-muted p-md border-b text-center">Protocol Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,10 +152,10 @@ export default function AcademicsPage() {
                                         <tr key={student.id} className="hover:bg-neutral-50/50 transition-colors">
                                             <td className="p-md">
                                                 <div className="flex items-center gap-sm">
-                                                    <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center text-[10px] font-black">{student.firstName[0]}{student.lastName[0]}</div>
+                                                    <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center text-[10px] font-semibold">{student.firstName[0]}{student.lastName[0]}</div>
                                                     <div>
                                                         <div className="text-sm font-bold text-primary-900">{student.firstName} {student.lastName}</div>
-                                                        <div className="text-[10px] font-bold text-muted uppercase">{student.admissionNumber}</div>
+                                                        <div className="text-[10px] font-bold text-muted ">{student.admissionNumber}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -187,10 +187,10 @@ export default function AcademicsPage() {
                     <div className="space-y-lg">
                         <div className="flex justify-between items-center bg-white p-lg card">
                             <div>
-                                <h3 className="text-lg font-black text-primary-900 uppercase">Examination Registry</h3>
-                                <p className="text-xs text-muted font-medium italic">Create and manage standardized assessments</p>
+                                <h3 className="text-lg font-semibold text-primary-900 ">Examination Registry</h3>
+                                <p className="text-xs text-muted font-medium ">Create and manage standardized assessments</p>
                             </div>
-                            <button className="btn btn-primary shadow-xl shadow-primary-100 px-xl text-xs font-black uppercase tracking-widest" onClick={() => setShowExamModal(true)}>
+                            <button className="btn btn-primary shadow-xl shadow-primary-100 px-xl text-xs font-semibold  " onClick={() => setShowExamModal(true)}>
                                 <Plus size={18} /> New Examination
                             </button>
                         </div>
@@ -206,16 +206,16 @@ export default function AcademicsPage() {
                                     <div className="absolute top-0 right-0 p-lg opacity-5 group-hover:scale-110 transition-transform">
                                         <BookOpen size={60} />
                                     </div>
-                                    <h4 className="text-xl font-black text-primary-900 mb-xs uppercase tracking-tighter">{exam.name}</h4>
-                                    <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-xl">{formatDate(exam.date)}</div>
+                                    <h4 className="text-xl font-semibold text-primary-900 mb-xs  tracking-tight">{exam.name}</h4>
+                                    <div className="text-[10px] font-semibold text-muted   mb-xl">{formatDate(exam.date)}</div>
 
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <div className="text-[9px] font-bold text-muted uppercase">Registry Entries</div>
-                                            <div className="text-2xl font-black text-primary-600">{exam.results?.length || 0}</div>
+                                            <div className="text-[9px] font-bold text-muted ">Registry Entries</div>
+                                            <div className="text-2xl font-semibold text-primary-600">{exam.results?.length || 0}</div>
                                         </div>
                                         <button
-                                            className="btn btn-ghost btn-sm text-[10px] font-black uppercase tracking-widest text-primary-600 hover:bg-primary-50 px-4"
+                                            className="btn btn-ghost btn-sm text-[10px] font-semibold   text-primary-600 hover:bg-primary-50 px-4"
                                             onClick={() => window.location.href = `/dashboard/academics/exams/${exam.id}`}
                                         >
                                             Enter Scores →
@@ -231,10 +231,10 @@ export default function AcademicsPage() {
                 {showExamModal && (
                     <div className="modal-overlay" onClick={() => setShowExamModal(false)}>
                         <div className="card modal-content animate-slide-up shadow-2xl border-none p-xl" style={{ maxWidth: '400px', width: '90%' }} onClick={e => e.stopPropagation()}>
-                            <h3 className="text-xl font-black text-primary-900 mb-lg uppercase">Create New Exam</h3>
+                            <h3 className="text-xl font-semibold text-primary-900 mb-lg ">Create New Exam</h3>
                             <form onSubmit={handleCreateExam} className="space-y-md">
                                 <div>
-                                    <label className="text-[10px] font-black uppercase text-muted mb-xs block">Exam Name</label>
+                                    <label className="text-[10px] font-semibold  text-muted mb-xs block">Exam Name</label>
                                     <input
                                         className="form-input"
                                         placeholder="e.g. Mid-Term 2024"
@@ -244,7 +244,7 @@ export default function AcademicsPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black uppercase text-muted mb-xs block">Examination Date</label>
+                                    <label className="text-[10px] font-semibold  text-muted mb-xs block">Examination Date</label>
                                     <input
                                         type="date"
                                         className="form-input font-bold"

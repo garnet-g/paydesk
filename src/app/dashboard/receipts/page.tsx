@@ -72,7 +72,7 @@ export default function ReceiptWalletPage() {
                         </div>
                         <div>
                             <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>{receipts.length}</div>
-                            <div className="text-xs text-muted uppercase font-bold tracking-tight">Total Slips</div>
+                            <div className="text-xs text-muted  font-bold tracking-tight">Total Slips</div>
                         </div>
                     </div>
                 </div>
@@ -132,14 +132,14 @@ export default function ReceiptWalletPage() {
                                         <CheckCircle2 size={24} className="text-success-600" />
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
-                                        <div className="text-xs text-muted font-bold uppercase tracking-widest">Receipt No.</div>
+                                        <div className="text-xs text-muted font-bold  ">Receipt No.</div>
                                         <div className="font-mono font-bold" style={{ fontSize: '0.9rem' }}>{receipt.receiptNumber || receipt.transactionRef}</div>
                                     </div>
                                 </div>
 
                                 {/* Content */}
                                 <div style={{ padding: 'var(--spacing-xl)', flex: 1 }}>
-                                    <div className="text-xs text-muted font-bold uppercase tracking-wider mb-xs">Payment For</div>
+                                    <div className="text-xs text-muted font-bold  tracking-wider mb-xs">Payment For</div>
                                     <div style={{ fontSize: '1.125rem', fontWeight: 800, marginBottom: 'var(--spacing-md)' }}>
                                         {receipt.student?.firstName} {receipt.student?.lastName}
                                     </div>

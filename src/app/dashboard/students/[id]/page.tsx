@@ -177,29 +177,29 @@ export default function StudentProfilePage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
                                         <div className="space-y-md">
                                             <div>
-                                                <label className="text-xs font-bold text-muted uppercase tracking-wider">Full Name</label>
+                                                <label className="text-xs font-bold text-muted  tracking-wider">Full Name</label>
                                                 <p className="font-semibold text-lg">{student.firstName} {student.middleName || ''} {student.lastName}</p>
                                             </div>
                                             <div>
-                                                <label className="text-xs font-bold text-muted uppercase tracking-wider">Admission Number</label>
+                                                <label className="text-xs font-bold text-muted  tracking-wider">Admission Number</label>
                                                 <p className="font-semibold text-lg text-primary-700">{student.admissionNumber}</p>
                                             </div>
                                             <div>
-                                                <label className="text-xs font-bold text-muted uppercase tracking-wider">Enrollment Status</label>
+                                                <label className="text-xs font-bold text-muted  tracking-wider">Enrollment Status</label>
                                                 <p className="font-semibold text-lg">{student.status}</p>
                                             </div>
                                         </div>
                                         <div className="space-y-md">
                                             <div>
-                                                <label className="text-xs font-bold text-muted uppercase tracking-wider">Date of Birth</label>
+                                                <label className="text-xs font-bold text-muted  tracking-wider">Date of Birth</label>
                                                 <p className="font-semibold text-lg">{student.dateOfBirth ? formatDate(student.dateOfBirth) : 'Not recorded'}</p>
                                             </div>
                                             <div>
-                                                <label className="text-xs font-bold text-muted uppercase tracking-wider">Gender</label>
+                                                <label className="text-xs font-bold text-muted  tracking-wider">Gender</label>
                                                 <p className="font-semibold text-lg text-capitalize">{student.gender || 'Not specified'}</p>
                                             </div>
                                             <div>
-                                                <label className="text-xs font-bold text-muted uppercase tracking-wider">Joined Date</label>
+                                                <label className="text-xs font-bold text-muted  tracking-wider">Joined Date</label>
                                                 <p className="font-semibold text-lg">{formatDate(student.createdAt)}</p>
                                             </div>
                                         </div>
@@ -216,7 +216,7 @@ export default function StudentProfilePage() {
                                             </div>
                                             <div className="flex-1 text-center md:text-left">
                                                 <h4 className="font-bold text-xl m-0">{primaryGuardian.firstName} {primaryGuardian.lastName}</h4>
-                                                <p className="text-primary-600 text-sm font-semibold uppercase tracking-tighter mt-1">
+                                                <p className="text-primary-600 text-sm font-semibold  tracking-tight mt-1">
                                                     {student.guardians?.find((g: any) => g.user.id === primaryGuardian.id)?.relationship || 'Primary Guardian'}
                                                 </p>
 
@@ -294,7 +294,7 @@ export default function StudentProfilePage() {
                                                         <p className="text-xs text-muted">
                                                             {formatDate(h.promotionDate)} · {h.academicYear} {h.term}
                                                         </p>
-                                                        {h.notes && <p className="text-xs mt-xs italic" style={{ color: 'var(--neutral-500)' }}>"{h.notes}"</p>}
+                                                        {h.notes && <p className="text-xs mt-xs " style={{ color: 'var(--neutral-500)' }}>"{h.notes}"</p>}
                                                     </div>
                                                 </div>
                                             ))}
@@ -313,7 +313,7 @@ export default function StudentProfilePage() {
                                 <CreditCard size={18} className="text-muted" />
                             </div>
                             <div className="space-y-md">
-                                <p className="text-center py-xl text-muted text-sm italic">No recent payments or invoices found for this student.</p>
+                                <p className="text-center py-xl text-muted text-sm ">No recent payments or invoices found for this student.</p>
                                 <button className="btn btn-primary w-full shadow-md" onClick={() => setActiveTab('statement')}>
                                     <CreditCard size={18} /> Record manual Payment
                                 </button>
@@ -324,7 +324,7 @@ export default function StudentProfilePage() {
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
                             <div className="relative z-10">
                                 <h3 className="text-lg font-bold mb-xs text-primary-100">Net Account Balance</h3>
-                                <p className="text-primary-200 text-xs mb-lg uppercase font-bold tracking-widest">Across all invoice terms</p>
+                                <p className="text-primary-200 text-xs mb-lg  font-bold ">Across all invoice terms</p>
                                 <h2 style={{ fontSize: '2.5rem', fontWeight: 800 }} className="mb-0">
                                     KES {student.balance?.toLocaleString() || '0.00'}
                                 </h2>

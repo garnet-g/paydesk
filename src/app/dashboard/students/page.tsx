@@ -99,11 +99,11 @@ export default function StudentsPage() {
     }
 
     const handleDeleteStudent = async (student: any) => {
-        if (confirm(`PURGE RECORD: Are you sure you want to delete ${student.firstName} ${student.lastName}?`)) {
+        if (confirm(`DELETE: Are you sure you want to delete ${student.firstName} ${student.lastName}?`)) {
             try {
                 const res = await fetch(`/api/students/${student.id}`, { method: 'DELETE' })
                 if (res.ok) {
-                    toast.success("Student record purged from system")
+                    toast.success("Student deleted successfully")
                     if (selectedClass) {
                         fetchStudents(selectedClass.id)
                     } else {
@@ -113,7 +113,7 @@ export default function StudentsPage() {
                     toast.error('Failed to delete student')
                 }
             } catch (error) {
-                toast.error('Error during purge operation')
+                toast.error('Error deleting student')
             }
         }
     }
@@ -155,17 +155,17 @@ export default function StudentsPage() {
                                     <Users size={24} />
                                 </div>
                             )}
-                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
+                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white  ">
                                 {selectedClass ? `${selectedClass.name} ${selectedClass.stream || ''}` : 'Registry'}
                             </h2>
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium italic">
-                            {selectedClass ? 'Viewing division personnel' : 'Command center for student personnel by division'} at <span className="text-blue-600 font-black uppercase not-italic">{session?.user?.schoolName}</span>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium ">
+                            {selectedClass ? 'Viewing division personnel' : 'Manage student profiles, enrollment, and records'} at <span className="text-blue-600 font-semibold  not-">{session?.user?.schoolName}</span>
                         </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-4">
                         {session?.user?.role !== 'SUPER_ADMIN' && (
-                            <Button asChild variant="outline" className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest border-slate-200 bg-white hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800">
+                            <Button asChild variant="outline" className="h-12 px-6 rounded-2xl font-semibold text-xs   border-slate-200 bg-white hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800">
                                 <Link href="/dashboard/settings/import">
                                     <Download size={18} className="mr-2 text-blue-600" />
                                     Batch Data Import
@@ -174,7 +174,7 @@ export default function StudentsPage() {
                         )}
                         <Button
                             className={cn(
-                                "h-12 px-8 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all",
+                                "h-12 px-8 rounded-2xl font-semibold text-xs   shadow-xl transition-all",
                                 isLimitReached
                                     ? "bg-slate-200 text-slate-500 cursor-not-allowed"
                                     : "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200 dark:shadow-none"
@@ -182,7 +182,7 @@ export default function StudentsPage() {
                             onClick={handleAddStudent}
                         >
                             <UserPlus size={18} className="mr-2" />
-                            {isLimitReached ? 'ENROLLMENT LOCKED' : 'Enroll New Cadet'}
+                            {isLimitReached ? 'LIMIT REACHED' : 'Add Student'}
                         </Button>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ export default function StudentsPage() {
                     <div className="flex justify-center p-20">
                         <div className="inline-flex items-center gap-3">
                             <Loader2 className="animate-spin text-blue-600" size={24} />
-                            <span className="text-lg font-black text-slate-400 uppercase italic tracking-tighter">Syncing Divisions...</span>
+                            <span className="text-lg font-semibold text-slate-400   tracking-tight">Syncing Divisions...</span>
                         </div>
                     </div>
                 )}
@@ -201,7 +201,7 @@ export default function StudentsPage() {
                         {classes.length === 0 ? (
                             <div className="col-span-full py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
                                 <Building2 size={48} className="mx-auto text-slate-300 mb-4" />
-                                <h3 className="text-xl font-black text-slate-800 uppercase italic tracking-tighter">No Divisions Configured</h3>
+                                <h3 className="text-xl font-semibold text-slate-800   tracking-tight">No Divisions Configured</h3>
                                 <p className="text-slate-500 font-medium mt-2">Setup classes/divisions first before viewing the registry.</p>
                             </div>
                         ) : (
@@ -216,18 +216,18 @@ export default function StudentsPage() {
                                             <div className="h-10 w-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-blue-600">
                                                 <Users size={20} />
                                             </div>
-                                            <Badge variant="outline" className="font-black text-[10px] uppercase tracking-widest bg-white">
-                                                {c._count?.students || 0} Cadets
+                                            <Badge variant="outline" className="font-semibold text-[10px]   bg-white">
+                                                {c._count?.students || 0} Students
                                             </Badge>
                                         </div>
-                                        <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-tight mt-4">
+                                        <CardTitle className="text-xl font-semibold text-slate-900  tracking-tight mt-4">
                                             {c.name} {c.stream && <span className="text-blue-600">{c.stream}</span>}
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-6">
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest italic mb-4">Division Sector</p>
-                                        <Button variant="ghost" className="w-full justify-between hover:bg-blue-50 hover:text-blue-700 text-slate-500 font-black text-[10px] uppercase tracking-widest rounded-xl transition-colors">
-                                            View Personnel
+                                        <p className="text-xs font-bold text-slate-400    mb-4">Division</p>
+                                        <Button variant="ghost" className="w-full justify-between hover:bg-blue-50 hover:text-blue-700 text-slate-500 font-semibold text-[10px]   rounded-xl transition-colors">
+                                            View Students
                                             <ChevronRight size={14} />
                                         </Button>
                                     </CardContent>
@@ -246,7 +246,7 @@ export default function StudentsPage() {
                                     <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                     <Input
                                         type="text"
-                                        placeholder="Scouring Sector: Search by name, admission ID..."
+                                        placeholder=" Search by name, admission ID..."
                                         className="h-14 pl-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-900 dark:text-white group-focus-within:ring-2 ring-blue-500/20 transition-all shadow-sm"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -254,14 +254,14 @@ export default function StudentsPage() {
                                 </div>
                                 <div className="flex items-center gap-4 w-full lg:w-auto">
                                     <Select value={statusFilter} onValueChange={v => setStatusFilter(v)}>
-                                        <SelectTrigger className="h-14 w-full lg:w-[220px] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-[10px] tracking-widest text-slate-600 dark:text-white">
+                                        <SelectTrigger className="h-14 w-full lg:w-[220px] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-semibold  text-[10px]  text-slate-600 dark:text-white">
                                             <div className="flex items-center gap-2">
                                                 <Filter size={16} className="text-blue-600" />
                                                 <SelectValue placeholder="Status: All" />
                                             </div>
                                         </SelectTrigger>
                                         <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
-                                            <SelectItem value="ALL" className="font-bold">ALL PERSONNEL</SelectItem>
+                                            <SelectItem value="ALL" className="font-bold">ALL STUDENTS</SelectItem>
                                             <SelectItem value="ACTIVE" className="font-bold text-emerald-600">ACTIVE</SelectItem>
                                             <SelectItem value="INACTIVE" className="font-bold text-slate-500">INACTIVE</SelectItem>
                                             <SelectItem value="SUSPENDED" className="font-bold text-amber-600">SUSPENDED</SelectItem>
@@ -269,8 +269,8 @@ export default function StudentsPage() {
                                         </SelectContent>
                                     </Select>
                                     <div className="hidden lg:flex flex-col items-center justify-center px-6 h-14 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl whitespace-nowrap">
-                                        <span className="text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest leading-none mb-1">Division Strength</span>
-                                        <span className="text-xl font-black text-blue-700 dark:text-blue-400 leading-none">{filteredStudents.length}</span>
+                                        <span className="text-[10px] font-semibold text-blue-400 dark:text-blue-500   leading-none mb-1">Division Strength</span>
+                                        <span className="text-xl font-semibold text-blue-700 dark:text-blue-400 leading-none">{filteredStudents.length}</span>
                                     </div>
                                 </div>
                             </div>
@@ -282,7 +282,7 @@ export default function StudentsPage() {
                                     <div className="col-span-full py-32 text-center">
                                         <div className="inline-flex items-center gap-3">
                                             <Loader2 className="animate-spin text-blue-600" size={24} />
-                                            <span className="text-lg font-black text-slate-400 uppercase italic tracking-tighter">Syncing Sector Personnel...</span>
+                                            <span className="text-lg font-semibold text-slate-400   tracking-tight">Loading students...</span>
                                         </div>
                                     </div>
                                 ) : filteredStudents.length === 0 ? (
@@ -291,9 +291,9 @@ export default function StudentsPage() {
                                             <div className="h-20 w-20 bg-slate-100 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center text-slate-300 dark:text-slate-800 mb-6 shadow-inner">
                                                 <GraduationCap size={48} />
                                             </div>
-                                            <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter mb-2">Division Empty</h3>
-                                            <p className="text-slate-400 text-sm font-medium italic">
-                                                No personnel matching your reconnaissance parameters were located in this division.
+                                            <h3 className="text-xl font-semibold text-slate-900 dark:text-white   tracking-tight mb-2">No Students Found</h3>
+                                            <p className="text-slate-400 text-sm font-medium ">
+                                                No students matching your search criteria were found in this division.
                                             </p>
                                         </div>
                                     </div>
@@ -308,10 +308,10 @@ export default function StudentsPage() {
                                                         </div>
                                                         <div>
                                                             <h3 className="font-bold text-slate-900 dark:text-white capitalize">{student.firstName} {student.lastName}</h3>
-                                                            <p className="text-xs text-slate-500 uppercase tracking-widest">{student.admissionNumber}</p>
+                                                            <p className="text-xs text-slate-500  ">{student.admissionNumber}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="bg-slate-950 text-white font-bold text-[10px] px-3 py-1 rounded-full uppercase">
+                                                    <div className="bg-slate-950 text-white font-bold text-[10px] px-3 py-1 rounded-full ">
                                                         {student.status || 'Active'}
                                                     </div>
                                                 </div>
@@ -336,7 +336,7 @@ export default function StudentsPage() {
                                                                     <p className="text-xs text-slate-500 mt-1">{student.guardians[0].user.phoneNumber}</p>
                                                                 </>
                                                             ) : (
-                                                                <p className="font-bold text-slate-900 dark:text-white italic text-xs">Unassigned</p>
+                                                                <p className="font-bold text-slate-900 dark:text-white  text-xs">Unassigned</p>
                                                             )}
                                                         </div>
                                                     </div>
@@ -361,14 +361,14 @@ export default function StudentsPage() {
 
                         {/* Footer / Pagination Placeholder */}
                         <div className="bg-slate-50 dark:bg-slate-900/30 border-t border-slate-100 dark:border-slate-900 p-6 flex justify-between items-center whitespace-nowrap overflow-x-auto gap-8">
-                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic shrink-0">
-                                Displaying Sector {filteredStudents.length} Students • Central Intelligence Unit
+                            <div className="text-[10px] font-semibold text-slate-400    shrink-0">
+                                Displaying {filteredStudents.length} Students • 
                             </div>
                             {isLimitReached && (
                                 <div className="flex items-center gap-3 px-4 py-2 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/30 rounded-xl shrink-0">
                                     <AlertTriangle size={14} className="text-red-600" />
-                                    <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.1em]">Free Tier Limit Reached • Enrollment Offline</span>
-                                    <Button variant="link" className="h-auto p-0 text-[10px] font-black uppercase text-blue-600 hover:text-blue-700 underline shadow-none">Upgrade Mission</Button>
+                                    <span className="text-[10px] font-semibold text-red-600  tracking-[0.1em]">Free Tier Limit Reached • Enrollment Offline</span>
+                                    <Button variant="link" className="h-auto p-0 text-[10px] font-semibold  text-blue-600 hover:text-blue-700 underline shadow-none">Upgrade Mission</Button>
                                 </div>
                             )}
                         </div>

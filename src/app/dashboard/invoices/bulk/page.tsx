@@ -307,7 +307,7 @@ export default function BulkInvoicePage() {
                                         </div>
                                     ) : (
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-                                            <div className="text-xs font-bold uppercase text-muted" style={{ letterSpacing: '0.05em', marginBottom: 'var(--spacing-md)' }}>Available Fee Structures</div>
+                                            <div className="text-xs font-bold  text-muted" style={{ letterSpacing: '0.05em', marginBottom: 'var(--spacing-md)' }}>Available Fee Structures</div>
                                             {feeStructures.map(fs => (
                                                 <div
                                                     key={fs.id}
@@ -341,7 +341,7 @@ export default function BulkInvoicePage() {
                                                         </div>
                                                         <div>
                                                             <div className="font-semibold text-sm">{fs.name}</div>
-                                                            <div className="text-xs text-muted" style={{ textTransform: 'uppercase' }}>{fs.category || 'GENERAL'} • {fs.classId ? fs.class?.name : 'All Classes'}</div>
+                                                            <div className="text-xs text-muted" style={{ textTransform: '' }}>{fs.category || 'GENERAL'} • {fs.classId ? fs.class?.name : 'All Classes'}</div>
                                                         </div>
                                                     </div>
                                                     <div className="font-semibold">{formatCurrency(fs.amount)}</div>

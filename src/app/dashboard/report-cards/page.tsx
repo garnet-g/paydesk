@@ -116,7 +116,7 @@ export default function ReportCardsPage() {
             <div className="flex-1 space-y-8 p-8 pt-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div>
-                        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Report Cards</h2>
+                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white ">Report Cards</h2>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">
                             Generate and print terminal report cards for students and classes.
                         </p>
@@ -127,7 +127,7 @@ export default function ReportCardsPage() {
                     <CardHeader className="bg-slate-50/80 dark:bg-slate-900/50 pb-6 border-b border-slate-100 dark:border-slate-800">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-2">
-                                <Label htmlFor="period" className="text-slate-700 dark:text-slate-300 font-bold uppercase text-[10px] tracking-widest ml-1">1. Term Selection</Label>
+                                <Label htmlFor="period" className="text-slate-700 dark:text-slate-300 font-bold  text-[10px]  ml-1">1. Term Selection</Label>
                                 <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                                     <SelectTrigger id="period" className="h-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
                                         <SelectValue placeholder="Select Term" />
@@ -141,7 +141,7 @@ export default function ReportCardsPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="exam" className="text-slate-700 dark:text-slate-300 font-bold uppercase text-[10px] tracking-widest ml-1">2. Exam Source</Label>
+                                <Label htmlFor="exam" className="text-slate-700 dark:text-slate-300 font-bold  text-[10px]  ml-1">2. Exam Source</Label>
                                 <Select value={selectedExam} onValueChange={setSelectedExam} disabled={loadingExams || exams.length === 0}>
                                     <SelectTrigger id="exam" className="h-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
                                         <SelectValue placeholder={loadingExams ? "Syncing..." : exams.length === 0 ? "No exams" : "Select Exam"} />
@@ -152,7 +152,7 @@ export default function ReportCardsPage() {
                                                 <div className="flex justify-between items-center w-full gap-4">
                                                     <span className="font-medium text-slate-700 dark:text-slate-300">{e.name}</span>
                                                     <Badge variant={e.status === 'FINALIZED' ? 'default' : 'secondary'} className={cn(
-                                                        "text-[9px] font-black h-4 uppercase tracking-tighter",
+                                                        "text-[9px] font-semibold h-4  tracking-tight",
                                                         e.status === 'FINALIZED' ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"
                                                     )}>
                                                         {e.status}
@@ -165,7 +165,7 @@ export default function ReportCardsPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="class" className="text-slate-700 dark:text-slate-300 font-bold uppercase text-[10px] tracking-widest ml-1">3. Target Class</Label>
+                                <Label htmlFor="class" className="text-slate-700 dark:text-slate-300 font-bold  text-[10px]  ml-1">3. Target Class</Label>
                                 <Select value={selectedClass} onValueChange={setSelectedClass}>
                                     <SelectTrigger id="class" className="h-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
                                         <SelectValue placeholder="Select Class" />
@@ -185,20 +185,20 @@ export default function ReportCardsPage() {
                                 <div className="w-24 h-24 bg-slate-50 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
                                     <FileText className="h-12 w-12 text-slate-300" />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tight">Report Generator Ready</h3>
+                                <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2  tracking-tight">Report Generator Ready</h3>
                                 <p className="max-w-md text-slate-500 dark:text-slate-400 font-medium">Configure your search filters above to generate student transcripts and termly report cards.</p>
                             </div>
                         ) : loadingStudents ? (
                             <div className="p-24 text-center">
                                 <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
-                                <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Accessing Student Records...</p>
+                                <p className="font-semibold text-slate-900   text-xs">Accessing Student Records...</p>
                             </div>
                         ) : students.length === 0 ? (
                             <div className="p-24 text-center">
                                 <div className="w-24 h-24 bg-amber-50 rounded-3xl flex items-center justify-center mb-8 mx-auto shadow-inner">
                                     <Search className="h-12 w-12 text-amber-300" />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Zero Results</h3>
+                                <h3 className="text-2xl font-semibold text-slate-900 mb-2  tracking-tight">Zero Results</h3>
                                 <p className="max-w-md text-slate-500 font-medium mx-auto">We couldn't find any active students in this class. Please verify your enrollment records.</p>
                             </div>
                         ) : (
@@ -214,7 +214,7 @@ export default function ReportCardsPage() {
                                         />
                                     </div>
                                     <Button
-                                        className="h-11 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest rounded-xl px-8 shadow-lg shadow-blue-100"
+                                        className="h-11 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs   rounded-xl px-8 shadow-lg shadow-blue-100"
                                         onClick={() => toast.info("Batch processing is undergoing final testing.")}
                                     >
                                         <Printer className="mr-2 h-4 w-4" />
@@ -226,9 +226,9 @@ export default function ReportCardsPage() {
                                     <table className="w-full text-left">
                                         <thead>
                                             <tr className="bg-slate-50/50">
-                                                <th className="px-8 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest">Student Information</th>
-                                                <th className="px-8 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Admission No.</th>
-                                                <th className="px-8 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-right">PDF Generator</th>
+                                                <th className="px-8 py-5 text-[10px] font-semibold text-slate-900  ">Student Information</th>
+                                                <th className="px-8 py-5 text-[10px] font-semibold text-slate-900   text-center">Admission No.</th>
+                                                <th className="px-8 py-5 text-[10px] font-semibold text-slate-900   text-right">PDF Generator</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100">
@@ -236,7 +236,7 @@ export default function ReportCardsPage() {
                                                 <tr key={student.id} className="hover:bg-slate-50 transition-colors group">
                                                     <td className="px-8 py-5">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-black text-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-semibold text-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
                                                                 {student.firstName[0]}{student.lastName[0]}
                                                             </div>
                                                             <span className="font-bold text-slate-900 text-base">
@@ -265,7 +265,7 @@ export default function ReportCardsPage() {
                                         </tbody>
                                     </table>
                                     {filteredStudents.length === 0 && (
-                                        <div className="p-12 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">
+                                        <div className="p-12 text-center text-slate-400 font-bold   text-xs">
                                             No matching records for "{searchTerm}"
                                         </div>
                                     )}
