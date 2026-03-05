@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import Link from 'next/link'
-import { School, DollarSign, Users, TrendingUp, FileText, Upload, Layers, BarChart3, Smartphone, AlertTriangle, Activity, Wifi, Server, Mail as MailIcon, PlusCircle, Settings, ShieldCheck } from 'lucide-react'
+import { School, DollarSign, Users, TrendingUp, FileText, Upload, Layers, BarChart3, Smartphone, AlertTriangle, Activity, Wifi, Server, Mail as MailIcon, PlusCircle, Settings, ShieldCheck, PieChart as PieChartIcon } from 'lucide-react'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie } from 'recharts'
 
 export default function DashboardPage() {
     const { data: session, status } = useSession()
@@ -504,6 +505,128 @@ export default function DashboardPage() {
                         )
                     })}
                 </div>
+
+                {/* Visual Analytics Section */}
+                {(role === 'PRINCIPAL' || role === 'SUPER_ADMIN') && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--spacing-xl)', marginBottom: 'var(--spacing-xl)' }}>
+                        <div className="card" style={{ height: '400px', display: 'flex', flexDirection: 'column' }}>
+                            <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div>
+                                        <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>Revenue & Collections</h3>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', margin: 0 }}>Trend analysis for the current term</p>
+                                    </div>
+                                    <div style={{ padding: '8px', background: 'var(--primary-50)', color: 'var(--primary-600)', borderRadius: '10px' }}>
+                                        <Activity size={18} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ flex: 1, padding: 'var(--spacing-xl) var(--spacing-md) var(--spacing-md) 0' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={[
+                                        { name: 'Week 1', revenue: 120000, collections: 80000 },
+                                        { name: 'Week 2', revenue: 250000, collections: 140000 },
+                                        { name: 'Week 3', revenue: 410000, collections: 290000 },
+                                        { name: 'Week 4', revenue: 580000, collections: 420000 },
+                                        { name: 'Week 5', revenue: 720000, collections: 510000 },
+                                        { name: 'Week 6', revenue: 850000, collections: 680000 },
+                                    ]}>
+                                        <defs>
+                                            <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="var(--primary-500)" stopOpacity={0.1} />
+                                                <stop offset="95%" stopColor="var(--primary-500)" stopOpacity={0} />
+                                            </linearGradient>
+                                            <linearGradient id="colorColl" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="var(--success-500)" stopOpacity={0.1} />
+                                                <stop offset="95%" stopColor="var(--success-500)" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <XAxis dataKey="name" fontSize={10} axisLine={false} tickLine={false} />
+                                        <YAxis fontSize={10} axisLine={false} tickLine={false} tickFormatter={(v) => `K${v / 1000}k`} />
+                                        <Tooltip
+                                            contentStyle={{
+                                                background: 'var(--card-bg)',
+                                                border: '1px solid var(--border)',
+                                                borderRadius: '12px',
+                                                boxShadow: 'var(--shadow-lg)',
+                                                fontSize: '12px'
+                                            }}
+                                        />
+                                        <Area type="monotone" dataKey="revenue" stroke="var(--primary-600)" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />
+                                        <Area type="monotone" dataKey="collections" stroke="var(--success-600)" fillOpacity={1} fill="url(#colorColl)" strokeWidth={3} />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        <div className="card" style={{ height: '400px', display: 'flex', flexDirection: 'column' }}>
+                            <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div>
+                                        <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>Fee Breakdown</h3>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', margin: 0 }}>Category distribution</p>
+                                    </div>
+                                    <div style={{ padding: '8px', background: 'var(--warning-50)', color: 'var(--warning-600)', borderRadius: '10px' }}>
+                                        <PieChartIcon size={18} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ flex: 1, position: 'relative' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={[
+                                                { name: 'Tuition', value: 400, color: '#4f46e5' },
+                                                { name: 'Transport', value: 300, color: '#10b981' },
+                                                { name: 'Feeding', value: 300, color: '#f59e0b' },
+                                                { name: 'Activities', value: 200, color: '#ec4899' },
+                                            ]}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={100}
+                                            paddingAngle={5}
+                                            dataKey="value"
+                                        >
+                                            {[
+                                                { name: 'Tuition', value: 400, color: '#4f46e5' },
+                                                { name: 'Transport', value: 300, color: '#10b981' },
+                                                { name: 'Feeding', value: 300, color: '#f59e0b' },
+                                                { name: 'Activities', value: 200, color: '#ec4899' },
+                                            ].map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    textAlign: 'center'
+                                }}>
+                                    <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>1.2M</div>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--neutral-500)', fontWeight: 700, textTransform: 'uppercase' }}>Total</div>
+                                </div>
+                            </div>
+                            <div style={{ padding: 'var(--spacing-lg)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                {[
+                                    { name: 'Tuition', color: '#4f46e5' },
+                                    { name: 'Transport', color: '#10b981' },
+                                    { name: 'Feeding', color: '#f59e0b' },
+                                    { name: 'Other', color: '#ec4899' },
+                                ].map(item => (
+                                    <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: item.color }} />
+                                        <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{item.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Recent Payments */}
                 <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
