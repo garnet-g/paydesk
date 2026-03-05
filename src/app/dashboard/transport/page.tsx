@@ -61,12 +61,12 @@ export default function TransportManagementPage() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-white">Transport Management</h1>
-                        <p className="text-slate-500 dark:text-slate-400">Manage routes and vehicle assignments</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-white italic uppercase">Transport</h1>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">Coordinate school transport and driver schedules</p>
                     </div>
-                    <Button className="h-11 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-foreground dark:hover:bg-muted rounded-xl px-6 font-semibold shadow-lg">
+                    <Button className="h-11 bg-slate-900 hover:bg-slate-800 text-slate-50 dark:bg-white dark:text-foreground dark:hover:bg-muted rounded-xl px-6 font-semibold shadow-lg">
                         <Plus size={18} className="mr-2" />
-                        Add Route
+                        New Route
                     </Button>
                 </div>
 
@@ -77,7 +77,7 @@ export default function TransportManagementPage() {
                             <Bus size={20} />
                         </div>
                         <div>
-                            <p className="text-[10px]  tracking-wider font-bold text-slate-400">Total Vehicles</p>
+                            <p className="text-[10px] tracking-wider font-bold text-slate-400 uppercase italic">Fleets</p>
                             <p className="text-lg font-bold">12 Active</p>
                         </div>
                     </div>
@@ -86,7 +86,7 @@ export default function TransportManagementPage() {
                             <Users size={20} />
                         </div>
                         <div>
-                            <p className="text-[10px]  tracking-wider font-bold text-slate-400">Students Transported</p>
+                            <p className="text-[10px] tracking-wider font-bold text-slate-400 uppercase italic">Commuters</p>
                             <p className="text-lg font-bold">342 Daily</p>
                         </div>
                     </div>
@@ -95,8 +95,8 @@ export default function TransportManagementPage() {
                             <MapPin size={20} />
                         </div>
                         <div>
-                            <p className="text-[10px]  tracking-wider font-bold text-slate-400">Active Routes</p>
-                            <p className="text-lg font-bold">8 Established</p>
+                            <p className="text-[10px] tracking-wider font-bold text-slate-400 uppercase italic">Network</p>
+                            <p className="text-lg font-bold">8 Active</p>
                         </div>
                     </div>
                     <div className="p-4 bg-white dark:bg-slate-950 rounded-2xl ring-1 ring-slate-100 dark:ring-slate-900 shadow-sm flex items-center gap-4">
@@ -104,8 +104,8 @@ export default function TransportManagementPage() {
                             <ShieldCheck size={20} />
                         </div>
                         <div>
-                            <p className="text-[10px]  tracking-wider font-bold text-slate-400">Safety Status</p>
-                            <p className="text-lg font-bold">Certified</p>
+                            <p className="text-[10px] tracking-wider font-bold text-slate-400 uppercase italic">Safety</p>
+                            <p className="text-lg font-bold italic">Certified</p>
                         </div>
                     </div>
                 </div>
@@ -171,11 +171,11 @@ export default function TransportManagementPage() {
                             </CardContent>
 
                             <CardFooter className="p-8 pt-0 flex justify-end gap-3">
-                                <Button variant="ghost" className="h-10 rounded-xl text-primary-600 hover:bg-primary-50 font-bold text-xs">
+                                <Button variant="ghost" className="h-10 rounded-xl text-primary-600 hover:bg-primary-50 font-bold text-xs italic">
                                     Edit Route
                                 </Button>
-                                <Button variant="outline" className="h-10 rounded-xl border-primary-100 text-primary-700 font-bold text-xs bg-primary-50/30 hover:bg-primary-50">
-                                    Manage Registry
+                                <Button variant="outline" className="h-10 rounded-xl border-primary-100 text-primary-700 font-bold text-xs bg-primary-50/30 hover:bg-primary-50 italic">
+                                    Student Roster
                                 </Button>
                             </CardFooter>
                         </Card>

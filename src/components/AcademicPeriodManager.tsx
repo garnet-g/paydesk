@@ -60,7 +60,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                     endDate: '',
                     isActive: false
                 })
-                toast.success("Academic period initialized")
+                toast.success("Academic term created")
             } else {
                 const txt = await res.text()
                 setError(txt)
@@ -235,7 +235,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                         className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-foreground dark:hover:text-white"
                                         onClick={() => setShowForm(false)}
                                     >
-                                        ABORT
+                                        Cancel
                                     </Button>
                                     <Button
                                         type="submit"
@@ -245,7 +245,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                         {loading ? <Loader2 className="animate-spin" size={18} /> : (
                                             <>
                                                 <Check size={18} className="mr-2" />
-                                                INITIALIZE CYCLE
+                                                Create Term
                                             </>
                                         )}
                                     </Button>
@@ -320,7 +320,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                                         size="sm"
                                                         className="h-10 w-10 p-0 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-900/20 text-slate-300 transition-colors"
                                                         onClick={() => activatePeriod(p.id)}
-                                                        title="Deploy As Primary"
+                                                        title="Activate"
                                                     >
                                                         <Check size={18} />
                                                     </Button>
@@ -336,7 +336,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                                     )}
                                                     onClick={() => !p.isActive && deletePeriod(p.id)}
                                                     disabled={p.isActive}
-                                                    title="Purge Cycle"
+                                                    title="Delete"
                                                 >
                                                     <Trash2 size={16} />
                                                 </Button>

@@ -456,19 +456,19 @@ export default function PaymentsPage() {
         <DashboardLayout>
             <div className="animate-fade-in">
                 {/* Page Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
-                    <div style={{ flex: '1 1 300px' }}>
-                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">Payments</h2>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium">
-                            {isSuperAdmin ? 'Monitor school-wide payments' : isParent ? 'Manage your school fees and history' : 'Manage student payment records'}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div className="space-y-1">
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-white uppercase italic">Payments</h1>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium italic">
+                            {isSuperAdmin ? 'School-wide financial oversight' : isParent ? 'Your school fee records and history' : 'Student payment management'}
                         </p>
                     </div>
 
-                    <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div className="flex flex-wrap items-center gap-3">
                         {isAdmin && (
                             <>
                                 <Button
-                                    className="h-10 px-4 rounded-lg bg-slate-900 border-none hover:bg-slate-800 text-white font-medium shadow-none dark:bg-muted dark:text-foreground dark:hover:bg-slate-200 transition-colors"
+                                    className="h-11 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] uppercase tracking-widest shadow-lg dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
                                     onClick={() => setShowManualModal(true)}
                                 >
                                     <Plus size={16} className="mr-2" />
@@ -476,7 +476,7 @@ export default function PaymentsPage() {
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    className="h-10 px-4 rounded-lg font-medium border-border dark:border-slate-800"
+                                    className="h-11 px-6 rounded-xl font-bold text-[10px] uppercase tracking-widest border-border dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
                                     onClick={() => setShowBankModal(true)}
                                 >
                                     <Landmark size={16} className="mr-2" />
@@ -484,54 +484,33 @@ export default function PaymentsPage() {
                                 </Button>
                             </>
                         )}
-                        {(isAdmin) && (
-                            <div style={{ display: 'flex', background: 'var(--neutral-100)', padding: '4px', borderRadius: 'var(--radius-lg)', gap: '2px', width: '100%', smWidth: 'auto' } as any}>
+                        {isAdmin && (
+                            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-2xl border border-border dark:border-slate-800">
                                 <button
                                     onClick={() => setActiveTab('ledger')}
-                                    style={{
-                                        flex: 1,
-                                        padding: '8px 16px',
-                                        borderRadius: 'var(--radius-md)',
-                                        fontSize: '0.8125rem',
-                                        fontWeight: 600,
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s',
-                                        background: activeTab === 'ledger' ? 'white' : 'transparent',
-                                        color: activeTab === 'ledger' ? 'var(--primary-700)' : 'var(--muted-foreground)',
-                                        boxShadow: activeTab === 'ledger' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none'
-                                    }}
+                                    className={cn(
+                                        "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic",
+                                        activeTab === 'ledger'
+                                            ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm"
+                                            : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                    )}
                                 >
-                                    Transactions
+                                    Ledger
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('approvals')}
-                                    style={{
-                                        flex: 1,
-                                        padding: '8px 16px',
-                                        borderRadius: 'var(--radius-md)',
-                                        fontSize: '0.8125rem',
-                                        fontWeight: 600,
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s',
-                                        background: activeTab === 'approvals' ? 'white' : 'transparent',
-                                        color: activeTab === 'approvals' ? 'var(--warning-700)' : 'var(--muted-foreground)',
-                                        boxShadow: activeTab === 'approvals' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '6px'
-                                    }}
+                                    className={cn(
+                                        "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 italic",
+                                        activeTab === 'approvals'
+                                            ? "bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-sm"
+                                            : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                    )}
                                 >
                                     Approvals
                                     {pendingApprovalCount > 0 && (
-                                        <span style={{
-                                            width: '18px', height: '18px', borderRadius: '50%',
-                                            background: 'var(--warning-500)', color: 'white',
-                                            fontSize: '0.6875rem', fontWeight: 700,
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                                        }}>{pendingApprovalCount}</span>
+                                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white text-[9px] font-black shadow-sm">
+                                            {pendingApprovalCount}
+                                        </span>
                                     )}
                                 </button>
                             </div>
@@ -540,23 +519,21 @@ export default function PaymentsPage() {
                 </div>
 
                 {/* Filter Bar */}
-                <div className="card" style={{ marginBottom: 'var(--spacing-lg)', padding: 'var(--spacing-md)' }}>
-                    <div className="flex sm:flex-col lg:flex-row gap-md items-center sm:items-stretch">
-                        <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
-                            <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+                <div className="bg-white dark:bg-slate-950 p-6 rounded-[2rem] border border-border dark:border-slate-800 mb-8 shadow-sm">
+                    <div className="flex flex-col lg:flex-row gap-6 items-center">
+                        <div className="relative flex-1 w-full">
+                            <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="text"
-                                placeholder="Search transactions..."
-                                className="form-input"
-                                style={{ paddingLeft: '40px' }}
+                                placeholder="Search payments by student or reference..."
+                                className="w-full h-14 pl-14 pr-6 bg-slate-50 dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl font-medium focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                             />
                         </div>
 
-                        <div className="flex gap-md sm:flex-col md:flex-row">
+                        <div className="flex flex-wrap gap-4 w-full lg:w-auto">
                             {isSuperAdmin && (
                                 <select
-                                    className="form-select"
-                                    style={{ minWidth: '160px' }}
+                                    className="h-14 px-6 bg-slate-50 dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl font-bold text-[10px] uppercase tracking-widest outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                                     value={filters.schoolId}
                                     onChange={(e) => setFilters({ ...filters, schoolId: e.target.value })}
                                 >
@@ -566,32 +543,36 @@ export default function PaymentsPage() {
                             )}
 
                             <select
-                                className="form-select"
-                                style={{ minWidth: '140px' }}
+                                className="h-14 px-6 bg-slate-50 dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl font-bold text-[10px] uppercase tracking-widest outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                                 value={filters.status}
                                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                             >
-                                <option value="">All Status</option>
+                                <option value="">Status: All</option>
                                 <option value="COMPLETED">Completed</option>
                                 <option value="PENDING">Pending</option>
                                 <option value="FAILED">Failed</option>
                                 <option value="DISPUTED">Disputed</option>
                             </select>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-                                <button
-                                    className="btn btn-ghost btn-sm"
+                            <div className="flex items-center gap-3">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-14 w-14 rounded-2xl border border-border dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900"
                                     onClick={fetchPayments}
                                     title="Refresh"
-                                    style={{ padding: '8px', flex: 1 }}
                                 >
-                                    <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-                                </button>
+                                    <RefreshCw size={20} className={cn("text-slate-400", loading && "animate-spin")} />
+                                </Button>
                                 {isAdmin && (
-                                    <button className="btn btn-secondary btn-sm" onClick={() => window.open('/api/payments/export', '_blank')} style={{ flex: 3 }}>
-                                        <Download size={14} />
+                                    <Button
+                                        variant="outline"
+                                        className="h-14 px-8 rounded-2xl border-border dark:border-slate-800 font-bold text-[10px] uppercase tracking-widest italic"
+                                        onClick={() => window.open('/api/payments/export', '_blank')}
+                                    >
+                                        <Download size={16} className="mr-2" />
                                         Export CSV
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </div>
@@ -601,10 +582,10 @@ export default function PaymentsPage() {
                 {activeTab === 'approvals' ? (
                     /* =================== APPROVALS TAB =================== */
                     <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
+                        <div className="p-8 border-b border-border dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
                             <div>
-                                <h3 className="card-title">Pending Approvals</h3>
-                                <p className="card-description">Cancellations and adjustments that need your review</p>
+                                <h3 className="text-xl font-bold text-foreground dark:text-white uppercase italic">Pending Authorizations</h3>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 italic">Financial adjustments requiring review</p>
                             </div>
                         </div>
 
@@ -711,13 +692,9 @@ export default function PaymentsPage() {
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }} className="lg:col-span-5">
                                     {/* Active Invoices Card */}
                                     <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                                        <div style={{
-                                            padding: 'var(--spacing-lg) var(--spacing-xl)',
-                                            background: 'linear-gradient(135deg, var(--primary-600), var(--primary-700))',
-                                            color: 'white'
-                                        }}>
-                                            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '2px' }}>Outstanding Invoices</h3>
-                                            <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>Pending fee balances</p>
+                                        <div className="p-8 bg-blue-600 text-white rounded-t-[2rem]">
+                                            <h3 className="text-lg font-bold uppercase italic">Pending Balances</h3>
+                                            <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mt-1 italic">Active Student Invoices</p>
                                         </div>
                                         <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
                                             {loading && invoices.length === 0 ? (
@@ -726,15 +703,10 @@ export default function PaymentsPage() {
                                                 </div>
                                             ) : invoices.length === 0 ? (
                                                 <div style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                                                    <div style={{
-                                                        width: '56px', height: '56px',
-                                                        background: 'var(--success-50)', color: 'var(--success-600)',
-                                                        borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                        margin: '0 auto var(--spacing-md)'
-                                                    }}>
-                                                        <CheckCircle size={28} />
+                                                    <div className="h-16 w-16 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                                                        <CheckCircle size={32} />
                                                     </div>
-                                                    <p className="text-muted-foreground font-medium text-sm">All accounts are clear.</p>
+                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] italic">All Accounts are Settled</p>
                                                 </div>
                                             ) : (
                                                 invoices.map(invoice => (
@@ -785,10 +757,10 @@ export default function PaymentsPage() {
                                     {/* Active Payment Plans */}
                                     {commitments.length > 0 && (
                                         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                                            <div className="card-header" style={{ background: 'var(--neutral-800)', color: 'white', borderBottom: 'none', padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
+                                            <div className="p-8 bg-slate-900 text-white rounded-t-[2rem] border-b border-white/10">
                                                 <div>
-                                                    <h3 className="card-title" style={{ color: 'white' }}>Active Payment Plans</h3>
-                                                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', margin: 0 }}>Installment tracking</p>
+                                                    <h3 className="text-lg font-bold uppercase italic">Payment Plans</h3>
+                                                    <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mt-1 italic">Active installment tracking</p>
                                                 </div>
                                             </div>
                                             <div>
@@ -849,9 +821,11 @@ export default function PaymentsPage() {
                                                     </tr>
                                                 ) : payments.length === 0 ? (
                                                     <tr>
-                                                        <td colSpan={8} style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                                                            <DollarSign size={48} style={{ opacity: 0.15, marginBottom: 'var(--spacing-md)' }} />
-                                                            <p className="text-muted-foreground">No transactions found.</p>
+                                                        <td colSpan={8} className="text-center py-20 bg-slate-50/50 dark:bg-slate-900/50">
+                                                            <div className="h-16 w-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border dark:border-slate-800 shadow-sm text-slate-300">
+                                                                <DollarSign size={32} />
+                                                            </div>
+                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">No payment history available</p>
                                                         </td>
                                                     </tr>
                                                 ) : (
@@ -865,8 +839,8 @@ export default function PaymentsPage() {
                                                                 <td className="text-sm font-semibold">{payment.school?.name}</td>
                                                             )}
                                                             <td>
-                                                                <div className="font-semibold text-sm">{payment.student?.firstName} {payment.student?.lastName}</div>
-                                                                <div className="text-xs text-muted-foreground">Adm: {payment.student?.admissionNumber}</div>
+                                                                <div className="font-bold text-sm text-foreground dark:text-white">{payment.student?.firstName} {payment.student?.lastName}</div>
+                                                                <div className="text-[10px] font-bold text-slate-400 uppercase italic">Admission: {payment.student?.admissionNumber}</div>
                                                             </td>
                                                             <td>
                                                                 <span className="font-semibold">{formatCurrency(payment.amount)}</span>
@@ -921,13 +895,13 @@ export default function PaymentsPage() {
                 {showCommitModal && (
                     <div className="modal-overlay" onClick={() => setShowCommitModal(false)}>
                         <div className="modal-content" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
-                            <div className="modal-header" style={{ background: 'var(--neutral-800)', color: 'white', borderBottom: 'none' }}>
+                            <div className="p-8 bg-slate-900 text-white rounded-t-[2.5rem] border-b border-white/5 flex items-center justify-between">
                                 <div>
-                                    <h3 className="modal-title" style={{ color: 'white' }}>Setup Payment Plan</h3>
-                                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', margin: 0 }}>Installment schedule</p>
+                                    <h3 className="text-xl font-bold uppercase italic">Setup Payment Plan</h3>
+                                    <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mt-1 italic">Structured Installment schedule</p>
                                 </div>
-                                <button className="btn btn-ghost btn-sm" onClick={() => setShowCommitModal(false)} style={{ color: 'rgba(255,255,255,0.6)' }}>
-                                    <X size={20} />
+                                <button className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors" onClick={() => setShowCommitModal(false)}>
+                                    <X size={20} className="opacity-60" />
                                 </button>
                             </div>
 
@@ -1006,8 +980,8 @@ export default function PaymentsPage() {
                                         }} />
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative' }}>
                                             <div>
-                                                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '2px' }}>Payment Checkout</h3>
-                                                <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>Secure M-Pesa payment</p>
+                                                <h3 className="text-xl font-bold uppercase italic text-white">Checkout</h3>
+                                                <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mt-1 italic text-white">Secure M-Pesa payment</p>
                                             </div>
                                             <button onClick={() => setShowPayModal(false)} style={{
                                                 background: 'rgba(255,255,255,0.15)',

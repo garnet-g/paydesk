@@ -152,17 +152,17 @@ export default function DashboardPage() {
                                 <AlertTriangle className="h-5 w-5 text-amber-600" />
                             </div>
                             <div>
-                                <p className="font-semibold text-xs  ">Action Required</p>
+                                <p className="font-semibold text-xs">Attention Needed</p>
                                 <p className="text-xs font-semibold">{pendingApprovals.length} Payment adjustments are awaiting your authorization.</p>
                             </div>
                         </div>
                         <Button
                             size="sm"
                             variant="outline"
-                            className="rounded-xl border-amber-200 font-bold text-[10px]   hover:bg-amber-100 text-amber-800"
+                            className="rounded-xl border-amber-200 font-bold text-[10px] hover:bg-amber-100 text-amber-800"
                             onClick={() => router.push('/dashboard/payments?tab=approvals')}
                         >
-                            Authorize Now
+                            Review Now
                         </Button>
                     </div>
                 )}
@@ -176,14 +176,14 @@ export default function DashboardPage() {
                         <div className="space-y-3">
                             <div className="flex items-center gap-2">
                                 <div className="h-2 w-8 bg-blue-600 rounded-full"></div>
-                                <span className="text-blue-400 font-semibold text-[10px]  tracking-[0.3em]">Institutional Pulse</span>
+                                <span className="text-blue-400 font-semibold text-[10px] uppercase tracking-[0.3em]">School Overview</span>
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-semibold text-white tracking-tight  leading-none">
-                                GREETINGS, <br className="md:hidden" /> {session.user.name?.split(' ')[0]}!
+                            <h1 className="text-4xl md:text-5xl font-semibold text-slate-50 tracking-tight leading-none uppercase italic">
+                                Welcome back, <br className="md:hidden" /> {session.user.name?.split(' ')[0]}!
                             </h1>
                             <p className="text-slate-400 font-medium text-lg max-w-lg leading-relaxed">
-                                {role === 'SUPER_ADMIN' && 'Global orchestration of your school ecosystem.'}
-                                {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && `Performance analysis for ${session.user.schoolName}.`}
+                                {role === 'SUPER_ADMIN' && 'Manage all your school operations in one place.'}
+                                {(role === 'PRINCIPAL' || role === 'FINANCE_MANAGER') && `Daily tracking for ${session.user.schoolName}.`}
                                 {role === 'PARENT' && 'Real-time academic and financial tracking for your children.'}
                             </p>
                         </div>
@@ -204,10 +204,10 @@ export default function DashboardPage() {
                                     </div>
                                 </div>
                                 <Button
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[10px]   h-14 px-8 rounded-2xl shadow-xl shadow-blue-500/20"
+                                    className="bg-blue-600 hover:bg-blue-700 text-slate-50 font-semibold text-[10px] h-14 px-8 rounded-2xl shadow-xl shadow-blue-500/20"
                                     onClick={() => router.push('/dashboard/reports')}
                                 >
-                                    View Reports
+                                    Analytics
                                 </Button>
                             </div>
                         )}
@@ -271,8 +271,8 @@ export default function DashboardPage() {
                     <Card className="lg:col-span-2 border-none shadow-2xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
                         <CardHeader className="bg-muted/50 border-b border-slate-50 p-8 flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle className="text-xl font-semibold text-foreground  tracking-tight">Financial Stream</CardTitle>
-                                <CardDescription className="text-slate-500 font-medium">Recent transactions across monitoring portals</CardDescription>
+                                <CardTitle className="text-xl font-semibold text-foreground tracking-tight italic uppercase">Recent Activity</CardTitle>
+                                <CardDescription className="text-slate-500 font-medium">Latest school-wide financial transactions</CardDescription>
                             </div>
                             <Button variant="ghost" className="rounded-xl text-blue-600 font-bold hover:bg-blue-50" onClick={() => router.push('/dashboard/payments')}>
                                 VIEW ALL <ChevronRight size={16} className="ml-1" />
@@ -291,7 +291,7 @@ export default function DashboardPage() {
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
                                         {paymentsLoading ? (
-                                            <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-bold animate-pulse   text-xs">Syncing Ledger...</td></tr>
+                                            <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-bold animate-pulse text-xs">Updating transactions...</td></tr>
                                         ) : recentPayments.length === 0 ? (
                                             <tr><td colSpan={4} className="p-12 text-center text-slate-400 font-medium">No transactions found.</td></tr>
                                         ) : (

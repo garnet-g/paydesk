@@ -16,7 +16,7 @@ export async function GET(req: Request) {
         const staffMembers = await prisma.user.findMany({
             where: {
                 schoolId: session.user.schoolId,
-                role: { in: ['PRINCIPAL', 'FINANCE_MANAGER'] }
+                role: { in: ['PRINCIPAL', 'FINANCE_MANAGER', 'TEACHER', 'REGISTRAR', 'BURSAR'] }
             },
             orderBy: { createdAt: 'desc' },
             select: {
@@ -28,7 +28,8 @@ export async function GET(req: Request) {
                 role: true,
                 isActive: true,
                 createdAt: true,
-                lastLogin: true
+                lastLogin: true,
+                salary: true
             }
         })
 
@@ -48,13 +49,14 @@ export async function POST(req: Request) {
 
     try {
         const data = await req.json()
-        const { firstName, lastName, email, phoneNumber, role } = data
+        const { firstName, lastName, email, phoneNumber, role, salary } = data
 
         if (email && !isOfficialEmail(email)) {
             return new NextResponse('Staff email must be an official domain email', { status: 400 })
         }
 
-        if (!['FINANCE_MANAGER'].includes(role)) {
+        const allowedRoles = ['FINANCE_MANAGER', 'TEACHER', 'REGISTRAR', 'BURSAR']
+        if (!allowedRoles.includes(role)) {
             return new NextResponse('Invalid Role', { status: 400 })
         }
 
@@ -73,6 +75,7 @@ export async function POST(req: Request) {
                 email,
                 phoneNumber,
                 role,
+                salary: salary || 0,
                 schoolId: session.user.schoolId,
                 password: hashedPassword,
                 requiresPasswordChange: true
@@ -86,7 +89,7 @@ export async function POST(req: Request) {
                 entityId: newStaff.id,
                 userId: session.user.id,
                 schoolId: session.user.schoolId,
-                details: JSON.stringify({ email: newStaff.email, role: newStaff.role })
+                details: JSON.stringify({ email: newStaff.email, role: newStaff.role, salary: newStaff.salary })
             }
         })
 

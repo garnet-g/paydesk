@@ -22,6 +22,7 @@ model User {
   createdAt              DateTime            @default(now())
   updatedAt              DateTime            @updatedAt
   lastLogin              DateTime?
+  salary                 Decimal?            @db.Decimal(10, 2)
   schoolId               String?
   approvedApprovals      ApprovalRequest[]   @relation("ApprovedApprovals")
   requestedApprovals     ApprovalRequest[]   @relation("RequestedApprovals")

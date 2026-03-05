@@ -10,7 +10,7 @@ export async function GET(
 ) {
     const params = await props.params;
     const session = await getServerSession(authOptions)
-    if (!session || (session.user.role !== 'PRINCIPAL' && session.user.role !== 'SUPER_ADMIN')) {
+    if (!session || (session.user.role !== 'PRINCIPAL' && session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'FINANCE_MANAGER')) {
         return new NextResponse('Unauthorized', { status: 401 })
     }
 
@@ -32,6 +32,18 @@ export async function GET(
                             }
                         }
                     }
+                },
+                attendance: {
+                    orderBy: { date: 'desc' },
+                    take: 20
+                },
+                examResults: {
+                    include: { exam: true },
+                    orderBy: { createdAt: 'desc' }
+                },
+                invoices: {
+                    include: { items: true },
+                    orderBy: { createdAt: 'desc' }
                 }
             }
         })
@@ -42,6 +54,7 @@ export async function GET(
 
         return NextResponse.json(student)
     } catch (error) {
+        console.error('Failed to fetch student details:', error)
         return new NextResponse('Internal Server Error', { status: 500 })
     }
 }

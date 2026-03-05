@@ -21,7 +21,8 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
         lastName: '',
         email: '',
         phoneNumber: '',
-        role: 'FINANCE_MANAGER'
+        role: 'FINANCE_MANAGER',
+        salary: ''
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -32,28 +33,33 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
         const publicDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'zoho.com', 'protonmail.com']
         const domain = formData.email.split('@')[1]?.toLowerCase()
         if (publicDomains.includes(domain)) {
-            toast.error("SECURITY PROTOCOL: Use a secure school domain email. Public providers are restricted.")
+            toast.error("Valid Email Required: Please use a professional or school domain email address.")
             return
         }
 
         setLoading(true)
         try {
+            const payload = {
+                ...formData,
+                salary: formData.salary ? parseFloat(formData.salary) : 0
+            }
+
             const res = await fetch('/api/staff', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             })
 
             if (res.ok) {
-                toast.success("NEW CADET REGISTERED: Access credentials generated")
+                toast.success("Staff Member Registered: System access has been granted.")
                 onSuccess()
                 onClose()
             } else {
                 const data = await res.text()
-                toast.error(data || 'Failed to authorize personnel account')
+                toast.error(data || 'Failed to complete staff registration')
             }
         } catch (err) {
-            toast.error('System error during personnel registration')
+            toast.error('An error occurred during registration')
         } finally {
             setLoading(false)
         }
@@ -68,8 +74,8 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                         <ShieldCheck size={28} />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black uppercase tracking-tighter italic">Register Staff</h3>
-                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">Authorized Personnel Registry</p>
+                        <h3 className="text-2xl font-black uppercase tracking-tighter italic">Add Staff Member</h3>
+                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">School Personnel Directory</p>
                     </div>
                 </div>
                 <Button variant="ghost" size="icon" className="h-10 w-10 text-white/50 hover:text-white hover:bg-white/10 rounded-xl relative z-10" onClick={onClose}>
@@ -105,7 +111,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Secure Email (School Domain)</Label>
+                        <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Work Email</Label>
                         <Input
                             type="email"
                             className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
@@ -115,13 +121,13 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                             required
                         />
                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1 italic flex items-center gap-1">
-                            <Info size={10} className="text-blue-500" /> Public providers (Gmail/Yahoo) restricted.
+                            <Info size={10} className="text-blue-500" /> Use a school-issued email for security.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Comms Frequency (Phone)</Label>
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number</Label>
                             <Input
                                 type="tel"
                                 className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
@@ -132,17 +138,33 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deployment Role</Label>
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Designated Role</Label>
                             <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
                                 <SelectTrigger className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl">
-                                    <SelectItem value="FINANCE_MANAGER" className="font-bold">FINANCE MANAGER</SelectItem>
-                                    <SelectItem value="REGISTRAR" className="font-bold">REGISTRAR</SelectItem>
-                                    <SelectItem value="BURSAR" className="font-bold">BURSAR</SelectItem>
+                                    <SelectItem value="FINANCE_MANAGER" className="font-bold text-xs uppercase tracking-widest">FINANCE MANAGER</SelectItem>
+                                    <SelectItem value="REGISTRAR" className="font-bold text-xs uppercase tracking-widest">REGISTRAR</SelectItem>
+                                    <SelectItem value="BURSAR" className="font-bold text-xs uppercase tracking-widest">BURSAR</SelectItem>
+                                    <SelectItem value="TEACHER" className="font-bold text-xs uppercase tracking-widest">TEACHER</SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Salary Package (Monthly)</Label>
+                        <div className="relative">
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xs">KES</div>
+                            <Input
+                                type="number"
+                                className="h-14 pl-12 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
+                                placeholder="0.00"
+                                value={formData.salary}
+                                onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
+                                required
+                            />
                         </div>
                     </div>
 
@@ -151,9 +173,9 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                             <Lock size={20} />
                         </div>
                         <div className="flex-1">
-                            <div className="text-[10px] font-black uppercase tracking-widest mb-1 italic">Security Credentials</div>
+                            <div className="text-[10px] font-black uppercase tracking-widest mb-1 italic">Access Details</div>
                             <p className="text-[10px] font-medium leading-relaxed italic uppercase tracking-tighter opacity-80">
-                                Default Cipher: <span className="font-black text-blue-600 dark:text-blue-300">password123</span>. Mandatory reset required upon first sector entry.
+                                Temporary Password: <span className="font-black text-blue-600 dark:text-blue-300">password123</span>. User must change this on first login.
                             </p>
                         </div>
                     </div>
@@ -161,13 +183,13 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
 
                 <div className="flex justify-end gap-4 pt-4">
                     <Button type="button" variant="ghost" className="h-12 px-8 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-foreground dark:hover:text-white" onClick={onClose}>
-                        Abort Entry
+                        Cancel
                     </Button>
                     <Button type="submit" className="h-12 px-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-blue-200 dark:shadow-none" disabled={loading}>
                         {loading ? <Loader2 className="animate-spin" size={20} /> : (
                             <>
                                 <Save size={18} className="mr-2" />
-                                Store Personnel File
+                                Add Staff Member
                             </>
                         )}
                     </Button>

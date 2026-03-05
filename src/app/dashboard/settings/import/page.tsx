@@ -6,6 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 export default function ImportDataPage() {
     const [importType, setImportType] = useState<'STUDENTS' | 'PARENTS' | 'BALANCES'>('STUDENTS')
@@ -67,8 +68,8 @@ export default function ImportDataPage() {
                             <ArrowLeft size={20} />
                         </Link>
                         <div>
-                            <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 'var(--spacing-xs)', color: 'var(--primary-900)' }}>Data Migration Center</h2>
-                            <p className="text-muted-foreground font-medium">Bulk initialize your school ecosystem with precision</p>
+                            <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 'var(--spacing-xs)', color: 'var(--primary-900)' }}>Data Management Hub</h2>
+                            <p className="text-muted-foreground font-medium">Bulk import your school data with precision</p>
                         </div>
                     </div>
                     <div className="hidden md:flex items-center gap-md px-lg py-md bg-primary-50 rounded-2xl border border-primary-100/50">
@@ -110,9 +111,9 @@ export default function ImportDataPage() {
                                 "text-[10px] font-black uppercase tracking-widest mt-sm transition-colors",
                                 importType === type ? "text-primary-600" : "text-neutral-400"
                             )}>
-                                {type === 'STUDENTS' && 'Identity & Structure'}
-                                {type === 'PARENTS' && 'Guardian Linkage'}
-                                {type === 'BALANCES' && 'Financial History'}
+                                {type === 'STUDENTS' && 'Student Records'}
+                                {type === 'PARENTS' && 'Guardian Links'}
+                                {type === 'BALANCES' && 'Fee Balances'}
                             </div>
 
                             {importType === type && (
@@ -129,7 +130,7 @@ export default function ImportDataPage() {
                         <div className="flex-1">
                             <h3 className="text-xl font-semibold text-primary-900 mb-lg flex items-center gap-sm">
                                 <Upload size={20} className="text-primary-600" />
-                                Select {importType.toLowerCase()} sequence
+                                Select your {importType.toLowerCase()} file
                             </h3>
 
                             <div
@@ -199,7 +200,7 @@ export default function ImportDataPage() {
                                 </div>
                             </div>
 
-                            <button
+                            <Button
                                 className={`btn w-full py-4 rounded-2xl font-semibold   text-xs transition-all duration-300 flex items-center justify-center gap-md ${!file || isUploading
                                     ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
                                     : 'bg-primary-600 text-white shadow-xl shadow-primary-200 hover:scale-105 active:scale-95'
@@ -208,11 +209,11 @@ export default function ImportDataPage() {
                                 onClick={handleUpload}
                             >
                                 {isUploading ? (
-                                    <><Loader2 className="animate-spin" size={18} /> Initializing...</>
+                                    <><Loader2 className="animate-spin" size={18} /> Processing...</>
                                 ) : (
-                                    <>Execute Migration Process</>
+                                    <>Start Data Import</>
                                 )}
-                            </button>
+                            </Button>
 
                             {result && (
                                 <div className={`p-lg rounded-2xl border animate-slide-up ${result.success

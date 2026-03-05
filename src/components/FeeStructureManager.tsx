@@ -137,22 +137,22 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                 resetForm()
             } else {
                 const err = await res.text()
-                toast.error(err || 'Failed to authorize transaction')
+                toast.error(err || 'Failed to save changes')
             }
         } catch (error) {
-            toast.error('System error during fee deployment')
+            toast.error('System error while saving fee')
         } finally {
             setSubmitting(false)
         }
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm('EXTERMINATE ALLOCATION: Are you sure? This will remove this fee from all systemic calculations.')) return
+        if (!confirm('Are you sure you want to remove this fee? This will affect future billing.')) return
 
         try {
             const res = await fetch(`/api/fee-structures/${id}`, { method: 'DELETE' })
             if (res.ok) {
-                toast.success("Fee structure expunged")
+                toast.success("Fee structure removed")
                 fetchFeeStructures()
             } else {
                 toast.error("Deletion rejected")
@@ -242,7 +242,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                         <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">Fee Management</h2>
                     </div>
                     <p className="text-slate-500 dark:text-slate-400 font-medium">
-                        Set up and manage school fee structures and <span className="text-blue-600 font-semibold ">Allocations</span>
+                        Set up and manage school fee structures and <span className="text-blue-600 font-semibold ">student billing</span>
                     </p>
                 </div>
                 <Button
@@ -273,7 +273,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     ) : (
                                         academicPeriods.map(period => (
                                             <SelectItem key={period.id} value={period.id} className="font-bold">
-                                                {period.academicYear} — {period.term.replace('_', ' ')} {period.isActive && '[ACTIVE MISSION]'}
+                                                {period.academicYear} — {period.term.replace('_', ' ')} {period.isActive && '[Active]'}
                                             </SelectItem>
                                         ))
                                     )}
@@ -308,7 +308,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                 <div className="py-24 text-center">
                     <div className="inline-flex items-center gap-4">
                         <Loader2 className="animate-spin text-blue-600" size={32} />
-                        <span className="text-2xl font-black text-slate-400 uppercase italic tracking-tighter animate-pulse">Syncing Treasury Data...</span>
+                        <span className="text-2xl font-black text-slate-400 uppercase italic tracking-tighter animate-pulse">Loading Billing Data...</span>
                     </div>
                 </div>
             ) : Object.keys(groupedFees).length === 0 ? (
@@ -316,9 +316,9 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                     <div className="h-24 w-24 bg-muted dark:bg-slate-900 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
                         <Coins size={48} className="text-slate-200 dark:text-slate-800" />
                     </div>
-                    <h3 className="text-2xl font-black text-foreground dark:text-white mb-2 uppercase italic tracking-tighter">Vault Empty</h3>
+                    <h3 className="text-2xl font-black text-foreground dark:text-white mb-2 uppercase italic tracking-tighter">No Fees Found</h3>
                     <p className="text-slate-500 dark:text-slate-400 font-medium italic max-w-sm mx-auto mb-8">
-                        {!selectedPeriod ? 'Initialize an academic period to map treasury allocations.' : 'No fee structures have been deployed for this cycle phase yet.'}
+                        {!selectedPeriod ? 'Initialize an academic period to set up billing.' : 'No fee structures have been defined for this period yet.'}
                     </p>
                     {selectedPeriod && (
                         <Button
@@ -327,7 +327,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                             onClick={() => { resetForm(); setShowAddModal(true) }}
                         >
                             <Plus size={18} className="mr-2 text-blue-600" />
-                            Launch First Allocation
+                            Add First Fee
                         </Button>
                     )}
                 </div>
@@ -345,12 +345,12 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     <div>
                                         <h3 className="text-2xl font-black uppercase tracking-tighter italic leading-tight">{group.className}</h3>
                                         <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
-                                            {group.fees.length} Allocation Items • Billing Sector
+                                            {group.fees.length} billing items
                                         </p>
                                     </div>
                                 </div>
                                 <div className="relative z-10 text-right mt-6 md:mt-0">
-                                    <div className="text-[10px] font-black text-blue-400/60 uppercase tracking-widest mb-1 italic">Aggregate Assessment</div>
+                                    <div className="text-[10px] font-black text-blue-400/60 uppercase tracking-widest mb-1 italic">Total Amount</div>
                                     <div className="text-3xl font-black tracking-tighter text-white uppercase italic">
                                         {formatCurrency(group.fees.reduce((sum: number, fee: any) => sum + fee.amount, 0))}
                                     </div>
@@ -362,10 +362,10 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     <table className="w-full text-left border-collapse">
                                         <thead>
                                             <tr className="bg-muted dark:bg-slate-900/50 border-b border-border dark:border-slate-900">
-                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Revenue Source</th>
-                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Description</th>
-                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Valuation</th>
-                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Operations</th>
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Fee Category</th>
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Description</th>
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount</th>
+                                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
@@ -435,10 +435,10 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                             </div>
                             <div>
                                 <DialogTitle className="text-2xl font-black uppercase tracking-tighter italic">
-                                    {editingFee ? 'Modify Allocation' : 'Deploy Allocation'}
+                                    {editingFee ? 'Edit Fee' : 'New Fee'}
                                 </DialogTitle>
                                 <DialogDescription className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
-                                    {editingFee ? 'Updating fiscal parameters in systemic registry' : 'Establishing new recurring financial obligation'}
+                                    {editingFee ? 'Updating fee details in the system' : 'Creating a new fee for students'}
                                 </DialogDescription>
                             </div>
                         </div>
@@ -447,7 +447,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                     <form onSubmit={handleSubmit} className="p-8 space-y-8">
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Asset Descriptor</Label>
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Fee Name</Label>
                                 <Input
                                     type="text"
                                     required
@@ -459,7 +459,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Meta Description (Optional)</Label>
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Description (Optional)</Label>
                                 <Input
                                     type="text"
                                     placeholder="BRIEF MISSION OVERVIEW..."
@@ -486,7 +486,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Valuation (KES)</Label>
+                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Amount (KES)</Label>
                                     <Input
                                         type="number"
                                         required
@@ -501,7 +501,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Division Restriction</Label>
+                                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Assign to Class</Label>
                                 <Select
                                     value={formData.classId}
                                     onValueChange={(v) => setFormData({ ...formData, classId: v === 'school-wide' ? '' : v, applyToAllClasses: false })}
@@ -546,7 +546,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                 className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-foreground dark:hover:text-white"
                                 onClick={closeModal}
                             >
-                                Abort Mission
+                                Cancel
                             </Button>
                             <Button
                                 type="submit"
@@ -556,7 +556,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                 {submitting ? <Loader2 className="animate-spin" size={18} /> : (
                                     <>
                                         <Check size={18} className="mr-2" />
-                                        {editingFee ? 'Confirm Parameters' : 'Authorize Deployment'}
+                                        {editingFee ? 'Update Fee' : 'Save Fee'}
                                     </>
                                 )}
                             </Button>

@@ -57,27 +57,28 @@
   --error-600: #dc2626;
 
   /* Neutrals - Warm & Earthy balance for a premium feel */
-  --neutral-50: #fdfaf6;
-  --neutral-100: #faf7f2;
-  --neutral-200: #f2ede4;
-  --neutral-300: #e2d9c8;
-  --neutral-400: #a89a85;
-  --neutral-500: #7a6e5a;
-  --neutral-600: #5c5242;
-  --neutral-700: #453d31;
-  --neutral-800: #2b261f;
-  --neutral-900: #1a1713;
+  --neutral-50: #f9f5eb;
+  --neutral-100: #f4f0e4;
+  --neutral-200: #ebe5d3;
+  --neutral-300: #d9cfba;
+  --neutral-400: #b0a48e;
+  --neutral-500: #8a7d6a;
+  --neutral-600: #665c4d;
+  --neutral-700: #4a4237;
+  --neutral-800: #2d2822;
+  --neutral-900: #1a1815;
 
   /* Semantic Colors */
-  --background: #fdfaf6;
-  /* Soft Creamy Background */
-  --foreground: #1c1917;
+  --background: #f9f5eb;
+  /* Softer Creamy Background */
+  --foreground: #2d2822;
+  /* Deep Charcoal/Stone */
   --card-bg: #ffffff;
-  /* Pure white for depth on top of cream */
-  --border: #e2d9c8;
+  --border: #dfd7c5;
+  /* More visible creamy border */
   --input-bg: #ffffff;
-  --muted: #faf7f2;
-  --muted-foreground: #7a6e5a;
+  --muted: #f4f0e4;
+  --muted-foreground: #8a7d6a;
 
   /* Spacing */
   --spacing-xs: 0.25rem;

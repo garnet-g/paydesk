@@ -140,7 +140,7 @@ export default function InquiriesPage() {
                             {session?.user.role === 'PARENT' ? 'Support' : 'Inquiries'}
                         </h1>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">
-                            {isPrincipal ? 'Respond to parent concerns and questions' : 'Communicate with the school administration'}
+                            {isPrincipal ? 'Review and respond to parent concerns' : 'Reach out to the school administration'}
                         </p>
                     </div>
                     {session?.user.role === 'PARENT' && (
@@ -244,14 +244,14 @@ export default function InquiriesPage() {
                                                                 className="bg-slate-900 dark:bg-white text-white dark:text-foreground rounded-xl px-6 h-11 font-semibold group shadow-lg"
                                                                 onClick={() => setReplyingTo(inquiry)}
                                                             >
-                                                                <Send size={18} className="mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                                                Provide Response
+                                                                <Send size={18} className="mr-2 group-hover:translate-x-1 transition-transform" />
+                                                                Send Response
                                                             </Button>
                                                         </DialogTrigger>
                                                         <DialogContent className="rounded-[2rem] border-none shadow-2xl p-8 max-w-lg">
                                                             <DialogHeader>
                                                                 <DialogTitle className="text-2xl font-bold tracking-tight">Resolve Inquiry</DialogTitle>
-                                                                <DialogDescription className="text-slate-500 font-medium">Respond to the concern regarding: <span className="text-foreground dark:text-white font-bold ">"{inquiry.subject}"</span></DialogDescription>
+                                                                <DialogDescription className="text-slate-500 font-medium">Respond to the message regarding: <span className="text-foreground dark:text-white font-bold ">"{inquiry.subject}"</span></DialogDescription>
                                                             </DialogHeader>
                                                             <div className="space-y-4 py-6">
                                                                 <Label className="text-xs font-bold text-slate-400  ">Your Response</Label>
@@ -273,7 +273,7 @@ export default function InquiriesPage() {
                                                                     onClick={handleReplySubmit}
                                                                     disabled={submitting || !replyMessage}
                                                                 >
-                                                                    {submitting ? 'Transmitting...' : 'Authorize & Send'}
+                                                                    {submitting ? 'Sending...' : 'Post Response'}
                                                                 </Button>
                                                             </DialogFooter>
                                                         </DialogContent>
@@ -307,7 +307,7 @@ export default function InquiriesPage() {
                             </div>
                         </div>
                         <div className="relative z-10 text-right">
-                            <h4 className="text-[10px] font-bold   text-slate-500 mb-1 leading-none ">Avg. Latency</h4>
+                            <h4 className="text-[10px] font-bold   text-slate-500 mb-1 leading-none ">Response Time</h4>
                             <p className="text-xl font-bold text-blue-400 tracking-tight leading-none ">~2.4 Hrs</p>
                         </div>
                     </div>
@@ -316,8 +316,8 @@ export default function InquiriesPage() {
                             <AlertCircle size={28} />
                         </div>
                         <div>
-                            <h4 className="text-sm font-bold text-foreground dark:text-white tracking-tight leading-snug">Support Priority</h4>
-                            <p className="text-xs text-slate-500 leading-relaxed font-medium  mt-1  tracking-tight">Critical fee disputes and payment verification inquiries are prioritized by the finance department.</p>
+                            <h4 className="text-sm font-bold text-foreground dark:text-white tracking-tight leading-snug">Support Guidelines</h4>
+                            <p className="text-xs text-slate-500 leading-relaxed font-medium  mt-1  tracking-tight">Inquiries regarding fee balances and billing are prioritized by our finance team for immediate resolution.</p>
                         </div>
                     </div>
                 </div>
@@ -326,8 +326,8 @@ export default function InquiriesPage() {
                 <Dialog open={showNewModal} onOpenChange={setShowNewModal}>
                     <DialogContent className="rounded-[2rem] border-none shadow-2xl p-8 max-w-lg">
                         <DialogHeader>
-                            <DialogTitle className="text-2xl font-bold tracking-tight">Submit Inquiry</DialogTitle>
-                            <DialogDescription className="text-slate-500 font-medium">Communicate a concern or query to the school admin.</DialogDescription>
+                            <DialogTitle className="text-2xl font-bold tracking-tight">New Message</DialogTitle>
+                            <DialogDescription className="text-slate-500 font-medium">Send a direct message to the school administration.</DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-6 py-6 font-medium">
                             <div className="space-y-2">
@@ -358,7 +358,7 @@ export default function InquiriesPage() {
                                 onClick={handleSubmit}
                                 disabled={submitting || !newInquiry.subject || !newInquiry.message}
                             >
-                                {submitting ? 'Transmitting...' : 'Send Inquiry'}
+                                {submitting ? 'Sending...' : 'Send Message'}
                             </Button>
                         </DialogFooter>
                     </DialogContent>
