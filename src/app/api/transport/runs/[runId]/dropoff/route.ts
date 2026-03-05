@@ -3,9 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-export async function POST(request: Request, context: { params: Promise<{ runId: string }> }) {
+export async function POST(request: Request, { params }: { params: { runId: string } }) {
     try {
-        const { runId } = await context.params
         const session = await getServerSession(authOptions)
         if (!session?.user?.schoolId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -14,14 +13,14 @@ export async function POST(request: Request, context: { params: Promise<{ runId:
 
         // verify run exists
         const run = await prisma.transportRun.findUnique({
-            where: { id: runId, schoolId: session.user.schoolId }
+            where: { id: params.runId, schoolId: session.user.schoolId }
         })
         if (!run) return NextResponse.json({ error: 'Run not found' }, { status: 404 })
 
         const runPassenger = await prisma.transportRunPassenger.update({
             where: {
                 runId_studentId: {
-                    runId: runId,
+                    runId: params.runId,
                     studentId: studentId
                 }
             },

@@ -30,7 +30,6 @@ model User {
   inquiries              Inquiry[]
   paymentCommitments     PaymentCommitment[]
   guardianships          StudentGuardian[]
-  teacherProfile         Teacher?
   school                 School?             @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
   @@index([email])
@@ -94,8 +93,6 @@ model School {
   users              User[]
   transportRoutes    TransportRoute[]
   transportRuns      TransportRun[]
-  teachers           Teacher[]
-  subjects           Subject[]
 
   @@index([code])
 }
@@ -126,9 +123,7 @@ model Class {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   schoolId        String
-  homeroomTeacherId String?      @unique
   school          School         @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  homeroomTeacher Teacher?       @relation("ClassHomeroom", fields: [homeroomTeacherId], references: [id])
   feeStructures   FeeStructure[]
   students        Student[]
   fromHistories   GradeHistory[] @relation("FromClass")
@@ -585,55 +580,4 @@ model TransportRunPassenger {
   @@unique([runId, studentId])
   @@index([runId])
   @@index([studentId])
-}
-
-model Teacher {
-  id              String           @id @default(cuid())
-  userId          String           @unique
-  schoolId        String
-  qualifications  String?
-  department      String?
-  hireDate        DateTime?        @default(now())
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  school          School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  homeroomClass   Class?           @relation("ClassHomeroom")
-  subjectTeachers SubjectTeacher[]
-
-  @@index([schoolId])
-}
-
-model Subject {
-  id              String           @id @default(cuid())
-  name            String
-  code            String?
-  category        String?          // e.g., "Sciences", "Humanities", "Languages"
-  schoolId        String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-
-  school          School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  subjectTeachers SubjectTeacher[]
-
-  @@unique([schoolId, name])
-  @@index([schoolId])
-}
-
-model SubjectTeacher {
-  id              String   @id @default(cuid())
-  teacherId       String
-  subjectId       String
-  classId         String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  teacher         Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  subject         Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-
-  @@unique([teacherId, subjectId, classId])
-  @@index([teacherId])
-  @@index([subjectId])
-  @@index([classId])
 }
