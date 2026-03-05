@@ -27,7 +27,9 @@ import {
     Lock,
     CreditCard,
     ArrowRight,
-    Crown
+    Crown,
+    CalendarCheck,
+    Award
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import ChangePasswordModal from './ChangePasswordModal'
@@ -67,6 +69,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: 'Parents', href: '/dashboard/parents', icon: Users, roles: ['PRINCIPAL'] },
         { name: 'Staff Management', href: '/dashboard/staff', icon: Briefcase, roles: ['PRINCIPAL'], requiresPro: true },
         { name: 'Students', href: '/dashboard/students', icon: GraduationCap, roles: ['PRINCIPAL', 'FINANCE_MANAGER'] },
+        { name: 'Attendance', href: '/dashboard/attendance', icon: CalendarCheck, roles: ['PRINCIPAL', 'FINANCE_MANAGER'] },
+        { name: 'Results', href: '/dashboard/results', icon: Award, roles: ['PRINCIPAL'] },
+        { name: 'Report Cards', href: '/dashboard/report-cards', icon: FileText, roles: ['PRINCIPAL'] },
         { name: 'Grade Promotion', href: '/dashboard/grade-promotion', icon: ArrowRight, roles: ['PRINCIPAL', 'FINANCE_MANAGER'] },
         { name: 'Classes', href: '/dashboard/classes', icon: Layers, roles: ['PRINCIPAL'] },
         { name: 'Fee Setup', href: '/dashboard/fee-setup', icon: BookOpen, roles: ['PRINCIPAL'] },

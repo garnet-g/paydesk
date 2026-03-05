@@ -1,0 +1,25 @@
+--- TEST LOGINS FOR PAYDESK ---
+
+Role: SUPER_ADMIN
+Email: super_admin@test.local
+Password: password123
+
+Role: PRINCIPAL
+Email: principal@test.local
+Password: password123
+
+Role: FINANCE_MANAGER
+Email: finance_manager@test.local
+Password: password123
+
+Role: TEACHER
+Email: teacher@test.local
+Password: password123
+
+Role: PARENT
+Email: parent@test.local
+Password: password123
+
+Note: There is also an existing principal account:
+Email: paul@goodlife.ac.ke
+Password: paul123

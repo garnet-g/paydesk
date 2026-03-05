@@ -28,7 +28,7 @@ setInterval(() => {
 }, 5 * 60 * 1000)
 
 // ─── Route config ───────────────────────────────────────────────────────────
-const PUBLIC_PATHS = ['/api/auth', '/login', '/_next', '/favicon', '/public']
+const PUBLIC_PATHS = ['/api/auth', '/api/debug-auth', '/login', '/_next', '/favicon', '/public']
 const AUTH_PATHS = ['/dashboard', '/api']  // require login
 
 // Stricter limits for sensitive endpoints

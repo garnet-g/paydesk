@@ -1,0 +1,4 @@
+﻿User found. Hash: $2b$10$7OOftsoZ9NofdHQdHXC45uKVqa2KuqKnbKK7woNfXksb4kD8k/1yy
+Is password valid? true
+Freshly hashed password: $2b$10$9ZTQ0V3058bSTrS5WIRBeuGMc.nUcqk531PPdUlbGmDQFPYt6zvaC
+Is fresh hash valid? true

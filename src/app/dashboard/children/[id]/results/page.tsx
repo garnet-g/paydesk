@@ -100,9 +100,9 @@ export default function StudentResultsPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <Link href={`/dashboard/reports/result-slip/${exam.id}?studentId=${studentId}`} className="btn btn-ghost text-xs font-black uppercase tracking-widest">
-                                                Print Result Slip
-                                            </Link>
+                                            <a href={`/api/report-cards/${studentId}?examId=${exam.id}`} target="_blank" rel="noreferrer" className="btn btn-ghost text-xs font-black uppercase tracking-widest">
+                                                Download Report Card
+                                            </a>
                                         </div>
                                     )}
                                 </div>

@@ -1,63 +1,64 @@
 import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
 
-export async function GET(req: Request) {
-    const session = await getServerSession(authOptions)
-    if (!session) return new NextResponse('Unauthorized', { status: 401 })
-
-    const schoolId = session.user.schoolId as string
-
+export async function GET(request: Request) {
     try {
+        const session = await getServerSession(authOptions)
+        if (!session?.user) {
+            return new NextResponse('Unauthorized', { status: 401 })
+        }
+
+        const { searchParams } = new URL(request.url)
+        const academicPeriodId = searchParams.get('academicPeriodId')
+
+        const where: any = { schoolId: session.user.schoolId }
+        if (academicPeriodId) {
+            where.academicPeriodId = academicPeriodId
+        }
+
         const exams = await prisma.exam.findMany({
-            where: { schoolId },
+            where,
             include: {
-                academicPeriod: true,
-                results: {
-                    include: {
-                        student: { select: { firstName: true, lastName: true, admissionNumber: true } }
-                    }
-                }
+                academicPeriod: { select: { term: true, academicYear: true } }
             },
             orderBy: { date: 'desc' }
         })
 
         return NextResponse.json(exams)
     } catch (error) {
-        console.error('Exams Fetch Error:', error)
+        console.error('[EXAMS_GET]', error)
         return new NextResponse('Internal Error', { status: 500 })
     }
 }
 
-export async function POST(req: Request) {
-    const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== 'PRINCIPAL') {
-        return new NextResponse('Unauthorized', { status: 401 })
-    }
-
-    const { name, date } = await req.json()
-    const { schoolId } = session.user
-
+export async function POST(request: Request) {
     try {
-        const period = await prisma.academicPeriod.findFirst({
-            where: { schoolId: schoolId as string, isActive: true }
-        })
+        const session = await getServerSession(authOptions)
+        if (!session?.user || (session.user.role !== 'PRINCIPAL' && session.user.role !== 'FINANCE_MANAGER')) {
+            return new NextResponse('Unauthorized', { status: 401 })
+        }
 
-        if (!period) return new NextResponse('No active term found', { status: 400 })
+        const body = await request.json()
+        const { name, date, academicPeriodId } = body
+
+        if (!name || !date || !academicPeriodId) {
+            return new NextResponse('Missing required fields', { status: 400 })
+        }
 
         const exam = await prisma.exam.create({
             data: {
                 name,
                 date: new Date(date),
-                schoolId: schoolId as string,
-                academicPeriodId: period.id
+                academicPeriodId,
+                schoolId: session.user.schoolId as string
             }
         })
 
         return NextResponse.json(exam)
     } catch (error) {
-        console.error('Exam Create Error:', error)
+        console.error('[EXAMS_POST]', error)
         return new NextResponse('Internal Error', { status: 500 })
     }
 }

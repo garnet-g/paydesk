@@ -1,0 +1,35 @@
+﻿.next/dev/types/validator.ts(549,31): error TS2344: Type 'typeof import("C:/Users/gar/Desktop/school_billing/src/app/api/attendance/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/attendance/[id]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<unknown>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(657,31): error TS2344: Type 'typeof import("C:/Users/gar/Desktop/school_billing/src/app/api/exams/[id]/results/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/exams/[id]/results">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<unknown>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(666,31): error TS2344: Type 'typeof import("C:/Users/gar/Desktop/school_billing/src/app/api/exams/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/exams/[id]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<unknown>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(891,31): error TS2344: Type 'typeof import("C:/Users/gar/Desktop/school_billing/src/app/api/report-cards/[studentId]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/report-cards/[studentId]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: Request, { params }: { params: { studentId: string; }; }) => Promise<NextResponse<unknown>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ studentId: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ studentId: string; }>; }' is not assignable to type '{ params: { studentId: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'studentId' is missing in type 'Promise<{ studentId: string; }>' but required in type '{ studentId: string; }'.
+.next/types/validator.ts(612,31): error TS2344: Type 'typeof import("C:/Users/gar/Desktop/school_billing/src/app/api/exams/[id]/results/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/exams/[id]/results">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<unknown>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.

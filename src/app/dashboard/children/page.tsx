@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import DashboardLayout from '@/components/DashboardLayout'
-import { Users, GraduationCap, DollarSign, FileText, ChevronRight, CheckCircle, X, ShieldAlert, Loader2, Smartphone } from 'lucide-react'
+import { Users, GraduationCap, DollarSign, FileText, ChevronRight, CheckCircle, X, ShieldAlert, Loader2, Smartphone, Award, CalendarCheck } from 'lucide-react'
 import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils'
 
@@ -202,6 +202,14 @@ export default function ChildrenPage() {
                                         <Link href={`/dashboard/children/${child.id}/statement`} className="btn btn-secondary btn-sm">
                                             <FileText size={14} />
                                             Statement
+                                        </Link>
+                                        <Link href={`/dashboard/children/${child.id}/results`} className="btn btn-outline btn-sm">
+                                            <Award size={14} />
+                                            Results
+                                        </Link>
+                                        <Link href={`/dashboard/children/${child.id}/attendance`} className="btn btn-outline btn-sm">
+                                            <CalendarCheck size={14} />
+                                            Attendance
                                         </Link>
                                     </div>
                                 </div>
