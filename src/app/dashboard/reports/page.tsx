@@ -113,7 +113,7 @@ export default function ReportsPage() {
                             <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                                 <TrendingUp size={24} className="text-blue-400" />
                             </div>
-                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white  ">Reports Overview</h2>
+                            <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white  ">Reports Overview</h2>
                         </div>
                         <p className="text-slate-500 dark:text-slate-400 font-medium ">
                             High-level institutional analytics for <span className="text-blue-600 font-semibold  not-">Administrative Decision-Making</span>
@@ -122,7 +122,7 @@ export default function ReportsPage() {
                     <div className="flex gap-4 flex-wrap">
                         <Button
                             variant="outline"
-                            className="h-12 px-6 rounded-2xl font-semibold text-xs   border-2 hover:bg-slate-50 transition-all border-slate-200 dark:border-slate-800"
+                            className="h-12 px-6 rounded-2xl font-semibold text-xs   border-2 hover:bg-muted transition-all border-border dark:border-slate-800"
                             onClick={handleExportReport}
                             disabled={loading}
                         >
@@ -147,7 +147,7 @@ export default function ReportsPage() {
                         <CardHeader className="p-8 pb-0 flex flex-row items-center justify-between">
                             <div className="space-y-1">
                                 <span className="text-[10px] font-semibold text-slate-400   leading-none">Revenue Stream</span>
-                                <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white  tracking-tight ">Collection Velocity</CardTitle>
+                                <CardTitle className="text-xl font-semibold text-foreground dark:text-white  tracking-tight ">Collection Velocity</CardTitle>
                             </div>
                             <div className="h-12 w-12 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600 shadow-inner group-hover:scale-110 transition-transform">
                                 <Target size={24} />
@@ -163,15 +163,15 @@ export default function ReportsPage() {
                             <div className="space-y-4">
                                 <Progress
                                     value={execStats?.collectionRate || 0}
-                                    className="h-4 bg-slate-50 dark:bg-slate-900"
+                                    className="h-4 bg-muted dark:bg-slate-900"
                                 />
                                 <div className="flex justify-between text-[10px] font-semibold text-slate-400   ">
                                     <span>Total Collected</span>
-                                    <span className="text-slate-900 dark:text-white font-semibold tracking-tight">{formatCurrency(execStats?.totalPaid || 0)}</span>
+                                    <span className="text-foreground dark:text-white font-semibold tracking-tight">{formatCurrency(execStats?.totalPaid || 0)}</span>
                                 </div>
                                 <div className="flex justify-between text-[10px] font-semibold text-slate-400   ">
                                     <span>Target Capacity</span>
-                                    <span className="text-slate-900 dark:text-white font-semibold tracking-tight">{formatCurrency(execStats?.totalInvoiced || 0)}</span>
+                                    <span className="text-foreground dark:text-white font-semibold tracking-tight">{formatCurrency(execStats?.totalInvoiced || 0)}</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -184,7 +184,7 @@ export default function ReportsPage() {
                                 <div className="h-8 w-8 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-red-600">
                                     <Clock size={18} />
                                 </div>
-                                <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white  tracking-tight ">Aging Debt Exposure</CardTitle>
+                                <CardTitle className="text-xl font-semibold text-foreground dark:text-white  tracking-tight ">Aging Debt Exposure</CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent className="px-8 pb-8 space-y-5">
@@ -192,12 +192,12 @@ export default function ReportsPage() {
                                 { label: 'Active (Current)', value: execStats?.aging?.current, color: 'bg-emerald-500', text: 'text-emerald-600' },
                                 { label: 'At Risk (31-60d)', value: execStats?.aging?.thirty, color: 'bg-amber-500', text: 'text-amber-600' },
                                 { label: 'Critical (61-90d)', value: execStats?.aging?.sixty, color: 'bg-red-500', text: 'text-red-600' },
-                                { label: 'Recovery (90d+)', value: execStats?.aging?.ninetyPlus, color: 'bg-slate-900', text: 'text-slate-900 dark:text-white' },
+                                { label: 'Recovery (90d+)', value: execStats?.aging?.ninetyPlus, color: 'bg-slate-900', text: 'text-foreground dark:text-white' },
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center justify-between group cursor-help">
                                     <div className="flex items-center gap-3">
                                         <div className={cn("h-2 w-2 rounded-full", item.color)} />
-                                        <span className="text-[10px] font-semibold text-slate-400   group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{item.label}</span>
+                                        <span className="text-[10px] font-semibold text-slate-400   group-hover:text-foreground dark:group-hover:text-white transition-colors">{item.label}</span>
                                     </div>
                                     <span className={cn("text-xs font-semibold tracking-tight ", item.text)}>{formatCurrency(item.value || 0)}</span>
                                 </div>
@@ -249,13 +249,13 @@ export default function ReportsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Class Performance Sector */}
                     <Card className="lg:col-span-8 border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden">
-                        <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-900 flex flex-row items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+                        <CardHeader className="p-8 border-b border-border dark:border-slate-900 flex flex-row items-center justify-between bg-muted/50 dark:bg-slate-900/50">
                             <div className="flex items-center gap-4">
                                 <div className="h-10 w-10 bg-blue-600/10 rounded-xl flex items-center justify-center text-blue-600">
                                     <Award size={20} />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white  tracking-tight  leading-none mb-1">Class Metrics</CardTitle>
+                                    <CardTitle className="text-xl font-semibold text-foreground dark:text-white  tracking-tight  leading-none mb-1">Class Metrics</CardTitle>
                                     <CardDescription className="text-[10px]  font-semibold  text-slate-400 leading-none m-0">Performance ranking by class collection</CardDescription>
                                 </div>
                             </div>
@@ -265,7 +265,7 @@ export default function ReportsPage() {
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
-                                        <tr className="bg-slate-50 dark:bg-slate-900/30">
+                                        <tr className="bg-muted dark:bg-slate-900/30">
                                             <th className="px-8 py-5 text-left text-[10px] font-semibold text-slate-400  ">Rank</th>
                                             <th className="px-8 py-5 text-left text-[10px] font-semibold text-slate-400  ">Class Identifier</th>
                                             <th className="px-8 py-5 text-left text-[10px] font-semibold text-slate-400  ">Efficiency</th>
@@ -276,29 +276,29 @@ export default function ReportsPage() {
                                         {loading ? (
                                             [1, 2, 3, 4, 5].map(i => (
                                                 <tr key={i} className="animate-pulse">
-                                                    <td colSpan={4} className="px-8 py-5 h-20 bg-slate-50/30"></td>
+                                                    <td colSpan={4} className="px-8 py-5 h-20 bg-muted/30"></td>
                                                 </tr>
                                             ))
                                         ) : execStats?.classPerformance?.map((cls: any, i: number) => (
-                                            <tr key={cls.id} className="group hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                                            <tr key={cls.id} className="group hover:bg-muted dark:hover:bg-slate-900/50 transition-colors">
                                                 <td className="px-8 py-6">
                                                     <div className={cn(
                                                         "h-8 w-8 rounded-xl flex items-center justify-center text-[10px] font-semibold shadow-inner border-2 border-white dark:border-slate-800",
-                                                        i === 0 ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                                                        i === 0 ? "bg-blue-600 text-white" : "bg-muted dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                                                     )}>
                                                         #{i + 1}
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-6">
-                                                    <div className="font-semibold text-slate-900 dark:text-white text-base leading-none  tracking-tight  transition-all group-hover:translate-x-1 underline decoration-blue-600/30 underline-offset-4">
+                                                    <div className="font-semibold text-foreground dark:text-white text-base leading-none  tracking-tight  transition-all group-hover:translate-x-1 underline decoration-blue-600/30 underline-offset-4">
                                                         {cls.name}
                                                     </div>
                                                     <div className="text-[10px] font-bold text-slate-400 mt-2   ">{cls.stream} Stream</div>
                                                 </td>
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-center gap-6">
-                                                        <span className="font-semibold text-sm text-slate-900 dark:text-white tabular-nums min-w-[3rem] ">{cls.rate}%</span>
-                                                        <div className="flex-1 min-w-[8rem] h-2 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden shadow-inner">
+                                                        <span className="font-semibold text-sm text-foreground dark:text-white tabular-nums min-w-[3rem] ">{cls.rate}%</span>
+                                                        <div className="flex-1 min-w-[8rem] h-2 bg-muted dark:bg-slate-900 rounded-full overflow-hidden shadow-inner">
                                                             <div
                                                                 className={cn(
                                                                     "h-full transition-all duration-1000",
@@ -311,7 +311,7 @@ export default function ReportsPage() {
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-6 text-right">
-                                                    <div className="text-sm font-semibold text-slate-900 dark:text-white tabular-nums tracking-tight ">
+                                                    <div className="text-sm font-semibold text-foreground dark:text-white tabular-nums tracking-tight ">
                                                         {formatCurrency(cls.outstanding)}
                                                     </div>
                                                 </td>
@@ -368,7 +368,7 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Footer Assurance */}
-                <div className="flex items-center justify-center pt-8 border-t border-slate-100 dark:border-slate-900">
+                <div className="flex items-center justify-center pt-8 border-t border-border dark:border-slate-900">
                     <div className="flex items-center gap-4 text-slate-400">
                         <ShieldCheck size={18} />
                         <span className="text-[10px] font-semibold  tracking-[0.3em] ">Secure Analytics • {new Date().getFullYear()} School Operating System</span>

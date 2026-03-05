@@ -458,7 +458,7 @@ export default function PaymentsPage() {
                 {/* Page Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
                     <div style={{ flex: '1 1 300px' }}>
-                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Payments</h2>
+                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">Payments</h2>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">
                             {isSuperAdmin ? 'Monitor school-wide payments' : isParent ? 'Manage your school fees and history' : 'Manage student payment records'}
                         </p>
@@ -468,7 +468,7 @@ export default function PaymentsPage() {
                         {isAdmin && (
                             <>
                                 <Button
-                                    className="h-10 px-4 rounded-lg bg-slate-900 border-none hover:bg-slate-800 text-white font-medium shadow-none dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 transition-colors"
+                                    className="h-10 px-4 rounded-lg bg-slate-900 border-none hover:bg-slate-800 text-white font-medium shadow-none dark:bg-muted dark:text-foreground dark:hover:bg-slate-200 transition-colors"
                                     onClick={() => setShowManualModal(true)}
                                 >
                                     <Plus size={16} className="mr-2" />
@@ -476,7 +476,7 @@ export default function PaymentsPage() {
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    className="h-10 px-4 rounded-lg font-medium border-slate-200 dark:border-slate-800"
+                                    className="h-10 px-4 rounded-lg font-medium border-border dark:border-slate-800"
                                     onClick={() => setShowBankModal(true)}
                                 >
                                     <Landmark size={16} className="mr-2" />
@@ -636,7 +636,7 @@ export default function PaymentsPage() {
                                                 </div>
                                                 <div>
                                                     <div className="font-semibold">{req.type.replace(/_/g, ' ')}</div>
-                                                    <div className="text-xs text-muted">
+                                                    <div className="text-xs text-muted-foreground">
                                                         Requested by {req.requestedBy.firstName} ({req.requestedBy.role}) • {formatDateTime(req.createdAt)}
                                                     </div>
                                                 </div>
@@ -655,11 +655,11 @@ export default function PaymentsPage() {
                                             display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-lg)'
                                         }}>
                                             <div>
-                                                <div className="text-xs text-muted" style={{ marginBottom: '4px' }}>Resource</div>
+                                                <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Resource</div>
                                                 <div className="text-sm font-semibold">Invoice: {payload.invoiceNumber || 'Manual Adjustment'}</div>
                                             </div>
                                             <div>
-                                                <div className="text-xs text-muted" style={{ marginBottom: '4px' }}>Reason</div>
+                                                <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Reason</div>
                                                 <div className="text-sm" style={{ fontStyle: '' }}>"{req.reason || 'No reason provided'}"</div>
                                             </div>
                                         </div>
@@ -691,7 +691,7 @@ export default function PaymentsPage() {
                                         )}
 
                                         {req.status !== 'PENDING' && (
-                                            <div className="text-xs text-muted" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <div className="text-xs text-muted-foreground" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                 {req.status === 'APPROVED' ? <CheckCircle size={14} style={{ color: 'var(--success-600)' }} /> : <X size={14} style={{ color: 'var(--error-600)' }} />}
                                                 Processed by {req.approvedBy?.firstName || 'System'}
                                             </div>
@@ -734,7 +734,7 @@ export default function PaymentsPage() {
                                                     }}>
                                                         <CheckCircle size={28} />
                                                     </div>
-                                                    <p className="text-muted font-medium text-sm">All accounts are clear.</p>
+                                                    <p className="text-muted-foreground font-medium text-sm">All accounts are clear.</p>
                                                 </div>
                                             ) : (
                                                 invoices.map(invoice => (
@@ -750,11 +750,11 @@ export default function PaymentsPage() {
                                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px', marginBottom: 'var(--spacing-sm)' }}>
                                                             <div>
                                                                 <div className="font-semibold text-sm">{invoice.student?.firstName} {invoice.student?.lastName}</div>
-                                                                <div className="text-xs text-muted">{invoice.invoiceNumber}</div>
+                                                                <div className="text-xs text-muted-foreground">{invoice.invoiceNumber}</div>
                                                             </div>
                                                             <div style={{ textAlign: 'right' }}>
                                                                 <div style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--error-600)' }}>{formatCurrency(invoice.balance)}</div>
-                                                                <div className="text-xs text-muted">Balance</div>
+                                                                <div className="text-xs text-muted-foreground">Balance</div>
                                                             </div>
                                                         </div>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', justifyContent: 'flex-end' }}>
@@ -801,10 +801,10 @@ export default function PaymentsPage() {
                                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                                                             <div>
                                                                 <div style={{ fontSize: '1.125rem', fontWeight: 700 }}>{formatCurrency(commit.amount)}</div>
-                                                                <div className="text-xs text-muted">Next: {formatDate(commit.startDate)}</div>
+                                                                <div className="text-xs text-muted-foreground">Next: {formatDate(commit.startDate)}</div>
                                                             </div>
                                                             <div style={{ textAlign: 'right' }}>
-                                                                <div className="text-xs text-muted" style={{ marginBottom: '4px' }}>Invoice: {commit.invoice?.invoiceNumber}</div>
+                                                                <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Invoice: {commit.invoice?.invoiceNumber}</div>
                                                                 <div style={{ width: '80px', height: '6px', background: 'var(--neutral-100)', borderRadius: '3px', overflow: 'hidden' }}>
                                                                     <div style={{ height: '100%', width: '45%', background: 'var(--primary-600)', borderRadius: '3px' }} />
                                                                 </div>
@@ -851,7 +851,7 @@ export default function PaymentsPage() {
                                                     <tr>
                                                         <td colSpan={8} style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
                                                             <DollarSign size={48} style={{ opacity: 0.15, marginBottom: 'var(--spacing-md)' }} />
-                                                            <p className="text-muted">No transactions found.</p>
+                                                            <p className="text-muted-foreground">No transactions found.</p>
                                                         </td>
                                                     </tr>
                                                 ) : (
@@ -859,14 +859,14 @@ export default function PaymentsPage() {
                                                         <tr key={payment.id}>
                                                             <td>
                                                                 <div className="text-sm">{formatDateTime(payment.createdAt).split(' ')[0]}</div>
-                                                                <div className="text-xs text-muted">{formatDateTime(payment.createdAt).split(' ').slice(1).join(' ')}</div>
+                                                                <div className="text-xs text-muted-foreground">{formatDateTime(payment.createdAt).split(' ').slice(1).join(' ')}</div>
                                                             </td>
                                                             {isSuperAdmin && (
                                                                 <td className="text-sm font-semibold">{payment.school?.name}</td>
                                                             )}
                                                             <td>
                                                                 <div className="font-semibold text-sm">{payment.student?.firstName} {payment.student?.lastName}</div>
-                                                                <div className="text-xs text-muted">Adm: {payment.student?.admissionNumber}</div>
+                                                                <div className="text-xs text-muted-foreground">Adm: {payment.student?.admissionNumber}</div>
                                                             </td>
                                                             <td>
                                                                 <span className="font-semibold">{formatCurrency(payment.amount)}</span>
@@ -939,7 +939,7 @@ export default function PaymentsPage() {
                                     marginBottom: 'var(--spacing-lg)',
                                     border: '1px solid var(--border)'
                                 }}>
-                                    <div className="text-xs text-muted" style={{ marginBottom: '4px' }}>Invoice Balance</div>
+                                    <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Invoice Balance</div>
                                     <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary-700)' }}>{formatCurrency(selectedInvoice?.balance)}</div>
                                 </div>
 
@@ -1068,7 +1068,7 @@ export default function PaymentsPage() {
                                             </div>
                                             <div>
                                                 <div className="font-semibold">M-Pesa STK Push</div>
-                                                <div className="text-xs text-muted">You'll receive a prompt on your phone</div>
+                                                <div className="text-xs text-muted-foreground">You'll receive a prompt on your phone</div>
                                             </div>
                                         </div>
 
@@ -1114,7 +1114,7 @@ export default function PaymentsPage() {
                                         <CheckCircle size={48} />
                                     </div>
                                     <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 'var(--spacing-sm)' }}>Payment Initiated!</h3>
-                                    <p className="text-muted" style={{ maxWidth: '320px', margin: '0 auto var(--spacing-xl)' }}>
+                                    <p className="text-muted-foreground" style={{ maxWidth: '320px', margin: '0 auto var(--spacing-xl)' }}>
                                         We've sent a prompt to your phone. Please enter your M-Pesa PIN to finalize.
                                     </p>
                                     <div style={{

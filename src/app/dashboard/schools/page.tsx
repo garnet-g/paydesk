@@ -124,7 +124,7 @@ export default function SchoolsPage() {
                         <div className="card" style={{ textAlign: 'center', padding: 'var(--spacing-3xl)', borderRadius: '24px', border: '2px dashed var(--neutral-200)', background: 'transparent' }}>
                             <SchoolIcon size={64} style={{ opacity: 0.1, margin: '0 auto 16px' }} />
                             <h3 style={{ fontWeight: 700, color: 'var(--neutral-400)' }}>No institutions found</h3>
-                            <p className="text-muted">Try adjusting your search criteria or register a new school.</p>
+                            <p className="text-muted-foreground">Try adjusting your search criteria or register a new school.</p>
                         </div>
                     ) : (
                         filteredSchools.map((school, index) => (

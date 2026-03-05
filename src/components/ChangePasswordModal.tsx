@@ -66,7 +66,7 @@ export default function ChangePasswordModal({ onSuccess }: ChangePasswordModalPr
                         <CheckCircle2 size={64} style={{ margin: '0 auto' }} />
                     </div>
                     <h3 className="card-title">Password Updated!</h3>
-                    <p className="text-muted">Your password has been changed successfully. You can now access your dashboard.</p>
+                    <p className="text-muted-foreground">Your password has been changed successfully. You can now access your dashboard.</p>
                 </div>
             </div>
         )
@@ -90,7 +90,7 @@ export default function ChangePasswordModal({ onSuccess }: ChangePasswordModalPr
                         <ShieldAlert size={32} />
                     </div>
                     <h3 className="card-title">Security Recommendation</h3>
-                    <p className="text-muted" style={{ fontSize: '0.875rem' }}>
+                    <p className="text-muted-foreground" style={{ fontSize: '0.875rem' }}>
                         This is your first login or your password was recently reset. Please set a new permanent password to continue.
                     </p>
                 </div>

@@ -114,7 +114,7 @@ export default function ChildrenPage() {
             <div className="animate-fade-in">
                 <div style={{ marginBottom: 'var(--spacing-xl)' }}>
                     <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>My Children</h2>
-                    <p className="text-muted">Manage school records and fees for your children</p>
+                    <p className="text-muted-foreground">Manage school records and fees for your children</p>
                 </div>
 
                 {loading ? (
@@ -125,7 +125,7 @@ export default function ChildrenPage() {
                     <div className="card" style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
                         <Users size={48} style={{ opacity: 0.2, marginBottom: 'var(--spacing-md)' }} />
                         <p>No children linked to your account.</p>
-                        <p className="text-sm text-muted mt-sm">Please contact the school administration to link your student record.</p>
+                        <p className="text-sm text-muted-foreground mt-sm">Please contact the school administration to link your student record.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
@@ -156,7 +156,7 @@ export default function ChildrenPage() {
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
                                                 <div style={{ minWidth: 'min-content' }}>
                                                     <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{child.firstName} {child.lastName}</h3>
-                                                    <p className="text-muted text-sm">{child.class?.name} {child.class?.stream}</p>
+                                                    <p className="text-muted-foreground text-sm">{child.class?.name} {child.class?.stream}</p>
                                                     <code className="text-xs badge badge-neutral mt-xs">{child.admissionNumber}</code>
                                                 </div>
                                                 {totalBalance > 0 ? (
@@ -176,13 +176,13 @@ export default function ChildrenPage() {
 
                                     <div className="grid grid-cols-2 gap-md" style={{ marginBottom: 'var(--spacing-lg)' }}>
                                         <div style={{ padding: 'var(--spacing-md)', background: 'var(--neutral-50)', borderRadius: 'var(--radius-md)' }}>
-                                            <div className="text-xs text-muted  font-bold mb-xs">Status</div>
+                                            <div className="text-xs text-muted-foreground  font-bold mb-xs">Status</div>
                                             <span className={`badge ${child.status === 'ACTIVE' ? 'badge-success' : 'badge-warning'}`}>
                                                 {child.status}
                                             </span>
                                         </div>
                                         <div style={{ padding: 'var(--spacing-md)', background: 'var(--neutral-50)', borderRadius: 'var(--radius-md)' }}>
-                                            <div className="text-xs text-muted  font-bold mb-xs">School</div>
+                                            <div className="text-xs text-muted-foreground  font-bold mb-xs">School</div>
                                             <div className="text-sm font-semibold truncate">{child.school?.name}</div>
                                         </div>
                                     </div>
@@ -306,7 +306,7 @@ export default function ChildrenPage() {
                                             </div>
                                             <div>
                                                 <div className="font-semibold">M-Pesa STK Push</div>
-                                                <div className="text-xs text-muted">You'll receive a prompt on your phone</div>
+                                                <div className="text-xs text-muted-foreground">You'll receive a prompt on your phone</div>
                                             </div>
                                         </div>
 
@@ -352,7 +352,7 @@ export default function ChildrenPage() {
                                         <CheckCircle size={48} />
                                     </div>
                                     <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 'var(--spacing-sm)' }}>Payment Initiated!</h3>
-                                    <p className="text-muted" style={{ maxWidth: '320px', margin: '0 auto var(--spacing-xl)' }}>
+                                    <p className="text-muted-foreground" style={{ maxWidth: '320px', margin: '0 auto var(--spacing-xl)' }}>
                                         We've sent a prompt to your phone. Please enter your M-Pesa PIN to finalize.
                                     </p>
                                     <div style={{

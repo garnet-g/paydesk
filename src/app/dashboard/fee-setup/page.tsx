@@ -24,7 +24,7 @@ export default function FeeSetupPage() {
                             <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                                 <Settings size={24} className="text-blue-400" />
                             </div>
-                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Fee Settings</h2>
+                            <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">Fee Settings</h2>
                         </div>
                         <p className="text-slate-500 dark:text-slate-400 font-medium ">
                             Manage school fee structures and academic terms
@@ -33,14 +33,14 @@ export default function FeeSetupPage() {
                 </div>
 
                 <Tabs defaultValue="fees" className="w-full space-y-8" onValueChange={(v) => setActiveTab(v as any)}>
-                    <div className="bg-white dark:bg-slate-950 p-2 rounded-[1.5rem] shadow-xl border border-slate-100 dark:border-slate-900 inline-flex">
+                    <div className="bg-white dark:bg-slate-950 p-2 rounded-[1.5rem] shadow-xl border border-border dark:border-slate-900 inline-flex">
                         <TabsList className="bg-transparent gap-2 h-auto p-0">
                             <TabsTrigger
                                 value="fees"
                                 className={cn(
                                     "h-12 px-8 rounded-xl font-semibold text-[10px]   transition-all duration-300",
                                     "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-200/50",
-                                    "hover:bg-slate-50 dark:hover:bg-slate-900"
+                                    "hover:bg-muted dark:hover:bg-slate-900"
                                 )}
                             >
                                 <Wallet size={16} className="mr-2" />
@@ -51,7 +51,7 @@ export default function FeeSetupPage() {
                                 className={cn(
                                     "h-12 px-8 rounded-xl font-semibold text-[10px]   transition-all duration-300",
                                     "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-200/50",
-                                    "hover:bg-slate-50 dark:hover:bg-slate-900"
+                                    "hover:bg-muted dark:hover:bg-slate-900"
                                 )}
                             >
                                 <Calendar size={16} className="mr-2" />

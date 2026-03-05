@@ -61,10 +61,10 @@ export default function TransportManagementPage() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Transport Management</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-white">Transport Management</h1>
                         <p className="text-slate-500 dark:text-slate-400">Manage routes and vehicle assignments</p>
                     </div>
-                    <Button className="h-11 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl px-6 font-semibold shadow-lg">
+                    <Button className="h-11 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-foreground dark:hover:bg-muted rounded-xl px-6 font-semibold shadow-lg">
                         <Plus size={18} className="mr-2" />
                         Add Route
                     </Button>
@@ -119,10 +119,10 @@ export default function TransportManagementPage() {
                                         <CardTitle className="text-xl font-bold">{route.name}</CardTitle>
                                         <CardDescription className="flex items-center gap-2">
                                             <span className="font-semibold text-slate-400">Driver:</span>
-                                            <span className="text-slate-900 dark:text-white font-medium">{route.driver}</span>
+                                            <span className="text-foreground dark:text-white font-medium">{route.driver}</span>
                                         </CardDescription>
                                     </div>
-                                    <Badge variant="outline" className="bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-none font-bold px-3 py-1 rounded-lg">
+                                    <Badge variant="outline" className="bg-slate-900 text-white dark:bg-white dark:text-foreground border-none font-bold px-3 py-1 rounded-lg">
                                         {route.capacity}
                                     </Badge>
                                 </div>
@@ -132,11 +132,11 @@ export default function TransportManagementPage() {
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-1">
                                         <Label className="text-[10px]   font-bold text-slate-400">Vehicle Number</Label>
-                                        <p className="text-sm font-bold text-slate-900 dark:text-white">{route.vehicleNumber}</p>
+                                        <p className="text-sm font-bold text-foreground dark:text-white">{route.vehicleNumber}</p>
                                     </div>
                                     <div className="space-y-1 text-right lg:text-left">
                                         <Label className="text-[10px]   font-bold text-slate-400">Monthly Fee</Label>
-                                        <p className="text-sm font-bold text-slate-900 dark:text-white">KES {route.monthlyFee.toLocaleString()}</p>
+                                        <p className="text-sm font-bold text-foreground dark:text-white">KES {route.monthlyFee.toLocaleString()}</p>
                                     </div>
                                 </div>
 
@@ -159,8 +159,8 @@ export default function TransportManagementPage() {
                                     <Label className="text-[10px]   font-bold text-slate-400">Assigned Students ({route.assignedStudents.length})</Label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         {route.assignedStudents.map((student, idx) => (
-                                            <div key={idx} className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800">
-                                                <div className="h-8 w-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 border border-slate-200 dark:border-slate-700">
+                                            <div key={idx} className="flex items-center gap-3 p-3 bg-muted dark:bg-slate-900/50 rounded-xl border border-border dark:border-slate-800">
+                                                <div className="h-8 w-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 border border-border dark:border-slate-700">
                                                     <User size={14} />
                                                 </div>
                                                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{student.name}</span>
@@ -171,10 +171,10 @@ export default function TransportManagementPage() {
                             </CardContent>
 
                             <CardFooter className="p-8 pt-0 flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button variant="ghost" className="h-10 rounded-xl text-slate-400 hover:text-slate-900 font-bold text-xs  ">
+                                <Button variant="ghost" className="h-10 rounded-xl text-slate-400 hover:text-foreground font-bold text-xs  ">
                                     Edit Route
                                 </Button>
-                                <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-xs  ">
+                                <Button variant="outline" className="h-10 rounded-xl border-border font-bold text-xs  ">
                                     Manage Registry
                                 </Button>
                             </CardFooter>

@@ -145,9 +145,9 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                 )}
 
                 {showForm && (
-                    <div className="mb-12 p-8 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-[2rem] animate-in zoom-in-95 duration-300">
+                    <div className="mb-12 p-8 bg-muted dark:bg-slate-900/50 border border-border dark:border-slate-800 rounded-[2rem] animate-in zoom-in-95 duration-300">
                         <div className="flex justify-between items-center mb-8">
-                            <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                            <h4 className="text-sm font-black text-foreground dark:text-white uppercase tracking-widest flex items-center gap-2">
                                 <span className="h-1 w-8 bg-blue-600 rounded-full"></span>
                                 New Academic Term
                             </h4>
@@ -165,10 +165,10 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                 <div className="space-y-2">
                                     <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Term Name</Label>
                                     <Select value={form.term} onValueChange={v => setForm({ ...form, term: v })}>
-                                        <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white">
+                                        <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-foreground dark:text-white">
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
+                                        <SelectContent className="rounded-2xl border-border dark:border-slate-800">
                                             <SelectItem value="TERM_1" className="font-bold">TERM 1</SelectItem>
                                             <SelectItem value="TERM_2" className="font-bold">TERM 2</SelectItem>
                                             <SelectItem value="TERM_3" className="font-bold">TERM 3</SelectItem>
@@ -180,7 +180,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Academic Year</Label>
                                     <Input
                                         type="number"
-                                        className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-lg text-slate-900 dark:text-white"
+                                        className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black text-lg text-foreground dark:text-white"
                                         placeholder="2026"
                                         required
                                         value={form.academicYear}
@@ -191,7 +191,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Start Date</Label>
                                     <Input
                                         type="date"
-                                        className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white"
+                                        className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black text-foreground dark:text-white"
                                         required
                                         value={form.startDate}
                                         onChange={e => setForm({ ...form, startDate: e.target.value })}
@@ -201,7 +201,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">End Date</Label>
                                     <Input
                                         type="date"
-                                        className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white"
+                                        className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black text-foreground dark:text-white"
                                         required
                                         value={form.endDate}
                                         onChange={e => setForm({ ...form, endDate: e.target.value })}
@@ -209,11 +209,11 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between p-6 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[1.5rem] shadow-sm">
+                            <div className="flex items-center justify-between p-6 bg-white dark:bg-slate-950 border border-border dark:border-slate-800 rounded-[1.5rem] shadow-sm">
                                 <div className="flex items-center gap-4">
                                     <div className={cn(
                                         "h-8 w-8 rounded-xl border-2 flex items-center justify-center transition-all cursor-pointer",
-                                        form.isActive ? "bg-emerald-500 border-emerald-500" : "border-slate-200 dark:border-slate-800"
+                                        form.isActive ? "bg-emerald-500 border-emerald-500" : "border-border dark:border-slate-800"
                                     )} onClick={() => setForm({ ...form, isActive: !form.isActive })}>
                                         <input
                                             type="checkbox"
@@ -224,7 +224,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                         {form.isActive && <Check size={18} className="text-white" />}
                                     </div>
                                     <div className="cursor-pointer" onClick={() => setForm({ ...form, isActive: !form.isActive })}>
-                                        <div className="text-[10px] font-semibold text-slate-900 dark:text-white uppercase tracking-wide">Set as current active term</div>
+                                        <div className="text-[10px] font-semibold text-foreground dark:text-white uppercase tracking-wide">Set as current active term</div>
                                         <div className="text-[9px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">This will be the default term for new invoices</div>
                                     </div>
                                 </div>
@@ -232,7 +232,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     <Button
                                         type="button"
                                         variant="ghost"
-                                        className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                                        className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-foreground dark:hover:text-white"
                                         onClick={() => setShowForm(false)}
                                     >
                                         ABORT
@@ -258,19 +258,19 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                 {/* Periods Table */}
                 {periods.length === 0 ? (
                     <div className="py-24 text-center">
-                        <div className="h-24 w-24 bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                        <div className="h-24 w-24 bg-muted dark:bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
                             <Calendar size={48} className="text-slate-200 dark:text-slate-800" />
                         </div>
-                        <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 uppercase tracking-tight">No Terms Defined</h3>
+                        <h3 className="text-2xl font-semibold text-foreground dark:text-white mb-2 uppercase tracking-tight">No Terms Defined</h3>
                         <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto">
                             No academic periods have been defined yet. Add a term to get started.
                         </p>
                     </div>
                 ) : (
-                    <div className="border border-slate-100 dark:border-slate-900 rounded-[2rem] overflow-hidden bg-white dark:bg-slate-950 shadow-inner">
+                    <div className="border border-border dark:border-slate-900 rounded-[2rem] overflow-hidden bg-white dark:bg-slate-950 shadow-inner">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900">
+                                <tr className="bg-muted dark:bg-slate-900/50 border-b border-border dark:border-slate-900">
                                     <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Term</th>
                                     <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Year</th>
                                     <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Dates</th>
@@ -280,11 +280,11 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                             </thead>
                             <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
                                 {periods.map((p) => (
-                                    <tr key={p.id} className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                                    <tr key={p.id} className="group hover:bg-muted/50 dark:hover:bg-slate-900/20 transition-colors">
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-2 bg-blue-600 rounded-full"></div>
-                                                <span className="font-semibold text-slate-900 dark:text-white uppercase tracking-tight text-sm">{p.term.replace('_', ' ')}</span>
+                                                <span className="font-semibold text-foreground dark:text-white uppercase tracking-tight text-sm">{p.term.replace('_', ' ')}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5">
@@ -292,9 +292,9 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-2 text-xs font-black text-slate-500 dark:text-slate-500 uppercase tracking-tighter">
-                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-900 rounded-lg">{formatDate(p.startDate)}</div>
+                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-border dark:border-slate-900 rounded-lg">{formatDate(p.startDate)}</div>
                                                 <ChevronRightIcon />
-                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-900 rounded-lg">{formatDate(p.endDate)}</div>
+                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-border dark:border-slate-900 rounded-lg">{formatDate(p.endDate)}</div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5">
@@ -302,7 +302,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                                 "font-black text-[9px] px-3 h-6 uppercase tracking-widest border-none",
                                                 p.isActive
                                                     ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                                                    : "bg-slate-100 text-slate-500 dark:bg-slate-900 dark:text-slate-500"
+                                                    : "bg-muted text-slate-500 dark:bg-slate-900 dark:text-slate-500"
                                             )}>
                                                 {p.isActive ? (
                                                     <span className="flex items-center gap-1.5 leading-none">

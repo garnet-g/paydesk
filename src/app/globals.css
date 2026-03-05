@@ -57,87 +57,59 @@
   --error-600: #dc2626;
 
   /* Neutrals - Slate & Pearl for a smooth, blended feel */
-  --neutral-50: #f8fafc;
-  --neutral-100: #f1f5f9;
-  --neutral-200: #e2e8f0;
-  --neutral-300: #cbd5e1;
-  --neutral-400: #94a3b8;
-  --neutral-500: #64748b;
-  --neutral-600: #475569;
-  --neutral-700: #334155;
-  --neutral-800: #1e293b;
-  --neutral-900: #0f172a;
+  --neutral-50: #fdfcfb;
+  --neutral-100: #f7f3f0;
+  --neutral-200: #e8e2de;
+  --neutral-300: #d1c7c2;
+  --neutral-400: #a39690;
+  --neutral-500: #736762;
+  --neutral-600: #574d49;
+  --neutral-700: #433b38;
+  --neutral-800: #2d2826;
+  --neutral-900: #1a1716;
 
   /* Semantic Colors */
-  --background: #f8fafc;
-  --foreground: var(--neutral-900);
-  --card-bg: #ffffff;
-  --border: var(--neutral-200);
+  --background: #fdfaf6;
+  --foreground: #1c1917;
+  --card-bg: #fffcf9;
+  --border: #e7e5e4;
   --input-bg: #ffffff;
-  --muted: var(--neutral-100);
-  --muted-foreground: var(--neutral-500);
-
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-  --spacing-3xl: 4rem;
-
-  /* Border Radius - Squircle inspired */
-  --radius-sm: 0.75rem;
-  --radius-md: 1.125rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2.25rem;
-  --radius-full: 9999px;
-
-  /* Shadows - Heavy Diffusion, Soft Velvet feel */
-  --shadow-sm: 0 1px 2px 0 rgba(87, 75, 66, 0.05);
-  --shadow-md: 0 12px 24px -6px rgba(115, 99, 87, 0.1), 0 4px 12px -2px rgba(115, 99, 87, 0.04);
-  --shadow-lg: 0 25px 50px -12px rgba(115, 99, 87, 0.15), 0 8px 24px -8px rgba(115, 99, 87, 0.08);
-  --shadow-xl: 0 40px 80px -20px rgba(115, 99, 87, 0.2);
-  --shadow-2xl: 0 60px 120px -30px rgba(115, 99, 87, 0.3);
-
-  /* Transitions - Longer but very smooth */
-  --transition-fast: 300ms ease;
-  --transition-base: 500ms cubic-bezier(0.23, 1, 0.32, 1);
-  --transition-slow: 800ms cubic-bezier(0.23, 1, 0.32, 1);
+  --muted: #f5f5f4;
+  --muted-foreground: #78716c;
 
   /* ---- shadcn/ui required HSL tokens ---- */
-  --radius: 0.75rem;
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
+  --radius: 1rem;
+  --card: 32 30% 100%;
+  --card-foreground: 32 15% 10%;
+  --popover: 32 30% 100%;
+  --popover-foreground: 32 15% 10%;
   --primary: 239 84% 58%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
+  --secondary: 32 10% 95%;
+  --secondary-foreground: 32 15% 10%;
+  --muted: 32 10% 96%;
+  --muted-foreground: 32 10% 45%;
+  --accent: 32 10% 96%;
+  --accent-foreground: 32 15% 10%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 32 10% 92%;
+  --input: 32 10% 92%;
   --ring: 239 84% 58%;
-  --background: 210 40% 98%;
-  --foreground: 222.2 84% 4.9%;
+  --background: 32 30% 98.5%;
+  --foreground: 32 15% 10%;
 }
 
 /* Dark Mode */
 [data-theme='dark'] {
   /* Semantic overrides - Deeper Blacks & Stark White */
-  --background: #000000;
-  --foreground: #ffffff;
-  --card-bg: #0a0a0a;
-  --border: #222222;
-  --input-bg: #111111;
-  --muted: #1a1a1a;
-  --muted-foreground: #a0a0a0;
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card-bg: #0f172a;
+  --border: #1e293b;
+  --input-bg: #1e293b;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
 
   /* Neutral overrides for dark - Grayscale */
   --neutral-50: #050505;
@@ -149,7 +121,7 @@
   --neutral-600: #a3a3a3;
   --neutral-700: #d4d4d4;
   --neutral-800: #e5e5e5;
-  --neutral-900: #ffffff;
+  --neutral-900: #f8fafc;
 
   /* Primary stays vibrant, maybe slightly muted background */
   --primary-50: rgba(79, 70, 229, 0.1);
@@ -271,8 +243,8 @@ body {
   color: var(--foreground);
   background-color: var(--background);
   background-image:
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.08) 0, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(217, 119, 6, 0.04) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(251, 191, 36, 0.04) 0, transparent 50%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;

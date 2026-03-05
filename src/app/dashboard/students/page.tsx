@@ -127,10 +127,10 @@ export default function StudentsPage() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'ACTIVE': return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-            case 'INACTIVE': return 'bg-slate-100 text-slate-500 dark:bg-slate-900 dark:text-slate-500'
+            case 'INACTIVE': return 'bg-muted text-slate-500 dark:bg-slate-900 dark:text-slate-500'
             case 'SUSPENDED': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
             case 'GRADUATED': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-            default: return 'bg-slate-100 text-slate-500'
+            default: return 'bg-muted text-slate-500'
         }
     }
 
@@ -145,7 +145,7 @@ export default function StudentsPage() {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-10 w-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl"
+                                    className="h-10 w-10 bg-muted hover:bg-slate-200 text-slate-600 rounded-xl"
                                     onClick={() => { setSelectedClass(null); setStudents([]); }}
                                 >
                                     <ChevronLeft size={20} />
@@ -155,7 +155,7 @@ export default function StudentsPage() {
                                     <Users size={24} />
                                 </div>
                             )}
-                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                            <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">
                                 {selectedClass ? `${selectedClass.name} ${selectedClass.stream || ''}` : 'Students'}
                             </h2>
                         </div>
@@ -165,7 +165,7 @@ export default function StudentsPage() {
                     </div>
                     <div className="flex flex-wrap items-center gap-4">
                         {session?.user?.role !== 'SUPER_ADMIN' && (
-                            <Button asChild variant="outline" className="h-12 px-6 rounded-2xl font-semibold text-xs   border-slate-200 bg-white hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800">
+                            <Button asChild variant="outline" className="h-12 px-6 rounded-2xl font-semibold text-xs   border-border bg-white hover:bg-muted dark:bg-slate-900 dark:border-slate-800">
                                 <Link href="/dashboard/settings/import">
                                     <Download size={18} className="mr-2 text-blue-600" />
                                     Batch Upload
@@ -199,7 +199,7 @@ export default function StudentsPage() {
                 {!selectedClass && !loading && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {classes.length === 0 ? (
-                            <div className="col-span-full py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                            <div className="col-span-full py-20 text-center bg-muted rounded-3xl border border-dashed border-border">
                                 <Building2 size={48} className="mx-auto text-slate-300 mb-4" />
                                 <h3 className="text-xl font-semibold text-slate-800   tracking-tight">No Divisions Configured</h3>
                                 <p className="text-slate-500 font-medium mt-2">Setup classes/divisions first before viewing the registry.</p>
@@ -208,19 +208,19 @@ export default function StudentsPage() {
                             classes.map(c => (
                                 <Card
                                     key={c.id}
-                                    className="cursor-pointer group hover:-translate-y-1 hover:shadow-xl hover:border-blue-200 transition-all border-slate-200 rounded-[2rem] overflow-hidden"
+                                    className="cursor-pointer group hover:-translate-y-1 hover:shadow-xl hover:border-blue-200 transition-all border-border rounded-[2rem] overflow-hidden"
                                     onClick={() => setSelectedClass(c)}
                                 >
-                                    <CardHeader className="bg-slate-50/50 p-6 border-b border-slate-100 group-hover:bg-blue-50/50 transition-colors">
+                                    <CardHeader className="bg-muted/50 p-6 border-b border-border group-hover:bg-blue-50/50 transition-colors">
                                         <div className="flex items-start justify-between">
-                                            <div className="h-10 w-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-blue-600">
+                                            <div className="h-10 w-10 bg-white rounded-xl shadow-sm border border-border flex items-center justify-center text-blue-600">
                                                 <Users size={20} />
                                             </div>
                                             <Badge variant="outline" className="font-semibold text-[10px]   bg-white">
                                                 {c._count?.students || 0} Students
                                             </Badge>
                                         </div>
-                                        <CardTitle className="text-xl font-semibold text-slate-900  tracking-tight mt-4">
+                                        <CardTitle className="text-xl font-semibold text-foreground  tracking-tight mt-4">
                                             {c.name} {c.stream && <span className="text-blue-600">{c.stream}</span>}
                                         </CardTitle>
                                     </CardHeader>
@@ -240,27 +240,27 @@ export default function StudentsPage() {
                 {/* Tracking View For Selected Class */}
                 {selectedClass && (
                     <Card className="border-none shadow-xl bg-white dark:bg-slate-950 rounded-[2rem] overflow-hidden animate-in slide-in-from-right-4 duration-500">
-                        <CardHeader className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900 p-8">
+                        <CardHeader className="bg-muted dark:bg-slate-900/50 border-b border-border dark:border-slate-900 p-8">
                             <div className="flex flex-col lg:flex-row gap-6 items-center">
                                 <div className="relative flex-1 group">
                                     <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                     <Input
                                         type="text"
                                         placeholder="Search by name or admission number..."
-                                        className="h-14 pl-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-semibold text-slate-900 dark:text-white group-focus-within:ring-2 ring-blue-500/20 transition-all shadow-sm"
+                                        className="h-14 pl-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-semibold text-foreground dark:text-white group-focus-within:ring-2 ring-blue-500/20 transition-all shadow-sm"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
                                 <div className="flex items-center gap-4 w-full lg:w-auto">
                                     <Select value={statusFilter} onValueChange={v => setStatusFilter(v)}>
-                                        <SelectTrigger className="h-14 w-full lg:w-[220px] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-semibold  text-[10px]  text-slate-600 dark:text-white">
+                                        <SelectTrigger className="h-14 w-full lg:w-[220px] bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-semibold  text-[10px]  text-slate-600 dark:text-white">
                                             <div className="flex items-center gap-2">
                                                 <Filter size={16} className="text-blue-600" />
                                                 <SelectValue placeholder="Status: All" />
                                             </div>
                                         </SelectTrigger>
-                                        <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
+                                        <SelectContent className="rounded-2xl border-border dark:border-slate-800">
                                             <SelectItem value="ALL" className="font-semibold">All Students</SelectItem>
                                             <SelectItem value="ACTIVE" className="font-semibold text-emerald-600 border-none">Active</SelectItem>
                                             <SelectItem value="INACTIVE" className="font-semibold text-slate-500 border-none">Inactive</SelectItem>
@@ -277,7 +277,7 @@ export default function StudentsPage() {
                         </CardHeader>
 
                         <CardContent className="p-0">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-slate-50/30 dark:bg-slate-900/10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-muted/30 dark:bg-slate-900/10">
                                 {loading ? (
                                     <div className="col-span-full py-32 text-center">
                                         <div className="inline-flex items-center gap-3">
@@ -288,10 +288,10 @@ export default function StudentsPage() {
                                 ) : filteredStudents.length === 0 ? (
                                     <div className="col-span-full py-32 text-center">
                                         <div className="max-w-xs mx-auto flex flex-col items-center">
-                                            <div className="h-20 w-20 bg-slate-100 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center text-slate-300 dark:text-slate-800 mb-6 shadow-inner">
+                                            <div className="h-20 w-20 bg-muted dark:bg-slate-900 rounded-[2rem] flex items-center justify-center text-slate-300 dark:text-slate-800 mb-6 shadow-inner">
                                                 <GraduationCap size={48} />
                                             </div>
-                                            <h3 className="text-xl font-semibold text-slate-900 dark:text-white   tracking-tight mb-2">No Students Found</h3>
+                                            <h3 className="text-xl font-semibold text-foreground dark:text-white   tracking-tight mb-2">No Students Found</h3>
                                             <p className="text-slate-400 text-sm font-medium ">
                                                 No students matching your search criteria were found in this division.
                                             </p>
@@ -299,7 +299,7 @@ export default function StudentsPage() {
                                     </div>
                                 ) : (
                                     filteredStudents.map((student) => (
-                                        <Card key={student.id} className="border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-lg transition-all animate-in zoom-in-95 duration-300">
+                                        <Card key={student.id} className="border-border dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-lg transition-all animate-in zoom-in-95 duration-300">
                                             <CardContent className="p-6">
                                                 <div className="flex justify-between items-start mb-6">
                                                     <div className="flex items-center gap-4">
@@ -307,7 +307,7 @@ export default function StudentsPage() {
                                                             {student.firstName[0]}{student.lastName[0]}
                                                         </div>
                                                         <div>
-                                                            <h3 className="font-bold text-slate-900 dark:text-white capitalize">{student.firstName} {student.lastName}</h3>
+                                                            <h3 className="font-bold text-foreground dark:text-white capitalize">{student.firstName} {student.lastName}</h3>
                                                             <p className="text-xs text-slate-500  ">{student.admissionNumber}</p>
                                                         </div>
                                                     </div>
@@ -319,24 +319,24 @@ export default function StudentsPage() {
                                                 <div className="space-y-3 mb-6">
                                                     <div className="flex justify-between items-center text-sm py-2 border-b border-slate-50 dark:border-slate-800">
                                                         <span className="text-slate-500">Class:</span>
-                                                        <span className="font-semibold text-slate-900 dark:text-white text-right">
+                                                        <span className="font-semibold text-foreground dark:text-white text-right">
                                                             {student.class ? `${student.class.name} ${student.class.stream ? `- ${student.class.stream}` : ''}` : 'Unassigned'}
                                                         </span>
                                                     </div>
                                                     <div className="flex justify-between items-center text-sm py-2 border-b border-slate-50 dark:border-slate-800">
                                                         <span className="text-slate-500">Attendance:</span>
-                                                        <span className="font-semibold text-slate-900 dark:text-white text-right">100.0%</span>
+                                                        <span className="font-semibold text-foreground dark:text-white text-right">100.0%</span>
                                                     </div>
                                                     <div className="flex justify-between items-start text-sm py-2">
                                                         <span className="text-slate-500 mt-1">Parent/Guardian:</span>
                                                         <div className="text-right">
                                                             {student.guardians && student.guardians.length > 0 ? (
                                                                 <>
-                                                                    <p className="font-semibold text-slate-900 dark:text-white capitalize">{student.guardians[0].user.firstName} {student.guardians[0].user.lastName}</p>
+                                                                    <p className="font-semibold text-foreground dark:text-white capitalize">{student.guardians[0].user.firstName} {student.guardians[0].user.lastName}</p>
                                                                     <p className="text-xs text-slate-500 mt-1">{student.guardians[0].user.phoneNumber}</p>
                                                                 </>
                                                             ) : (
-                                                                <p className="font-semibold text-slate-900 dark:text-white text-xs">Unassigned</p>
+                                                                <p className="font-semibold text-foreground dark:text-white text-xs">Unassigned</p>
                                                             )}
                                                         </div>
                                                     </div>
@@ -344,7 +344,7 @@ export default function StudentsPage() {
 
                                                 <Button
                                                     variant="outline"
-                                                    className="w-full h-11 rounded-xl border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                                    className="w-full h-11 rounded-xl border-border dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-muted dark:hover:bg-slate-800 transition-colors"
                                                     onClick={() => {
                                                         setSelectedProfileStudent(student);
                                                         setShowProfileModal(true);
@@ -360,7 +360,7 @@ export default function StudentsPage() {
                         </CardContent>
 
                         {/* Footer / Pagination Placeholder */}
-                        <div className="bg-slate-50 dark:bg-slate-900/30 border-t border-slate-100 dark:border-slate-900 p-6 flex justify-between items-center whitespace-nowrap overflow-x-auto gap-8">
+                        <div className="bg-muted dark:bg-slate-900/30 border-t border-border dark:border-slate-900 p-6 flex justify-between items-center whitespace-nowrap overflow-x-auto gap-8">
                             <div className="text-[10px] font-semibold text-slate-400    shrink-0">
                                 Displaying {filteredStudents.length} Students •
                             </div>

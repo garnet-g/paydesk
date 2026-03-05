@@ -118,7 +118,7 @@ export default function PlatformAdminsPage() {
                             </div>
                             <h2 style={{ fontSize: '1.75rem', margin: 0 }}>Platform Admins</h2>
                         </div>
-                        <p className="text-muted">
+                        <p className="text-muted-foreground">
                             Manage sub-administrators who help you run the PayDesk platform. They have the same access as you, but you can suspend or remove them at any time.
                         </p>
                     </div>
@@ -183,7 +183,7 @@ export default function PlatformAdminsPage() {
                                     <tr>
                                         <td colSpan={5} style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
                                             <ShieldCheck size={48} style={{ opacity: 0.15, margin: '0 auto var(--spacing-md)', display: 'block' }} />
-                                            <p className="text-muted">No platform admins yet. Add one to delegate management tasks.</p>
+                                            <p className="text-muted-foreground">No platform admins yet. Add one to delegate management tasks.</p>
                                         </td>
                                     </tr>
                                 ) : admins.map(admin => (

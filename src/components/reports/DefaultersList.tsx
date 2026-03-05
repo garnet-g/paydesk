@@ -120,7 +120,7 @@ export default function DefaultersList() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-lg)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
                 <div>
                     <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Fee Defaulters</h2>
-                    <p className="text-muted">Students with outstanding fee balances</p>
+                    <p className="text-muted-foreground">Students with outstanding fee balances</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
                     <button className="btn btn-secondary btn-sm" onClick={handlePrint}>
@@ -158,11 +158,11 @@ export default function DefaultersList() {
                     background: 'var(--error-50)',
                     borderColor: 'var(--error-200)'
                 }}>
-                    <div className="text-xs text-muted" style={{ marginBottom: '2px' }}>Total Outstanding</div>
+                    <div className="text-xs text-muted-foreground" style={{ marginBottom: '2px' }}>Total Outstanding</div>
                     <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--error-600)', fontVariantNumeric: 'tabular-nums' }}>
                         {loading ? '—' : formatCurrency(getTotalOutstanding())}
                     </div>
-                    <div className="text-xs text-muted" style={{ marginTop: '4px' }}>
+                    <div className="text-xs text-muted-foreground" style={{ marginTop: '4px' }}>
                         {loading ? '...' : `${defaulters.length} student(s)`}
                     </div>
                 </div>
@@ -194,7 +194,7 @@ export default function DefaultersList() {
                                 <tr>
                                     <td colSpan={7} style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
                                         <AlertCircle size={48} style={{ opacity: 0.15, marginBottom: 'var(--spacing-sm)' }} />
-                                        <p className="text-muted">
+                                        <p className="text-muted-foreground">
                                             {searchTerm ? 'No matches found.' : 'All accounts are settled.'}
                                         </p>
                                     </td>

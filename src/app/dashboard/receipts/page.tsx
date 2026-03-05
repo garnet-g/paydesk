@@ -46,7 +46,7 @@ export default function ReceiptWalletPage() {
             <div className="animate-fade-in">
                 <div style={{ marginBottom: 'var(--spacing-xl)' }}>
                     <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: 'var(--spacing-xs)' }}>Receipt Wallet</h2>
-                    <p className="text-muted">A secure repository for all your official school fee receipts.</p>
+                    <p className="text-muted-foreground">A secure repository for all your official school fee receipts.</p>
                 </div>
 
                 {/* Search & Stats */}
@@ -72,7 +72,7 @@ export default function ReceiptWalletPage() {
                         </div>
                         <div>
                             <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>{receipts.length}</div>
-                            <div className="text-xs text-muted  font-bold tracking-tight">Total Slips</div>
+                            <div className="text-xs text-muted-foreground  font-bold tracking-tight">Total Slips</div>
                         </div>
                     </div>
                 </div>
@@ -88,10 +88,10 @@ export default function ReceiptWalletPage() {
                             borderRadius: '50%', display: 'flex', alignItems: 'center',
                             justifyContent: 'center', margin: '0 auto var(--spacing-lg)'
                         }}>
-                            <FileText size={32} className="text-muted" />
+                            <FileText size={32} className="text-muted-foreground" />
                         </div>
                         <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>No receipts found</h3>
-                        <p className="text-muted" style={{ maxWidth: '300px', margin: 'var(--spacing-xs) auto var(--spacing-lg)' }}>
+                        <p className="text-muted-foreground" style={{ maxWidth: '300px', margin: 'var(--spacing-xs) auto var(--spacing-lg)' }}>
                             Once you make payments, your official receipts will appear here automatically.
                         </p>
                     </div>
@@ -132,25 +132,25 @@ export default function ReceiptWalletPage() {
                                         <CheckCircle2 size={24} className="text-success-600" />
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
-                                        <div className="text-xs text-muted font-bold  ">Receipt No.</div>
+                                        <div className="text-xs text-muted-foreground font-bold  ">Receipt No.</div>
                                         <div className="font-mono font-bold" style={{ fontSize: '0.9rem' }}>{receipt.receiptNumber || receipt.transactionRef}</div>
                                     </div>
                                 </div>
 
                                 {/* Content */}
                                 <div style={{ padding: 'var(--spacing-xl)', flex: 1 }}>
-                                    <div className="text-xs text-muted font-bold  tracking-wider mb-xs">Payment For</div>
+                                    <div className="text-xs text-muted-foreground font-bold  tracking-wider mb-xs">Payment For</div>
                                     <div style={{ fontSize: '1.125rem', fontWeight: 800, marginBottom: 'var(--spacing-md)' }}>
                                         {receipt.student?.firstName} {receipt.student?.lastName}
                                     </div>
 
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-lg)' }}>
                                         <div>
-                                            <div className="text-xs text-muted">Amount Paid</div>
+                                            <div className="text-xs text-muted-foreground">Amount Paid</div>
                                             <div style={{ fontWeight: 700 }}>{formatCurrency(receipt.amount)}</div>
                                         </div>
                                         <div>
-                                            <div className="text-xs text-muted">Date</div>
+                                            <div className="text-xs text-muted-foreground">Date</div>
                                             <div style={{ fontWeight: 700 }}>{formatDate(receipt.createdAt)}</div>
                                         </div>
                                     </div>

@@ -197,7 +197,7 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
     if (!statement || statement.length === 0) {
         return (
             <div className="card" style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                <p className="text-muted">No financial history found for this student.</p>
+                <p className="text-muted-foreground">No financial history found for this student.</p>
                 {(session?.user?.role === 'PRINCIPAL' || session?.user?.role === 'SUPER_ADMIN') && (
                     <div className="flex justify-center gap-md mt-lg">
                         <button className="btn btn-primary btn-sm" onClick={() => setShowFeeModal(true)}>
@@ -216,10 +216,10 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
             <div className="flex justify-between items-start mb-lg">
                 <div>
                     <h2 className="text-xl font-bold mb-xs">Financial Ledger</h2>
-                    <p className="text-muted text-sm">Statement for {student.name} | Adm: {student.admissionNumber}</p>
+                    <p className="text-muted-foreground text-sm">Statement for {student.name} | Adm: {student.admissionNumber}</p>
                 </div>
                 <div className="text-right">
-                    <p className="text-xs uppercase font-bold text-muted mb-xs">Net Balance</p>
+                    <p className="text-xs uppercase font-bold text-muted-foreground mb-xs">Net Balance</p>
                     <h3 className={`text-2xl font-bold ${currentBalance > 0 ? 'text-error' : 'text-success'}`}>
                         {formatCurrency(currentBalance)}
                     </h3>
@@ -252,7 +252,7 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
             <div className="table-wrapper">
                 <table className="table w-full">
                     <thead>
-                        <tr className="bg-neutral-50 text-left text-xs uppercase text-muted font-semibold border-b">
+                        <tr className="bg-neutral-50 text-left text-xs uppercase text-muted-foreground font-semibold border-b">
                             <th className="p-sm">Date</th>
                             <th className="p-sm">Description</th>
                             <th className="p-sm text-right">Debit (+)</th>
@@ -263,10 +263,10 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
                     <tbody className="text-sm">
                         {statement.map((tx, idx) => (
                             <tr key={idx} className="border-b hover:bg-neutral-50">
-                                <td className="p-sm text-muted">{formatDate(tx.date)}</td>
+                                <td className="p-sm text-muted-foreground">{formatDate(tx.date)}</td>
                                 <td className="p-sm">
                                     <div className="font-semibold">{tx.type === 'INVOICE' ? 'Debit' : 'Credit'}</div>
-                                    <div className="text-xs text-muted truncate max-w-[250px]" title={tx.details || tx.description}>
+                                    <div className="text-xs text-muted-foreground truncate max-w-[250px]" title={tx.details || tx.description}>
                                         {tx.description} {tx.details && ` - ${tx.details}`}
                                     </div>
                                 </td>
@@ -285,7 +285,7 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
                 </table>
             </div>
 
-            <div className="mt-lg p-md bg-neutral-50 rounded text-center text-xs text-muted">
+            <div className="mt-lg p-md bg-neutral-50 rounded text-center text-xs text-muted-foreground">
                 <p>This statement reflects all financial activities for this student at {student.schoolName}.</p>
             </div>
 
@@ -295,7 +295,7 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
                     <div className="bg-white p-2xl rounded-xl shadow-2xl w-full max-w-md animate-slide-up" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-xl">
                             <h3 className="text-xl font-bold">Add Manual Fee Charge</h3>
-                            <button onClick={() => setShowFeeModal(false)} className="text-muted hover:text-foreground">
+                            <button onClick={() => setShowFeeModal(false)} className="text-muted-foreground hover:text-foreground">
                                 <X size={24} />
                             </button>
                         </div>
@@ -338,7 +338,7 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
                     <div className="bg-white p-2xl rounded-xl shadow-2xl w-full max-w-md animate-slide-up" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-xl">
                             <h3 className="text-xl font-bold">Record Manual Payment</h3>
-                            <button onClick={() => setShowPaymentModal(false)} className="text-muted hover:text-foreground">
+                            <button onClick={() => setShowPaymentModal(false)} className="text-muted-foreground hover:text-foreground">
                                 <X size={24} />
                             </button>
                         </div>

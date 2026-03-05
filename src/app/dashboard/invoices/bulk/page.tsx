@@ -163,7 +163,7 @@ export default function BulkInvoicePage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
                     <div>
                         <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Bulk Invoice Generation</h2>
-                        <p className="text-muted">Batch bill your students for the upcoming term with precision.</p>
+                        <p className="text-muted-foreground">Batch bill your students for the upcoming term with precision.</p>
                     </div>
                 </div>
 
@@ -182,7 +182,7 @@ export default function BulkInvoicePage() {
                             <CheckCircle size={48} style={{ color: 'var(--success-600)' }} />
                         </div>
                         <h3 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: 'var(--spacing-md)' }}>Process Complete</h3>
-                        <p className="text-muted" style={{ marginBottom: 'var(--spacing-xl)', maxWidth: '400px', margin: '0 auto var(--spacing-xl)' }}>
+                        <p className="text-muted-foreground" style={{ marginBottom: 'var(--spacing-xl)', maxWidth: '400px', margin: '0 auto var(--spacing-xl)' }}>
                             {result.message}
                         </p>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-md)' }}>
@@ -296,7 +296,7 @@ export default function BulkInvoicePage() {
                                     {feeStructures.length === 0 ? (
                                         <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)', background: 'var(--neutral-50)', borderRadius: 'var(--radius-md)', border: '2px dashed var(--border)' }}>
                                             <Info size={24} style={{ color: 'var(--muted-foreground)', marginBottom: 'var(--spacing-sm)' }} />
-                                            <p className="text-muted">No fee structures found for the selected period.</p>
+                                            <p className="text-muted-foreground">No fee structures found for the selected period.</p>
                                             <button
                                                 className="btn btn-ghost btn-sm"
                                                 style={{ marginTop: 'var(--spacing-sm)' }}
@@ -307,7 +307,7 @@ export default function BulkInvoicePage() {
                                         </div>
                                     ) : (
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-                                            <div className="text-xs font-bold  text-muted" style={{ letterSpacing: '0.05em', marginBottom: 'var(--spacing-md)' }}>Available Fee Structures</div>
+                                            <div className="text-xs font-bold  text-muted-foreground" style={{ letterSpacing: '0.05em', marginBottom: 'var(--spacing-md)' }}>Available Fee Structures</div>
                                             {feeStructures.map(fs => (
                                                 <div
                                                     key={fs.id}
@@ -341,7 +341,7 @@ export default function BulkInvoicePage() {
                                                         </div>
                                                         <div>
                                                             <div className="font-semibold text-sm">{fs.name}</div>
-                                                            <div className="text-xs text-muted" style={{ textTransform: '' }}>{fs.category || 'GENERAL'} • {fs.classId ? fs.class?.name : 'All Classes'}</div>
+                                                            <div className="text-xs text-muted-foreground" style={{ textTransform: '' }}>{fs.category || 'GENERAL'} • {fs.classId ? fs.class?.name : 'All Classes'}</div>
                                                         </div>
                                                     </div>
                                                     <div className="font-semibold">{formatCurrency(fs.amount)}</div>
@@ -362,19 +362,19 @@ export default function BulkInvoicePage() {
                                 <div className="card-content">
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                                            <span className="text-muted">Target Population</span>
+                                            <span className="text-muted-foreground">Target Population</span>
                                             <span className="font-semibold">{selectedClassId ? selectedClass?.name : 'Entire School'}</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                                            <span className="text-muted">Academic Period</span>
+                                            <span className="text-muted-foreground">Academic Period</span>
                                             <span className="font-semibold">{selectedPeriod?.academicYear} - {selectedPeriod?.term.replace('_', ' ')}</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                                            <span className="text-muted">Components Selected</span>
+                                            <span className="text-muted-foreground">Components Selected</span>
                                             <span className="font-semibold">{selectedFeeIds.length} items</span>
                                         </div>
                                         <div style={{ borderTop: '1px solid var(--border)', paddingTop: 'var(--spacing-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <span className="text-muted font-medium">Invoice Total</span>
+                                            <span className="text-muted-foreground font-medium">Invoice Total</span>
                                             <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary-700)' }}>{formatCurrency(totalSelectedFeesAmount)}</span>
                                         </div>
                                     </div>

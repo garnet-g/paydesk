@@ -80,7 +80,7 @@ export default function LogsPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
                     <div>
                         <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>System Logs</h2>
-                        <p className="text-muted">Global platform activity feed across all institutions</p>
+                        <p className="text-muted-foreground">Global platform activity feed across all institutions</p>
                     </div>
                 </div>
 
@@ -136,10 +136,10 @@ export default function LogsPage() {
                                 {loading ? (
                                     <tr><td colSpan={5} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}><div className="spinner" style={{ margin: '0 auto' }}></div></td></tr>
                                 ) : logs.length === 0 ? (
-                                    <tr><td colSpan={5} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }} className="text-muted">No system logs recorded yet.</td></tr>
+                                    <tr><td colSpan={5} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }} className="text-muted-foreground">No system logs recorded yet.</td></tr>
                                 ) : filteredLogs.map((log: any) => (
                                     <tr key={log.id} style={{ opacity: log.action === 'LOGIN_SUCCESS' ? 0.7 : 1 }}>
-                                        <td className="text-muted text-sm font-mono" style={{ whiteSpace: 'nowrap' }}>
+                                        <td className="text-muted-foreground text-sm font-mono" style={{ whiteSpace: 'nowrap' }}>
                                             {new Date(log.createdAt).toLocaleString()}
                                         </td>
                                         <td>
@@ -154,26 +154,26 @@ export default function LogsPage() {
                                         </td>
                                         <td>
                                             <span className="font-semibold text-sm">{log.entityType}</span>
-                                            {log.entityId && <span className="text-muted text-xs block font-mono">ID: {log.entityId}</span>}
+                                            {log.entityId && <span className="text-muted-foreground text-xs block font-mono">ID: {log.entityId}</span>}
                                         </td>
                                         <td>
                                             {log.school ? (
                                                 <div>
                                                     <span className="text-sm font-semibold">{log.school.name}</span>
-                                                    <code className="text-xs text-muted block">{log.school.code}</code>
+                                                    <code className="text-xs text-muted-foreground block">{log.school.code}</code>
                                                 </div>
                                             ) : (
-                                                <span className="text-xs text-muted">System Level</span>
+                                                <span className="text-xs text-muted-foreground">System Level</span>
                                             )}
                                         </td>
                                         <td>
                                             {log.user ? (
                                                 <div>
                                                     <span className="text-sm">{log.user.firstName} {log.user.lastName}</span>
-                                                    <span className="text-xs text-muted block">{log.user.email}</span>
+                                                    <span className="text-xs text-muted-foreground block">{log.user.email}</span>
                                                 </div>
                                             ) : (
-                                                <span className="text-xs text-muted ">System Automated</span>
+                                                <span className="text-xs text-muted-foreground ">System Automated</span>
                                             )}
                                         </td>
                                     </tr>

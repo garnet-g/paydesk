@@ -156,7 +156,7 @@ export default function ParentsPage() {
                 {/* Page Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
                     <div>
-                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Parents</h2>
+                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">Parents</h2>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">Manage parent and guardian accounts for {session?.user?.schoolName}</p>
                     </div>
                     <button className="btn btn-primary" onClick={handleAddClick}>
@@ -228,7 +228,7 @@ export default function ParentsPage() {
                                                     </div>
                                                     <div>
                                                         <div className="font-semibold">{parent.firstName} {parent.lastName}</div>
-                                                        <div className="text-xs text-muted">Joined {new Date(parent.createdAt).toLocaleDateString()}</div>
+                                                        <div className="text-xs text-muted-foreground">Joined {new Date(parent.createdAt).toLocaleDateString()}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -253,7 +253,7 @@ export default function ParentsPage() {
                                                             </span>
                                                         ))
                                                     ) : (
-                                                        <span className="text-muted text-xs">No students linked</span>
+                                                        <span className="text-muted-foreground text-xs">No students linked</span>
                                                     )}
                                                 </div>
                                             </td>

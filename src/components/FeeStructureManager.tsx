@@ -196,7 +196,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
 
     const getCategoryStyles = (category: string) => {
         const cat = FEE_CATEGORIES.find(c => c.value === category)
-        if (!cat) return 'bg-slate-100 text-slate-700'
+        if (!cat) return 'bg-muted text-slate-700'
 
         const colors: Record<string, string> = {
             blue: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
@@ -207,10 +207,10 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
             indigo: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
             red: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
             teal: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
-            slate: 'bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400'
+            slate: 'bg-muted text-slate-700 dark:bg-slate-900/30 dark:text-slate-400'
         }
 
-        return colors[cat.color] || 'bg-slate-100 text-slate-700'
+        return colors[cat.color] || 'bg-muted text-slate-700'
     }
 
     const getCategoryLabel = (category: string) =>
@@ -239,7 +239,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                         <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                             <Wallet size={24} />
                         </div>
-                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Fee Management</h2>
+                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">Fee Management</h2>
                     </div>
                     <p className="text-slate-500 dark:text-slate-400 font-medium">
                         Set up and manage school fee structures and <span className="text-blue-600 font-semibold ">Allocations</span>
@@ -256,18 +256,18 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
 
             {/* Selection Filters */}
             <Card className="border-none shadow-xl bg-white dark:bg-slate-950 rounded-[2rem] overflow-hidden">
-                <CardHeader className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900 p-8">
+                <CardHeader className="bg-muted dark:bg-slate-900/50 border-b border-border dark:border-slate-900 p-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-2">
                             <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Academic Term</Label>
                             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                                <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white transition-all shadow-sm">
+                                <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-foreground dark:text-white transition-all shadow-sm">
                                     <div className="flex items-center gap-2">
                                         <TrendingUp size={16} className="text-blue-600" />
                                         <SelectValue placeholder="Select Term..." />
                                     </div>
                                 </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
+                                <SelectContent className="rounded-2xl border-border dark:border-slate-800">
                                     {academicPeriods.length === 0 ? (
                                         <SelectItem value="none" disabled>No Periods Defined</SelectItem>
                                     ) : (
@@ -283,13 +283,13 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                         <div className="space-y-2">
                             <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Class Filter</Label>
                             <Select value={selectedClass} onValueChange={setSelectedClass}>
-                                <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white transition-all shadow-sm">
+                                <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-foreground dark:text-white transition-all shadow-sm">
                                     <div className="flex items-center gap-2">
                                         <Filter size={16} className="text-blue-600" />
                                         <SelectValue placeholder="All Divisions" />
                                     </div>
                                 </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
+                                <SelectContent className="rounded-2xl border-border dark:border-slate-800">
                                     <SelectItem value="all_classes" className="font-bold">ALL CLASSES</SelectItem>
                                     {classes.map(cls => (
                                         <SelectItem key={cls.id} value={cls.id} className="font-bold">
@@ -312,18 +312,18 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                     </div>
                 </div>
             ) : Object.keys(groupedFees).length === 0 ? (
-                <div className="py-24 text-center bg-white dark:bg-slate-950 rounded-[2.5rem] shadow-xl border-2 border-dashed border-slate-100 dark:border-slate-900">
-                    <div className="h-24 w-24 bg-slate-50 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                <div className="py-24 text-center bg-white dark:bg-slate-950 rounded-[2.5rem] shadow-xl border-2 border-dashed border-border dark:border-slate-900">
+                    <div className="h-24 w-24 bg-muted dark:bg-slate-900 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
                         <Coins size={48} className="text-slate-200 dark:text-slate-800" />
                     </div>
-                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase italic tracking-tighter">Vault Empty</h3>
+                    <h3 className="text-2xl font-black text-foreground dark:text-white mb-2 uppercase italic tracking-tighter">Vault Empty</h3>
                     <p className="text-slate-500 dark:text-slate-400 font-medium italic max-w-sm mx-auto mb-8">
                         {!selectedPeriod ? 'Initialize an academic period to map treasury allocations.' : 'No fee structures have been deployed for this cycle phase yet.'}
                     </p>
                     {selectedPeriod && (
                         <Button
                             variant="outline"
-                            className="h-12 px-8 rounded-xl font-black text-xs uppercase tracking-widest border-slate-200 dark:border-slate-800"
+                            className="h-12 px-8 rounded-xl font-black text-xs uppercase tracking-widest border-border dark:border-slate-800"
                             onClick={() => { resetForm(); setShowAddModal(true) }}
                         >
                             <Plus size={18} className="mr-2 text-blue-600" />
@@ -361,7 +361,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
                                         <thead>
-                                            <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900">
+                                            <tr className="bg-muted dark:bg-slate-900/50 border-b border-border dark:border-slate-900">
                                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Revenue Source</th>
                                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Description</th>
                                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Valuation</th>
@@ -370,7 +370,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                         </thead>
                                         <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
                                             {group.fees.map((fee: any) => (
-                                                <tr key={fee.id} className="group/row hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors border-l-4 border-transparent hover:border-blue-600">
+                                                <tr key={fee.id} className="group/row hover:bg-muted/50 dark:hover:bg-slate-900/20 transition-colors border-l-4 border-transparent hover:border-blue-600">
                                                     <td className="px-8 py-6">
                                                         <Badge className={cn(
                                                             "font-black text-[9px] px-3 h-6 uppercase tracking-widest border-none shadow-none",
@@ -380,7 +380,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                                         </Badge>
                                                     </td>
                                                     <td className="px-8 py-6">
-                                                        <div className="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm">{fee.name}</div>
+                                                        <div className="font-black text-foreground dark:text-white uppercase tracking-tight text-sm">{fee.name}</div>
                                                         {fee.description && (
                                                             <div className="text-[10px] text-slate-400 font-bold uppercase italic mt-0.5 max-w-sm truncate">{fee.description}</div>
                                                         )}
@@ -388,7 +388,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                                     <td className="px-8 py-6">
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-xs font-black text-slate-400 uppercase tracking-tighter">KES</span>
-                                                            <span className="text-base font-black text-slate-900 dark:text-white tracking-widest">{fee.amount.toLocaleString()}</span>
+                                                            <span className="text-base font-black text-foreground dark:text-white tracking-widest">{fee.amount.toLocaleString()}</span>
                                                         </div>
                                                     </td>
                                                     <td className="px-8 py-6 text-right">
@@ -452,7 +452,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     type="text"
                                     required
                                     placeholder="e.g. ADVANCED LABORATORY RESOURCE FEE"
-                                    className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white uppercase placeholder:opacity-30"
+                                    className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black text-foreground dark:text-white uppercase placeholder:opacity-30"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
@@ -463,7 +463,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                 <Input
                                     type="text"
                                     placeholder="BRIEF MISSION OVERVIEW..."
-                                    className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-bold text-slate-700 dark:text-slate-300 italic uppercase placeholder:opacity-30"
+                                    className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-slate-700 dark:text-slate-300 italic uppercase placeholder:opacity-30"
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 />
@@ -473,7 +473,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                 <div className="space-y-2">
                                     <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Source Category</Label>
                                     <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
-                                        <SelectTrigger className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
+                                        <SelectTrigger className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent className="rounded-2xl">
@@ -492,7 +492,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                         required
                                         min="0"
                                         step="0.01"
-                                        className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black text-lg text-slate-900 dark:text-white"
+                                        className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black text-lg text-foreground dark:text-white"
                                         placeholder="0.00"
                                         value={formData.amount}
                                         onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
@@ -507,7 +507,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     onValueChange={(v) => setFormData({ ...formData, classId: v === 'school-wide' ? '' : v, applyToAllClasses: false })}
                                     disabled={formData.applyToAllClasses}
                                 >
-                                    <SelectTrigger className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
+                                    <SelectTrigger className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
                                         <SelectValue placeholder="SYSTEM-WIDE (GENERAL)" />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl">
@@ -526,12 +526,12 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     <div className="flex items-center gap-4">
                                         <div className={cn(
                                             "h-8 w-8 rounded-xl border-2 flex items-center justify-center transition-all",
-                                            formData.applyToAllClasses ? "bg-blue-600 border-blue-600 shadow-lg shadow-blue-200" : "border-slate-200 dark:border-slate-800"
+                                            formData.applyToAllClasses ? "bg-blue-600 border-blue-600 shadow-lg shadow-blue-200" : "border-border dark:border-slate-800"
                                         )}>
                                             {formData.applyToAllClasses && <Check size={18} className="text-white" />}
                                         </div>
                                         <div>
-                                            <div className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.1em]">Mass Unit Deployment</div>
+                                            <div className="text-[10px] font-black text-foreground dark:text-white uppercase tracking-[0.1em]">Mass Unit Deployment</div>
                                             <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Replicates allocation for every existing division</div>
                                         </div>
                                     </div>
@@ -543,7 +543,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                             <Button
                                 type="button"
                                 variant="ghost"
-                                className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                                className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-foreground dark:hover:text-white"
                                 onClick={closeModal}
                             >
                                 Abort Mission

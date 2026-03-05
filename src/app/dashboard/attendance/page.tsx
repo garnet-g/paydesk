@@ -150,7 +150,7 @@ export default function AttendancePage() {
             <div className="flex-1 space-y-6 p-8 pt-6">
                 <div className="flex items-center justify-between space-y-2">
                     <div>
-                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white ">Attendance</h2>
+                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white ">Attendance</h2>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">
                             Mark daily student attendance and notify parents of absences.
                         </p>
@@ -162,13 +162,13 @@ export default function AttendancePage() {
                     )}
                 </div>
 
-                <Card className="border-slate-200 shadow-xl overflow-hidden rounded-2xl">
-                    <CardHeader className="bg-slate-50 border-b border-slate-100 pb-6">
+                <Card className="border-border shadow-xl overflow-hidden rounded-2xl">
+                    <CardHeader className="bg-muted border-b border-border pb-6">
                         <div className="flex flex-col md:flex-row gap-6 items-end">
                             <div className="space-y-2 flex-1">
                                 <Label htmlFor="class" className="text-slate-700 font-semibold text-[10px] ">Select Class</Label>
                                 <Select value={selectedClass} onValueChange={setSelectedClass}>
-                                    <SelectTrigger id="class" className="w-full md:w-[280px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm h-11">
+                                    <SelectTrigger id="class" className="w-full md:w-[280px] bg-white dark:bg-slate-900 border-border dark:border-slate-800 shadow-sm h-11">
                                         <SelectValue placeholder="Select class..." />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -190,7 +190,7 @@ export default function AttendancePage() {
                                         type="date"
                                         value={selectedDate}
                                         onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="w-full md:w-[200px] bg-white border-slate-200 h-11 pl-10 shadow-sm"
+                                        className="w-full md:w-[200px] bg-white border-border h-11 pl-10 shadow-sm"
                                     />
                                     <CalendarIcon className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
                                 </div>
@@ -200,7 +200,7 @@ export default function AttendancePage() {
                     <CardContent className="p-0">
                         {!selectedClass ? (
                             <div className="p-20 text-center text-slate-500 flex flex-col items-center bg-white">
-                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
                                     <Users className="h-10 w-10 text-slate-300" />
                                 </div>
                                 <h3 className="text-xl font-semibold text-slate-800 mb-2">Mark Attendance</h3>
@@ -222,14 +222,14 @@ export default function AttendancePage() {
                             </div>
                         ) : (
                             <div className="divide-y divide-slate-100 bg-white">
-                                <div className="p-6 bg-slate-50/50 flex justify-between items-center border-b border-slate-100">
+                                <div className="p-6 bg-muted/50 flex justify-between items-center border-b border-border">
                                     <div>
-                                        <span className="text-xs font-semibold text-slate-900   bg-blue-100/50 px-2 py-1 rounded">
+                                        <span className="text-xs font-semibold text-foreground   bg-blue-100/50 px-2 py-1 rounded">
                                             {records.length} Students
                                         </span>
                                     </div>
                                     {!isExistingData && (
-                                        <Button variant="outline" size="sm" onClick={allPresent} className="h-9 font-semibold text-xs bg-white border-slate-200 group">
+                                        <Button variant="outline" size="sm" onClick={allPresent} className="h-9 font-semibold text-xs bg-white border-border group">
                                             <CheckCircle className="h-4 w-4 mr-2 text-green-500 group-hover:scale-110 transition-transform" />
                                             Mark All Present
                                         </Button>
@@ -238,13 +238,13 @@ export default function AttendancePage() {
 
                                 <div className="max-h-[60vh] overflow-y-auto">
                                     {records.map((record, index) => (
-                                        <div key={record.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-slate-50 transition-all border-l-[4px] border-l-transparent hover:border-l-blue-500 group gap-4">
+                                        <div key={record.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-muted transition-all border-l-[4px] border-l-transparent hover:border-l-blue-500 group gap-4">
                                             <div className="flex items-center gap-5">
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-sm font-semibold text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-sm font-semibold text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                                                     {index + 1}
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-lg text-slate-900">
+                                                    <p className="font-semibold text-lg text-foreground">
                                                         {record.student.firstName} {record.student.lastName}
                                                     </p>
                                                     <div className="flex items-center gap-3">
@@ -259,7 +259,7 @@ export default function AttendancePage() {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                                            <div className="flex items-center gap-3 bg-muted p-1.5 rounded-2xl border border-border">
                                                 <Button
                                                     variant={record.status === 'PRESENT' ? 'default' : 'ghost'}
                                                     size="sm"
@@ -302,7 +302,7 @@ export default function AttendancePage() {
                     </CardContent>
 
                     {records.length > 0 && (
-                        <CardFooter className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6">
+                        <CardFooter className="bg-muted p-6 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-6">
                             <div className="flex items-center gap-4">
                                 <div className={cn(
                                     "px-4 py-2 rounded-xl text-xs font-semibold  ",
@@ -320,7 +320,7 @@ export default function AttendancePage() {
                             <div className="flex gap-4 w-full sm:w-auto">
                                 <Button
                                     variant="outline"
-                                    className="h-12 px-6 rounded-2xl font-semibold text-xs   border-slate-200 bg-white hover:bg-slate-50 w-full sm:w-auto"
+                                    className="h-12 px-6 rounded-2xl font-semibold text-xs   border-border bg-white hover:bg-muted w-full sm:w-auto"
                                     onClick={() => handleSave(false)}
                                     disabled={saving}
                                 >

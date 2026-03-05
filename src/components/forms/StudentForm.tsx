@@ -250,7 +250,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                                         </div>
                                         <div>
                                             <div className="font-bold">{selectedParent.firstName} {selectedParent.lastName}</div>
-                                            <div className="text-xs text-muted font-medium">{selectedParent.email}</div>
+                                            <div className="text-xs text-muted-foreground font-medium">{selectedParent.email}</div>
                                         </div>
                                     </div>
                                     <button type="button" onClick={() => setSelectedParent(null)} className="btn btn-ghost btn-sm text-error-600">
@@ -260,7 +260,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                             ) : (
                                 <div className="relative">
                                     <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={16} />
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                                         <input
                                             type="text"
                                             className="form-input"
@@ -299,14 +299,14 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                                                         </div>
                                                         <div className="flex-1">
                                                             <div className="text-sm font-bold">{p.firstName} {p.lastName}</div>
-                                                            <div className="text-[10px] text-muted">{p.email}</div>
+                                                            <div className="text-[10px] text-muted-foreground">{p.email}</div>
                                                         </div>
                                                         <Check className="text-primary opacity-0 group-hover:opacity-100" size={16} />
                                                     </div>
                                                 ))}
                                             {parents.length === 0 && !searching && (
                                                 <div className="p-xl text-center">
-                                                    <p className="text-sm text-muted mb-sm">No parents found in database.</p>
+                                                    <p className="text-sm text-muted-foreground mb-sm">No parents found in database.</p>
                                                     <Link href="/dashboard/settings/import" className="btn btn-primary btn-sm">Import Parents</Link>
                                                 </div>
                                             )}
@@ -314,7 +314,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                                     )}
                                 </div>
                             )}
-                            <p className="text-[10px] text-muted mt-sm">Parents must be registered first to be linked for automated billing.</p>
+                            <p className="text-[10px] text-muted-foreground mt-sm">Parents must be registered first to be linked for automated billing.</p>
                         </div>
                     </div>
 

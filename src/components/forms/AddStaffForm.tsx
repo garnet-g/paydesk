@@ -60,7 +60,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
     }
 
     return (
-        <div className="bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+        <div className="bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl border border-border dark:border-slate-800 animate-in zoom-in-95 duration-300">
             <div className="bg-slate-900 p-8 text-white flex justify-between items-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                 <div className="flex items-center gap-4 relative z-10">
@@ -84,7 +84,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">First Name</Label>
                             <Input
                                 type="text"
-                                className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-bold text-slate-900 dark:text-white uppercase"
+                                className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white uppercase"
                                 placeholder="e.g. JOHN"
                                 value={formData.firstName}
                                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
@@ -95,7 +95,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Last Name</Label>
                             <Input
                                 type="text"
-                                className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-bold text-slate-900 dark:text-white uppercase"
+                                className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white uppercase"
                                 placeholder="e.g. DOE"
                                 value={formData.lastName}
                                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
@@ -108,7 +108,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                         <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Secure Email (School Domain)</Label>
                         <Input
                             type="email"
-                            className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-bold text-slate-900 dark:text-white"
+                            className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
                             placeholder="admin@school.ac.ke"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -124,7 +124,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Comms Frequency (Phone)</Label>
                             <Input
                                 type="tel"
-                                className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-bold text-slate-900 dark:text-white"
+                                className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
                                 placeholder="07XXXXXXXX"
                                 value={formData.phoneNumber}
                                 onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
@@ -134,7 +134,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deployment Role</Label>
                             <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
-                                <SelectTrigger className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
+                                <SelectTrigger className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl">
@@ -160,7 +160,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                 </div>
 
                 <div className="flex justify-end gap-4 pt-4">
-                    <Button type="button" variant="ghost" className="h-12 px-8 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 dark:hover:text-white" onClick={onClose}>
+                    <Button type="button" variant="ghost" className="h-12 px-8 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-foreground dark:hover:text-white" onClick={onClose}>
                         Abort Entry
                     </Button>
                     <Button type="submit" className="h-12 px-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-blue-200 dark:shadow-none" disabled={loading}>

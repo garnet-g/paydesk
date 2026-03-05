@@ -126,7 +126,7 @@ export default function DailyCollections() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-lg)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
                 <div>
                     <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Collections Report</h2>
-                    <p className="text-muted">Daily collection breakdown and payment verification</p>
+                    <p className="text-muted-foreground">Daily collection breakdown and payment verification</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
                     <input
@@ -159,11 +159,11 @@ export default function DailyCollections() {
             {loading ? (
                 <div style={{ textAlign: 'center', padding: 'var(--spacing-3xl)' }}>
                     <div className="spinner" style={{ margin: '0 auto var(--spacing-md)' }}></div>
-                    <p className="text-muted text-sm">Loading report...</p>
+                    <p className="text-muted-foreground text-sm">Loading report...</p>
                 </div>
             ) : !report ? (
                 <div className="card" style={{ textAlign: 'center', padding: 'var(--spacing-3xl)' }}>
-                    <p className="text-muted">Failed to load report data.</p>
+                    <p className="text-muted-foreground">Failed to load report data.</p>
                 </div>
             ) : (
                 <div className="animate-fade-in">
@@ -196,7 +196,7 @@ export default function DailyCollections() {
                                 </div>
                                 <span className="badge badge-success" style={{ fontSize: '0.625rem' }}>MPESA</span>
                             </div>
-                            <div className="text-xs text-muted" style={{ marginBottom: '2px' }}>Digital Payments</div>
+                            <div className="text-xs text-muted-foreground" style={{ marginBottom: '2px' }}>Digital Payments</div>
                             <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{formatCurrency(report.byMethod?.MPESA || 0)}</div>
                         </div>
 
@@ -213,7 +213,7 @@ export default function DailyCollections() {
                                 </div>
                                 <span className="badge badge-neutral" style={{ fontSize: '0.625rem' }}>OTHER</span>
                             </div>
-                            <div className="text-xs text-muted" style={{ marginBottom: '2px' }}>Cash & Bank Transfers</div>
+                            <div className="text-xs text-muted-foreground" style={{ marginBottom: '2px' }}>Cash & Bank Transfers</div>
                             <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>
                                 {formatCurrency((report.byMethod?.CASH || 0) + (report.byMethod?.CARD || 0) + (report.byMethod?.BANK || 0))}
                             </div>
@@ -245,7 +245,7 @@ export default function DailyCollections() {
                                         <tr>
                                             <td colSpan={6} style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
                                                 <DollarSign size={48} style={{ opacity: 0.15, marginBottom: 'var(--spacing-sm)' }} />
-                                                <p className="text-muted">No transactions for this date.</p>
+                                                <p className="text-muted-foreground">No transactions for this date.</p>
                                             </td>
                                         </tr>
                                     ) : (
@@ -258,7 +258,7 @@ export default function DailyCollections() {
                                                 </td>
                                                 <td>
                                                     <div className="font-semibold text-sm">{tx.student?.firstName} {tx.student?.lastName}</div>
-                                                    <div className="text-xs text-muted">{tx.student?.admissionNumber}</div>
+                                                    <div className="text-xs text-muted-foreground">{tx.student?.admissionNumber}</div>
                                                 </td>
                                                 <td>
                                                     <span className="badge badge-neutral">
@@ -274,7 +274,7 @@ export default function DailyCollections() {
                                                     </span>
                                                 </td>
                                                 <td style={{ textAlign: 'right' }}>
-                                                    <span className="text-xs text-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                                                    <span className="text-xs text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>
                                                         {tx.receiptNumber || tx.transactionRef || '—'}
                                                     </span>
                                                 </td>

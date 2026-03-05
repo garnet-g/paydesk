@@ -202,13 +202,13 @@ export default function ClassManager() {
             {/* Page Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Classes</h2>
+                    <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">Classes</h2>
                     <p className="text-slate-500 dark:text-slate-400 font-medium">Configure classes, streams, and fee structures</p>
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
                     <Button
                         variant="outline"
-                        className="h-12 px-6 rounded-2xl font-semibold text-xs border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
+                        className="h-12 px-6 rounded-2xl font-semibold text-xs border-border dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
                         onClick={() => setShowPeriodManager(true)}
                     >
                         <Calendar className="mr-2 h-4 w-4" />
@@ -231,7 +231,7 @@ export default function ClassManager() {
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
                             placeholder="Filter by class name or stream..."
-                            className="pl-11 h-12 bg-slate-50 dark:bg-slate-950 border-none rounded-2xl font-medium focus-visible:ring-blue-600 focus-visible:ring-offset-0"
+                            className="pl-11 h-12 bg-muted dark:bg-slate-950 border-none rounded-2xl font-medium focus-visible:ring-blue-600 focus-visible:ring-offset-0"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -243,15 +243,15 @@ export default function ClassManager() {
             {loading ? (
                 <div className="py-20 text-center">
                     <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
-                    <p className="font-semibold text-slate-900 dark:text-white text-xs">Loading classes...</p>
+                    <p className="font-semibold text-foreground dark:text-white text-xs">Loading classes...</p>
                 </div>
             ) : filteredClasses.length === 0 ? (
-                <Card className="border-dashed border-slate-300 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 rounded-3xl">
+                <Card className="border-dashed border-slate-300 dark:border-slate-800 bg-muted/50 dark:bg-slate-900/30 rounded-3xl">
                     <CardContent className="flex flex-col items-center justify-center p-20 text-center">
                         <div className="h-24 w-24 bg-white dark:bg-slate-900 shadow-xl rounded-[2rem] flex items-center justify-center mb-8">
                             <Layers className="h-12 w-12 text-slate-300 dark:text-slate-700" />
                         </div>
-                        <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">No Classes Found</h3>
+                        <h3 className="text-2xl font-semibold text-foreground dark:text-white mb-2 tracking-tight">No Classes Found</h3>
                         <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-8 font-medium">
                             No classes have been registered in this system yet. Create your first class to begin enrollment.
                         </p>
@@ -269,14 +269,14 @@ export default function ClassManager() {
                         <Card key={cls.id} className="group hover:shadow-2xl hover:-translate-y-1 transition-all border-none bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden flex flex-col h-full shadow-xl shadow-slate-200/50 dark:shadow-none">
                             <CardHeader className="p-8 pb-4 flex-none">
                                 <div className="flex justify-between items-start mb-4">
-                                    <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-[1.5rem] group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
+                                    <div className="p-4 bg-muted dark:bg-slate-950 rounded-[1.5rem] group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
                                         <Layers size={24} />
                                     </div>
                                     <div className="flex gap-2">
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-10 w-10 p-0 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+                                            className="h-10 w-10 p-0 rounded-xl hover:bg-muted dark:hover:bg-slate-800"
                                             onClick={() => openEditModal(cls)}
                                         >
                                             <Edit2 size={16} className="text-slate-400 dark:text-slate-600" />
@@ -285,7 +285,7 @@ export default function ClassManager() {
                                 </div>
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                        <CardTitle className="text-2xl font-semibold text-slate-900 dark:text-white tracking-tight">
+                                        <CardTitle className="text-2xl font-semibold text-foreground dark:text-white tracking-tight">
                                             {cls.name}
                                         </CardTitle>
                                         {cls.stream && (
@@ -300,20 +300,20 @@ export default function ClassManager() {
                                 </div>
                             </CardHeader>
                             <CardContent className="px-8 py-4 flex-1">
-                                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center justify-between p-4 bg-muted dark:bg-slate-950 rounded-2xl border border-border dark:border-slate-800">
                                     <div className="flex items-center gap-3">
                                         <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
                                         <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Enrollment</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Users className="h-4 w-4 text-blue-600" />
-                                        <span className="font-semibold text-slate-900 dark:text-white">{cls._count?.students || 0}</span>
+                                        <span className="font-semibold text-foreground dark:text-white">{cls._count?.students || 0}</span>
                                     </div>
                                 </div>
                             </CardContent>
                             <CardFooter className="p-8 pt-4">
                                 <Button
-                                    className="w-full h-14 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all text-slate-900 dark:text-white font-semibold text-xs group/btn shadow-sm"
+                                    className="w-full h-14 rounded-2xl bg-white dark:bg-slate-800 border-2 border-border dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all text-foreground dark:text-white font-semibold text-xs group/btn shadow-sm"
                                     onClick={() => openFeeModal(cls)}
                                 >
                                     Manage Fees
@@ -351,19 +351,19 @@ export default function ClassManager() {
                             {feeLoading ? (
                                 <div className="py-12 text-center text-slate-400 font-bold italic text-xs animate-pulse">Syncing transactions...</div>
                             ) : classFees.length === 0 ? (
-                                <div className="p-12 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-3xl text-center">
+                                <div className="p-12 border-2 border-dashed border-border dark:border-slate-800 rounded-3xl text-center">
                                     <p className="text-slate-400 font-medium italic">No fee structures initialized for this class unit.</p>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
                                     {classFees.map(fee => (
-                                        <div key={fee.id} className="flex justify-between items-center p-5 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 group/fee animate-in slide-in-from-bottom duration-300">
+                                        <div key={fee.id} className="flex justify-between items-center p-5 bg-muted dark:bg-slate-900 rounded-[1.5rem] border border-border dark:border-slate-800 group/fee animate-in slide-in-from-bottom duration-300">
                                             <div className="flex items-center gap-4">
                                                 <div className="h-10 w-10 bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center text-blue-600 shadow-sm">
                                                     <Coins size={18} />
                                                 </div>
                                                 <div>
-                                                    <div className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-tight">{fee.name}</div>
+                                                    <div className="font-bold text-foreground dark:text-white uppercase text-sm leading-tight">{fee.name}</div>
                                                     <Badge className="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-none font-black text-[8px] h-4 uppercase tracking-tighter px-2">
                                                         {fee.category}
                                                     </Badge>
@@ -371,7 +371,7 @@ export default function ClassManager() {
                                             </div>
                                             <div className="flex items-center gap-6">
                                                 <div className="text-right">
-                                                    <div className="font-black text-lg text-slate-900 dark:text-white tracking-tighter">
+                                                    <div className="font-black text-lg text-foreground dark:text-white tracking-tighter">
                                                         {formatCurrency(fee.amount)}
                                                     </div>
                                                     <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">PER TERM CYCLE</div>
@@ -394,14 +394,14 @@ export default function ClassManager() {
                         </div>
 
                         {/* Add New Fee Form */}
-                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800">
-                            <h4 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest mb-6 block">Manual Fee Addition</h4>
+                        <div className="bg-muted dark:bg-slate-900/50 p-6 rounded-[2rem] border border-border dark:border-slate-800">
+                            <h4 className="text-[10px] font-black text-foreground dark:text-white uppercase tracking-widest mb-6 block">Manual Fee Addition</h4>
                             <form onSubmit={handleAddFee} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label className="uppercase text-[9px] font-black text-slate-400 tracking-widest ml-1">Fee Descriptor</Label>
                                         <Input
-                                            className="h-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl font-medium"
+                                            className="h-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-xl font-medium"
                                             placeholder="e.g. Science Laboratory Fee"
                                             value={feeData.name}
                                             onChange={e => setFeeData({ ...feeData, name: e.target.value })}
@@ -412,7 +412,7 @@ export default function ClassManager() {
                                         <Label className="uppercase text-[9px] font-black text-slate-400 tracking-widest ml-1">Value (KES)</Label>
                                         <Input
                                             type="number"
-                                            className="h-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl font-medium"
+                                            className="h-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-xl font-medium"
                                             placeholder="0.00"
                                             step="0.01"
                                             value={feeData.amount}
@@ -434,7 +434,7 @@ export default function ClassManager() {
                                                     "h-12 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                                                     feeData.category === cat
                                                         ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
-                                                        : "bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-500"
+                                                        : "bg-white dark:bg-slate-950 border border-border dark:border-slate-800 text-slate-500"
                                                 )}
                                             >
                                                 {cat}
@@ -443,11 +443,11 @@ export default function ClassManager() {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4 border-t border-slate-200 dark:border-slate-800">
+                                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4 border-t border-border dark:border-slate-800">
                                     <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className={cn(
                                             "h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all",
-                                            applyToGrade ? "bg-emerald-500 border-emerald-500" : "border-slate-200 dark:border-slate-800"
+                                            applyToGrade ? "bg-emerald-500 border-emerald-500" : "border-border dark:border-slate-800"
                                         )}>
                                             <input
                                                 type="checkbox"
@@ -474,7 +474,7 @@ export default function ClassManager() {
             <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
                 <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-md bg-white dark:bg-slate-950">
                     <DialogHeader className="mb-8">
-                        <DialogTitle className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Initialize Class</DialogTitle>
+                        <DialogTitle className="text-3xl font-black text-foreground dark:text-white uppercase tracking-tighter italic">Initialize Class</DialogTitle>
                         <DialogDescription className="text-slate-500 font-medium italic">Define a new academic unit for institutional tracking.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-8">
@@ -482,7 +482,7 @@ export default function ClassManager() {
                             <div className="space-y-2">
                                 <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Class Nomenclature</Label>
                                 <Input
-                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    className="h-14 bg-muted dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
                                     required
                                     placeholder="e.g. GRADE 1"
                                     value={formData.name}
@@ -494,7 +494,7 @@ export default function ClassManager() {
                             <div className="space-y-2">
                                 <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Stream Designation (Optional)</Label>
                                 <Input
-                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    className="h-14 bg-muted dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
                                     placeholder="e.g. ALPHA, NORTH, GREEN"
                                     value={formData.stream}
                                     onChange={e => setFormData({ ...formData, stream: e.target.value })}
@@ -529,7 +529,7 @@ export default function ClassManager() {
             <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
                 <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-md bg-white dark:bg-slate-950">
                     <DialogHeader className="mb-8">
-                        <DialogTitle className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Reconfigure Unit</DialogTitle>
+                        <DialogTitle className="text-3xl font-black text-foreground dark:text-white uppercase tracking-tighter italic">Reconfigure Unit</DialogTitle>
                         <DialogDescription className="text-slate-500 font-medium italic">Adjust the properties of an established academic stream.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleEditSubmit} className="space-y-8">
@@ -537,7 +537,7 @@ export default function ClassManager() {
                             <div className="space-y-2">
                                 <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Class Nomenclature</Label>
                                 <Input
-                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    className="h-14 bg-muted dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
                                     required
                                     placeholder="e.g. GRADE 1"
                                     value={editData.name}
@@ -548,7 +548,7 @@ export default function ClassManager() {
                             <div className="space-y-2">
                                 <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Stream Designation</Label>
                                 <Input
-                                    className="h-14 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
+                                    className="h-14 bg-muted dark:bg-slate-900 border-none rounded-2xl font-black text-lg uppercase tracking-tight focus-visible:ring-blue-600"
                                     placeholder="e.g. ALPHA, NORTH, GREEN"
                                     value={editData.stream}
                                     onChange={e => setEditData({ ...editData, stream: e.target.value })}

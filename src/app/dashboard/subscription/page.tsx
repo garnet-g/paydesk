@@ -94,7 +94,7 @@ export default function SubscriptionPage() {
             <div className="animate-fade-in" style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 <div style={{ marginBottom: 'var(--spacing-2xl)' }}>
                     <h2 style={{ fontSize: '2rem', fontWeight: 900, letterSpacing: '-0.02em' }}>Platform Subscription</h2>
-                    <p className="text-muted">Manage your institutional access and platform billing</p>
+                    <p className="text-muted-foreground">Manage your institutional access and platform billing</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-2xl">
@@ -164,7 +164,7 @@ export default function SubscriptionPage() {
                         {/* Payment History Placeholder */}
                         <div className="card" style={{ marginTop: 'var(--spacing-xl)', padding: 'var(--spacing-lg)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                                <History size={20} className="text-muted" />
+                                <History size={20} className="text-muted-foreground" />
                                 <h4 style={{ fontWeight: 800, fontSize: '0.9rem' }}>Recent Platform Payments</h4>
                             </div>
                             <div style={{ textAlign: 'center', padding: '40px', opacity: 0.5 }}>

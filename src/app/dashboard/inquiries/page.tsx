@@ -136,7 +136,7 @@ export default function InquiriesPage() {
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                        <h1 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">
                             {session?.user.role === 'PARENT' ? 'Support' : 'Inquiries'}
                         </h1>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">
@@ -145,7 +145,7 @@ export default function InquiriesPage() {
                     </div>
                     {session?.user.role === 'PARENT' && (
                         <Button
-                            className="h-11 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl px-6 font-semibold shadow-lg"
+                            className="h-11 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-foreground dark:hover:bg-muted rounded-xl px-6 font-semibold shadow-lg"
                             onClick={() => setShowNewModal(true)}
                         >
                             <Plus size={18} className="mr-2" />
@@ -158,12 +158,12 @@ export default function InquiriesPage() {
                 <div className="space-y-6">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-24 text-center">
-                            <div className="h-12 w-12 border-4 border-slate-200 border-t-slate-900 dark:border-slate-800 dark:border-t-white rounded-full animate-spin mb-4" />
+                            <div className="h-12 w-12 border-4 border-border border-t-slate-900 dark:border-slate-800 dark:border-t-white rounded-full animate-spin mb-4" />
                             <p className="text-slate-500 font-medium">Loading inquiries...</p>
                         </div>
                     ) : inquiries.length === 0 ? (
                         <Card className="border-none shadow-sm bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden p-12 text-center ring-1 ring-slate-100 dark:ring-slate-900">
-                            <div className="h-20 w-20 bg-slate-50 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center text-slate-300 mx-auto mb-6 border border-slate-100 dark:border-slate-800">
+                            <div className="h-20 w-20 bg-muted dark:bg-slate-900 rounded-[2rem] flex items-center justify-center text-slate-300 mx-auto mb-6 border border-border dark:border-slate-800">
                                 <MessageSquare size={40} />
                             </div>
                             <h3 className="text-xl font-semibold mb-2">No inquiries yet</h3>
@@ -190,7 +190,7 @@ export default function InquiriesPage() {
                                                     {inquiry.status === 'RESOLVED' ? <CheckCircle2 size={24} /> : <Clock size={24} />}
                                                 </div>
                                                 <div>
-                                                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">{inquiry.subject}</h3>
+                                                    <h3 className="text-lg font-semibold text-foreground dark:text-white mb-1">{inquiry.subject}</h3>
                                                     <p className="text-xs font-semibold text-slate-400   flex items-center gap-2">
                                                         {isPrincipal ? (
                                                             <span className="flex items-center gap-1">
@@ -217,10 +217,10 @@ export default function InquiriesPage() {
                                         <div className="space-y-6">
                                             {/* Original Message */}
                                             <div className="flex gap-4">
-                                                <div className="h-10 w-10 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center shrink-0 border border-slate-100 dark:border-slate-800">
+                                                <div className="h-10 w-10 bg-muted dark:bg-slate-900 rounded-full flex items-center justify-center shrink-0 border border-border dark:border-slate-800">
                                                     <User size={18} className="text-slate-400" />
                                                 </div>
-                                                <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl rounded-tl-none text-sm text-slate-700 dark:text-slate-300 leading-relaxed max-w-[90%] border border-slate-100 dark:border-slate-800">
+                                                <div className="bg-muted dark:bg-slate-900/50 p-6 rounded-2xl rounded-tl-none text-sm text-slate-700 dark:text-slate-300 leading-relaxed max-w-[90%] border border-border dark:border-slate-800">
                                                     {inquiry.message}
                                                 </div>
                                             </div>
@@ -228,10 +228,10 @@ export default function InquiriesPage() {
                                             {/* Response Area */}
                                             {inquiry.response ? (
                                                 <div className="flex flex-row-reverse gap-4">
-                                                    <div className="h-10 w-10 bg-slate-900 dark:bg-slate-100 rounded-full flex items-center justify-center shrink-0 shadow-lg text-white dark:text-slate-900 font-bold text-xs">
+                                                    <div className="h-10 w-10 bg-slate-900 dark:bg-muted rounded-full flex items-center justify-center shrink-0 shadow-lg text-white dark:text-foreground font-bold text-xs">
                                                         S
                                                     </div>
-                                                    <div className="bg-slate-900 dark:bg-white p-6 rounded-2xl rounded-tr-none text-sm text-white dark:text-slate-900 leading-relaxed max-w-[90%] shadow-xl shadow-slate-200/50 dark:shadow-none relative">
+                                                    <div className="bg-slate-900 dark:bg-white p-6 rounded-2xl rounded-tr-none text-sm text-white dark:text-foreground leading-relaxed max-w-[90%] shadow-xl shadow-slate-200/50 dark:shadow-none relative">
                                                         <div className="text-[10px] font-bold   opacity-60 mb-2">School Response</div>
                                                         {inquiry.response}
                                                     </div>
@@ -241,7 +241,7 @@ export default function InquiriesPage() {
                                                     <Dialog open={replyingTo?.id === inquiry.id} onOpenChange={(open) => !open && setReplyingTo(null)}>
                                                         <DialogTrigger asChild>
                                                             <Button
-                                                                className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl px-6 h-11 font-semibold group shadow-lg"
+                                                                className="bg-slate-900 dark:bg-white text-white dark:text-foreground rounded-xl px-6 h-11 font-semibold group shadow-lg"
                                                                 onClick={() => setReplyingTo(inquiry)}
                                                             >
                                                                 <Send size={18} className="mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -251,13 +251,13 @@ export default function InquiriesPage() {
                                                         <DialogContent className="rounded-[2rem] border-none shadow-2xl p-8 max-w-lg">
                                                             <DialogHeader>
                                                                 <DialogTitle className="text-2xl font-bold tracking-tight">Resolve Inquiry</DialogTitle>
-                                                                <DialogDescription className="text-slate-500 font-medium">Respond to the concern regarding: <span className="text-slate-900 dark:text-white font-bold ">"{inquiry.subject}"</span></DialogDescription>
+                                                                <DialogDescription className="text-slate-500 font-medium">Respond to the concern regarding: <span className="text-foreground dark:text-white font-bold ">"{inquiry.subject}"</span></DialogDescription>
                                                             </DialogHeader>
                                                             <div className="space-y-4 py-6">
                                                                 <Label className="text-xs font-bold text-slate-400  ">Your Response</Label>
                                                                 <Textarea
                                                                     placeholder="Enter response here..."
-                                                                    className="min-h-[160px] bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 rounded-2xl p-6 font-medium placeholder:text-slate-300 resize-none"
+                                                                    className="min-h-[160px] bg-muted dark:bg-slate-900 border-border dark:border-slate-800 rounded-2xl p-6 font-medium placeholder:text-slate-300 resize-none"
                                                                     value={replyMessage}
                                                                     onChange={(e) => setReplyMessage(e.target.value)}
                                                                 />
@@ -269,7 +269,7 @@ export default function InquiriesPage() {
                                                             <DialogFooter className="gap-3">
                                                                 <Button variant="ghost" onClick={() => setReplyingTo(null)} className="rounded-xl px-6 font-bold  text-[10px]  text-slate-400">Cancel</Button>
                                                                 <Button
-                                                                    className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl px-8 font-bold  text-[10px]  shadow-xl"
+                                                                    className="bg-slate-900 dark:bg-white text-white dark:text-foreground rounded-xl px-8 font-bold  text-[10px]  shadow-xl"
                                                                     onClick={handleReplySubmit}
                                                                     disabled={submitting || !replyMessage}
                                                                 >
@@ -316,7 +316,7 @@ export default function InquiriesPage() {
                             <AlertCircle size={28} />
                         </div>
                         <div>
-                            <h4 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight leading-snug">Support Priority</h4>
+                            <h4 className="text-sm font-bold text-foreground dark:text-white tracking-tight leading-snug">Support Priority</h4>
                             <p className="text-xs text-slate-500 leading-relaxed font-medium  mt-1  tracking-tight">Critical fee disputes and payment verification inquiries are prioritized by the finance department.</p>
                         </div>
                     </div>
@@ -333,7 +333,7 @@ export default function InquiriesPage() {
                             <div className="space-y-2">
                                 <Label className="text-xs font-bold text-slate-400   ml-1">Inquiry Subject</Label>
                                 <Input
-                                    className="h-11 bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 rounded-xl font-medium"
+                                    className="h-11 bg-muted dark:bg-slate-900 border-border dark:border-slate-800 rounded-xl font-medium"
                                     placeholder="Brief summary..."
                                     required
                                     value={newInquiry.subject}
@@ -344,7 +344,7 @@ export default function InquiriesPage() {
                                 <Label className="text-xs font-bold text-slate-400   ml-1">Detailed Message</Label>
                                 <Textarea
                                     placeholder="Explain your concern..."
-                                    className="min-h-[140px] bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 rounded-xl p-4 font-medium resize-none"
+                                    className="min-h-[140px] bg-muted dark:bg-slate-900 border-border dark:border-slate-800 rounded-xl p-4 font-medium resize-none"
                                     required
                                     value={newInquiry.message}
                                     onChange={(e) => setNewInquiry({ ...newInquiry, message: e.target.value })}
@@ -354,7 +354,7 @@ export default function InquiriesPage() {
                         <DialogFooter className="gap-3">
                             <Button variant="ghost" onClick={() => setShowNewModal(false)} className="rounded-xl px-6 font-bold  text-[10px]  text-slate-400">Discard</Button>
                             <Button
-                                className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl px-8 h-11 font-bold  text-[10px]  shadow-xl"
+                                className="bg-slate-900 dark:bg-white text-white dark:text-foreground rounded-xl px-8 h-11 font-bold  text-[10px]  shadow-xl"
                                 onClick={handleSubmit}
                                 disabled={submitting || !newInquiry.subject || !newInquiry.message}
                             >

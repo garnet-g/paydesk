@@ -91,7 +91,7 @@ export default function MpesaTestingPage() {
             <div className="animate-fade-in max-w-5xl mx-auto">
                 <div className="mb-xl">
                     <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>M-Pesa Reconciliation Simulator</h2>
-                    <p className="text-muted">Test your automated payment workflows without a real Safaricom connection.</p>
+                    <p className="text-muted-foreground">Test your automated payment workflows without a real Safaricom connection.</p>
                 </div>
 
                 {message && (
@@ -115,7 +115,7 @@ export default function MpesaTestingPage() {
                         </div>
                         <div className="p-0">
                             {pendingPayments.length === 0 ? (
-                                <div className="p-2xl text-center text-muted">
+                                <div className="p-2xl text-center text-muted-foreground">
                                     <PhoneIcon size={48} className="mx-auto mb-md opacity-20" />
                                     <p>No pending STK pushes found.</p>
                                     <p className="text-xs mt-xs">Try initiating a payment from the Invoices page first.</p>
@@ -171,7 +171,7 @@ export default function MpesaTestingPage() {
                             </div>
                         </div>
                         <div className="p-xl">
-                            <p className="text-sm text-muted mb-lg">
+                            <p className="text-sm text-muted-foreground mb-lg">
                                 Simulates a parent paying via the "Lipa na M-Pesa" menu manually using your Paybill.
                             </p>
                             <form onSubmit={simulateC2b} className="space-y-md">
@@ -187,7 +187,7 @@ export default function MpesaTestingPage() {
                                             required
                                         />
                                     </div>
-                                    <p className="text-xs text-muted mt-xs ">System will try to match this to an invoice automatically.</p>
+                                    <p className="text-xs text-muted-foreground mt-xs ">System will try to match this to an invoice automatically.</p>
                                 </div>
                                 <div className="form-group">
                                     <label className="text-xs font-bold  block mb-xs">Amount Paid (KES)</label>

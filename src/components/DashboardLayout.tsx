@@ -411,7 +411,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             <h1 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                 {filteredNavigation.find(item => item.href === pathname)?.name || 'Dashboard'}
                             </h1>
-                            <p className="text-muted" style={{ fontSize: '0.75rem', fontWeight: 500 }}>
+                            <p className="text-muted-foreground" style={{ fontSize: '0.75rem', fontWeight: 500 }}>
                                 Welcome, {session?.user?.name?.split(' ')[0]}!
                             </p>
                         </div>

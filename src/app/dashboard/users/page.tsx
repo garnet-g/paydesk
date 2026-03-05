@@ -118,7 +118,7 @@ export default function AppUsersPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
                     <div>
                         <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>App Users Database</h2>
-                        <p className="text-muted">Global registry of every active user account across all schools</p>
+                        <p className="text-muted-foreground">Global registry of every active user account across all schools</p>
                     </div>
 
                     <button onClick={exportToCSV} className="btn btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
@@ -179,7 +179,7 @@ export default function AppUsersPage() {
                                     <tr>
                                         <td colSpan={5} style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
                                             <Users size={48} style={{ opacity: 0.2, margin: '0 auto var(--spacing-md)' }} />
-                                            <p className="text-muted">No system users found matching your filters.</p>
+                                            <p className="text-muted-foreground">No system users found matching your filters.</p>
                                         </td>
                                     </tr>
                                 ) : (
@@ -188,8 +188,8 @@ export default function AppUsersPage() {
                                             <td>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                                     <span className="font-semibold">{user.firstName} {user.lastName}</span>
-                                                    <span className="text-xs text-muted">{user.email}</span>
-                                                    {user.phoneNumber && <span className="text-xs text-muted font-mono">{user.phoneNumber}</span>}
+                                                    <span className="text-xs text-muted-foreground">{user.email}</span>
+                                                    {user.phoneNumber && <span className="text-xs text-muted-foreground font-mono">{user.phoneNumber}</span>}
                                                 </div>
                                             </td>
                                             <td>
@@ -204,7 +204,7 @@ export default function AppUsersPage() {
                                                         {user.school.name}
                                                     </span>
                                                 ) : (
-                                                    <span className="text-muted text-xs ">Platform Wide</span>
+                                                    <span className="text-muted-foreground text-xs ">Platform Wide</span>
                                                 )}
                                             </td>
                                             <td className="hide-mobile">

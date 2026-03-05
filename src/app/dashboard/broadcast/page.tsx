@@ -80,7 +80,7 @@ export default function CommunicationPage() {
             <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-700">
                 {/* Header */}
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Communication Hub</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-white">Communication Hub</h1>
                     <p className="text-slate-500 dark:text-slate-400">Send SMS and announcements to parents</p>
                 </div>
 
@@ -96,7 +96,7 @@ export default function CommunicationPage() {
                                 <div className="space-y-2">
                                     <Label htmlFor="recipient" className="text-sm font-medium">Recipient</Label>
                                     <Select value={recipient} onValueChange={setRecipient}>
-                                        <SelectTrigger id="recipient" className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl">
+                                        <SelectTrigger id="recipient" className="h-11 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-xl">
                                             <SelectValue placeholder="Select Recipient" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -115,7 +115,7 @@ export default function CommunicationPage() {
                                         placeholder="Message subject"
                                         value={subject}
                                         onChange={(e) => setSubject(e.target.value)}
-                                        className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl"
+                                        className="h-11 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-xl"
                                     />
                                 </div>
 
@@ -126,13 +126,13 @@ export default function CommunicationPage() {
                                         placeholder="Type your message here..."
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        className="min-h-[120px] bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl resize-none p-4"
+                                        className="min-h-[120px] bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-xl resize-none p-4"
                                     />
                                 </div>
 
                                 <Button
                                     type="submit"
-                                    className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl font-semibold transition-all shadow-lg active:scale-[0.98]"
+                                    className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-foreground dark:hover:bg-muted rounded-xl font-semibold transition-all shadow-lg active:scale-[0.98]"
                                     disabled={submitting}
                                 >
                                     {submitting ? (
@@ -161,10 +161,10 @@ export default function CommunicationPage() {
                                 {messageHistory.map((item) => (
                                     <div
                                         key={item.id}
-                                        className="p-5 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 group hover:border-slate-300 dark:hover:border-slate-600 transition-all cursor-pointer relative"
+                                        className="p-5 bg-muted dark:bg-slate-900/50 rounded-2xl border border-border dark:border-slate-800 group hover:border-slate-300 dark:hover:border-slate-600 transition-all cursor-pointer relative"
                                     >
                                         <div className="flex justify-between items-start mb-1">
-                                            <h3 className="font-semibold text-slate-900 dark:text-white">{item.title}</h3>
+                                            <h3 className="font-semibold text-foreground dark:text-white">{item.title}</h3>
                                             <Badge className="bg-slate-900 text-white border-none rounded-lg text-[10px] px-2 py-0.5">
                                                 {item.status}
                                             </Badge>
@@ -183,17 +183,17 @@ export default function CommunicationPage() {
 
                                 {messageHistory.length === 0 && (
                                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                                        <div className="h-16 w-16 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-300 mb-4">
+                                        <div className="h-16 w-16 bg-muted dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-300 mb-4">
                                             <History size={32} />
                                         </div>
-                                        <h3 className="font-semibold text-slate-900 dark:text-white">No history yet</h3>
+                                        <h3 className="font-semibold text-foreground dark:text-white">No history yet</h3>
                                         <p className="text-sm text-slate-500 max-w-[200px] mx-auto mt-1">Your sent announcements will appear here</p>
                                     </div>
                                 )}
                             </div>
                         </CardContent>
                         <CardFooter className="p-6 border-t border-slate-50 dark:border-slate-900">
-                            <Button variant="ghost" className="w-full text-xs font-semibold text-slate-400 hover:text-slate-900">
+                            <Button variant="ghost" className="w-full text-xs font-semibold text-slate-400 hover:text-foreground">
                                 View Full History
                             </Button>
                         </CardFooter>
@@ -220,12 +220,12 @@ export default function CommunicationPage() {
                             <p className="text-xs text-emerald-700/70 dark:text-emerald-400/60 mt-1">Important notices are mirrored to registered email addresses.</p>
                         </div>
                     </div>
-                    <div className="p-6 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-start gap-4">
-                        <div className="h-10 w-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 shrink-0">
+                    <div className="p-6 bg-muted dark:bg-slate-900/50 border border-border dark:border-slate-800 rounded-2xl flex items-start gap-4">
+                        <div className="h-10 w-10 bg-muted dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 shrink-0">
                             <Info size={20} />
                         </div>
                         <div>
-                            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-300">Support Center</h4>
+                            <h4 className="text-sm font-semibold text-foreground dark:text-slate-300">Support Center</h4>
                             <p className="text-xs text-slate-500 mt-1">Need help with mass messaging? Contact our technical team.</p>
                         </div>
                     </div>

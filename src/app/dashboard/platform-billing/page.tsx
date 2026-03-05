@@ -219,7 +219,7 @@ export default function PlatformBillingPage() {
                                             <tr>
                                                 <td colSpan={6} style={{ textAlign: 'center', padding: 'var(--spacing-3xl)' }}>
                                                     <Building size={48} style={{ opacity: 0.1, margin: '0 auto var(--spacing-md)' }} />
-                                                    <p className="text-muted">No institutional partners found.</p>
+                                                    <p className="text-muted-foreground">No institutional partners found.</p>
                                                 </td>
                                             </tr>
                                         ) : (
@@ -317,7 +317,7 @@ export default function PlatformBillingPage() {
 
                         <motion.div variants={item} className="card" style={{ padding: 'var(--spacing-lg)', background: 'var(--primary-50)', borderColor: 'var(--primary-100)' }}>
                             <h4 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '8px' }}>Billing Automation</h4>
-                            <p className="text-xs text-muted" style={{ marginBottom: '16px' }}>Reminders are queued for principals of past due institutions.</p>
+                            <p className="text-xs text-muted-foreground" style={{ marginBottom: '16px' }}>Reminders are queued for principals of past due institutions.</p>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
                                 <button className="btn btn-primary btn-sm w-full" style={{ fontSize: '0.75rem' }} onClick={handleViewBillingLogic}>View Billing Logic</button>
@@ -362,7 +362,7 @@ function MetricCard({ label, value, trend, icon, color, bg, highlight, variants 
                     </div>
                 )}
             </div>
-            <p className="text-xs text-muted font-bold  tracking-wider">{label}</p>
+            <p className="text-xs text-muted-foreground font-bold  tracking-wider">{label}</p>
             <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginTop: '4px', letterSpacing: '-0.02em' }}>{value}</h3>
         </motion.div>
     )

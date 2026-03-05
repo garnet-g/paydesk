@@ -22,7 +22,7 @@ export default function GradePromotionPage() {
                         </div>
                         <div>
                             <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0 }}>Grade Promotion</h1>
-                            <p className="text-muted text-sm">Move students between classes at end of term or academic year</p>
+                            <p className="text-muted-foreground text-sm">Move students between classes at end of term or academic year</p>
                         </div>
                     </div>
                 </div>

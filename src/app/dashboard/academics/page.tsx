@@ -89,7 +89,7 @@ export default function AcademicsPage() {
             <div className="animate-fade-in">
                 <div className="page-header">
                     <div>
-                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">
                             Academics
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 font-medium">Manage student attendance and examination records</p>
@@ -126,7 +126,7 @@ export default function AcademicsPage() {
                                 />
                             </div>
                             <div className="relative" style={{ width: '300px' }}>
-                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                                 <input
                                     className="form-input pl-10 text-sm"
                                     placeholder="Search students..."
@@ -140,9 +140,9 @@ export default function AcademicsPage() {
                             <table className="table-modern w-full">
                                 <thead>
                                     <tr className="bg-neutral-50/50">
-                                        <th className="text-[10px] font-semibold text-muted p-md border-b">Student</th>
-                                        <th className="text-[10px] font-semibold text-muted p-md border-b">Class</th>
-                                        <th className="text-[10px] font-semibold text-muted p-md border-b text-center">Actions</th>
+                                        <th className="text-[10px] font-semibold text-muted-foreground p-md border-b">Student</th>
+                                        <th className="text-[10px] font-semibold text-muted-foreground p-md border-b">Class</th>
+                                        <th className="text-[10px] font-semibold text-muted-foreground p-md border-b text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -155,11 +155,11 @@ export default function AcademicsPage() {
                                                     <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center text-[10px] font-semibold">{student.firstName[0]}{student.lastName[0]}</div>
                                                     <div>
                                                         <div className="text-sm font-semibold text-primary-900">{student.firstName} {student.lastName}</div>
-                                                        <div className="text-[10px] font-semibold text-muted ">{student.admissionNumber}</div>
+                                                        <div className="text-[10px] font-semibold text-muted-foreground ">{student.admissionNumber}</div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="p-md text-sm font-medium text-muted">
+                                            <td className="p-md text-sm font-medium text-muted-foreground">
                                                 {student.class?.name} {student.class?.stream}
                                             </td>
                                             <td className="p-md">
@@ -188,7 +188,7 @@ export default function AcademicsPage() {
                         <div className="flex justify-between items-center bg-white p-lg card">
                             <div>
                                 <h3 className="text-lg font-semibold text-primary-900 ">Examination Registry</h3>
-                                <p className="text-xs text-muted font-medium ">Create and manage standardized assessments</p>
+                                <p className="text-xs text-muted-foreground font-medium ">Create and manage standardized assessments</p>
                             </div>
                             <button className="btn btn-primary shadow-xl shadow-primary-100 px-xl text-xs font-semibold  " onClick={() => setShowExamModal(true)}>
                                 <Plus size={18} /> New Exam
@@ -198,8 +198,8 @@ export default function AcademicsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-xl">
                             {exams.length === 0 ? (
                                 <div className="col-span-full card text-center py-2xl">
-                                    <BookOpen size={48} className="mx-auto text-muted opacity-20 mb-md" />
-                                    <p className="font-bold text-muted">No examinations registered this term.</p>
+                                    <BookOpen size={48} className="mx-auto text-muted-foreground opacity-20 mb-md" />
+                                    <p className="font-bold text-muted-foreground">No examinations registered this term.</p>
                                 </div>
                             ) : exams.map(exam => (
                                 <div key={exam.id} className="card hover:shadow-2xl transition-all border-neutral-100 relative group overflow-hidden">
@@ -207,11 +207,11 @@ export default function AcademicsPage() {
                                         <BookOpen size={60} />
                                     </div>
                                     <h4 className="text-xl font-semibold text-primary-900 mb-xs  tracking-tight">{exam.name}</h4>
-                                    <div className="text-[10px] font-semibold text-muted   mb-xl">{formatDate(exam.date)}</div>
+                                    <div className="text-[10px] font-semibold text-muted-foreground   mb-xl">{formatDate(exam.date)}</div>
 
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <div className="text-[9px] font-semibold text-muted ">Results Recorded</div>
+                                            <div className="text-[9px] font-semibold text-muted-foreground ">Results Recorded</div>
                                             <div className="text-2xl font-semibold text-primary-600">{exam.results?.length || 0}</div>
                                         </div>
                                         <button
@@ -234,7 +234,7 @@ export default function AcademicsPage() {
                             <h3 className="text-xl font-semibold text-primary-900 mb-lg ">Create New Exam</h3>
                             <form onSubmit={handleCreateExam} className="space-y-md">
                                 <div>
-                                    <label className="text-[10px] font-semibold  text-muted mb-xs block">Exam Name</label>
+                                    <label className="text-[10px] font-semibold  text-muted-foreground mb-xs block">Exam Name</label>
                                     <input
                                         className="form-input"
                                         placeholder="e.g. Mid-Term 2024"
@@ -244,7 +244,7 @@ export default function AcademicsPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-semibold  text-muted mb-xs block">Examination Date</label>
+                                    <label className="text-[10px] font-semibold  text-muted-foreground mb-xs block">Examination Date</label>
                                     <input
                                         type="date"
                                         className="form-input font-semibold"

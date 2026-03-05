@@ -66,7 +66,7 @@ export default function ImportDataPage() {
                         </Link>
                         <div>
                             <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 'var(--spacing-xs)', color: 'var(--primary-900)' }}>Data Migration Center</h2>
-                            <p className="text-muted font-medium">Bulk initialize your school ecosystem with precision</p>
+                            <p className="text-muted-foreground font-medium">Bulk initialize your school ecosystem with precision</p>
                         </div>
                     </div>
                     <div className="hidden md:flex items-center gap-md px-lg py-md bg-primary-50 rounded-2xl border border-primary-100/50">
@@ -145,7 +145,7 @@ export default function ImportDataPage() {
                                             <Upload size={40} />
                                         </div>
                                         <div className="font-semibold text-xl text-primary-900 mb-xs">Drop your CSV file here</div>
-                                        <div className="text-sm font-medium text-muted">Maximum file size: 10MB</div>
+                                        <div className="text-sm font-medium text-muted-foreground">Maximum file size: 10MB</div>
                                     </>
                                 )}
                                 <input

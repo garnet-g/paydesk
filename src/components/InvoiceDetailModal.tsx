@@ -223,7 +223,7 @@ export default function InvoiceDetailModal({ invoice: initialInvoice, onClose, o
                                 </button>
                             )}
                         </h3>
-                        <p className="text-sm text-muted">{invoice.invoiceNumber}</p>
+                        <p className="text-sm text-muted-foreground">{invoice.invoiceNumber}</p>
                     </div>
                     <button className="btn-close" onClick={onClose}>&times;</button>
                 </div>
@@ -237,7 +237,7 @@ export default function InvoiceDetailModal({ invoice: initialInvoice, onClose, o
                                 <strong>{invoice.student?.firstName} {invoice.student?.lastName}</strong>
                             </p>
                             <div className="flex items-center gap-sm">
-                                <p className="text-sm text-muted">Adm No: {invoice.student?.admissionNumber}</p>
+                                <p className="text-sm text-muted-foreground">Adm No: {invoice.student?.admissionNumber}</p>
                                 <span className={`badge ${invoice.status === 'PAID' ? 'badge-success' :
                                     invoice.status === 'PARTIALLY_PAID' ? 'badge-warning' :
                                         invoice.status === 'CANCELLED' ? 'badge-muted' :
@@ -420,7 +420,7 @@ export default function InvoiceDetailModal({ invoice: initialInvoice, onClose, o
                                                 <div>
                                                     <p className="text-sm font-medium">{item.description}</p>
                                                     {item.quantity > 1 && (
-                                                        <p className="text-xs text-muted">
+                                                        <p className="text-xs text-muted-foreground">
                                                             {item.quantity} × {formatCurrency(item.unitPrice)}
                                                         </p>
                                                     )}
@@ -451,11 +451,11 @@ export default function InvoiceDetailModal({ invoice: initialInvoice, onClose, o
                     }}>
                         <div className="space-y-sm">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted">Current Invoice Amount:</span>
+                                <span className="text-muted-foreground">Current Invoice Amount:</span>
                                 <span className="font-semibold">{formatCurrency(invoice.totalAmount)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted">Paid towards this Invoice:</span>
+                                <span className="text-muted-foreground">Paid towards this Invoice:</span>
                                 <span className="font-semibold text-success">{formatCurrency(invoice.paidAmount)}</span>
                             </div>
 
@@ -464,7 +464,7 @@ export default function InvoiceDetailModal({ invoice: initialInvoice, onClose, o
                                     {/* Arrears calculation: Overall - Current Invoice Balance */}
                                     {((billingSummary.overallBalance - parseFloat(invoice.balance)) !== 0) && (
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-muted">
+                                            <span className="text-muted-foreground">
                                                 {(billingSummary.overallBalance - parseFloat(invoice.balance)) > 0
                                                     ? 'Arrears (Brought Forward):'
                                                     : 'Overpayment (Brought Forward):'}

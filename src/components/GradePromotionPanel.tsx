@@ -133,8 +133,8 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
             <div className="card text-center" style={{ padding: 'var(--spacing-3xl)' }}>
                 <CheckCircle size={56} className="mx-auto mb-lg" style={{ color: 'var(--success-600)' }} />
                 <h3 className="text-2xl font-bold mb-sm">Promotion Request Submitted</h3>
-                <p className="text-muted mb-xl">{success}</p>
-                <p className="text-sm text-muted mb-xl">
+                <p className="text-muted-foreground mb-xl">{success}</p>
+                <p className="text-sm text-muted-foreground mb-xl">
                     The principal must <strong>approve</strong> this request before students are moved. Check the Pending Approvals section on the Payments page.
                 </p>
                 <button className="btn btn-primary" onClick={() => {
@@ -248,7 +248,7 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                             <div className="text-center">
                                 <GraduationCap size={24} style={{ color: 'var(--primary-600)', margin: '0 auto 4px' }} />
                                 <p className="font-bold text-sm">{fromClass?.name}{fromClass?.stream ? ' ' + fromClass.stream : ''}</p>
-                                <p className="text-xs text-muted">{students.length} students</p>
+                                <p className="text-xs text-muted-foreground">{students.length} students</p>
                             </div>
                             <ArrowRight size={24} style={{ color: 'var(--primary-400)', flexShrink: 0 }} />
                             <div className="text-center">
@@ -287,14 +287,14 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                     </div>
 
                     {loading ? (
-                        <div className="text-center py-xl text-muted">
+                        <div className="text-center py-xl text-muted-foreground">
                             <Loader2 size={24} className="mx-auto mb-sm animate-spin" />
                             Loading students...
                         </div>
                     ) : students.length === 0 ? (
                         <div className="text-center py-xl">
-                            <AlertCircle size={32} className="mx-auto mb-sm text-muted" />
-                            <p className="text-muted">No active students in this class.</p>
+                            <AlertCircle size={32} className="mx-auto mb-sm text-muted-foreground" />
+                            <p className="text-muted-foreground">No active students in this class.</p>
                         </div>
                     ) : (
                         <div className="space-y-sm">
@@ -346,7 +346,7 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="font-semibold text-sm truncate">{s.firstName} {s.lastName}</p>
-                                            <p className="text-xs text-muted">Adm: {s.admissionNumber}</p>
+                                            <p className="text-xs text-muted-foreground">Adm: {s.admissionNumber}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -378,14 +378,14 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                         <div className="p-lg rounded-xl" style={{ background: 'var(--neutral-50)', border: '1px solid var(--border)' }}>
                             <div className="grid grid-cols-3 gap-lg text-center">
                                 <div>
-                                    <p className="text-xs text-muted uppercase font-bold tracking-wider mb-xs">From</p>
+                                    <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-xs">From</p>
                                     <p className="font-bold">{fromClass?.name}{fromClass?.stream ? ' ' + fromClass.stream : ''}</p>
                                 </div>
                                 <div className="flex items-center justify-center">
                                     <ArrowRight size={20} style={{ color: 'var(--primary-400)' }} />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-muted uppercase font-bold tracking-wider mb-xs">To</p>
+                                    <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-xs">To</p>
                                     <p className="font-bold">{toClass?.name}{toClass?.stream ? ' ' + toClass.stream : ''}</p>
                                 </div>
                             </div>
@@ -394,13 +394,13 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                         <div className="grid grid-cols-2 gap-md">
                             <div className="p-md rounded-xl text-center" style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-100)' }}>
                                 <p className="text-2xl font-bold" style={{ color: 'var(--primary-700)' }}>{selectedStudentIds.size}</p>
-                                <p className="text-xs text-muted font-semibold">Students Affected</p>
+                                <p className="text-xs text-muted-foreground font-semibold">Students Affected</p>
                             </div>
                             <div className="p-md rounded-xl text-center" style={{ background: totalNewFees > 0 ? 'var(--success-50)' : 'var(--neutral-50)', border: `1px solid ${totalNewFees > 0 ? 'var(--success-100)' : 'var(--border)'}` }}>
                                 <p className="text-2xl font-bold" style={{ color: totalNewFees > 0 ? 'var(--success-700)' : 'var(--neutral-500)' }}>
                                     KES {totalNewFees > 0 ? totalNewFees.toLocaleString() : '—'}
                                 </p>
-                                <p className="text-xs text-muted font-semibold">New Fees Per Student</p>
+                                <p className="text-xs text-muted-foreground font-semibold">New Fees Per Student</p>
                             </div>
                         </div>
 

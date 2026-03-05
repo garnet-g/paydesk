@@ -107,7 +107,7 @@ export default function InvoicesPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
                     <div>
                         <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Invoices</h2>
-                        <p className="text-muted">Manage student billing and fee structures</p>
+                        <p className="text-muted-foreground">Manage student billing and fee structures</p>
                     </div>
                     <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap', width: '100%', smWidth: 'auto' } as any}>
                         <button
@@ -210,13 +210,13 @@ export default function InvoicesPage() {
                                 {loading ? (
                                     <tr><td colSpan={8} className="text-center py-xl"><div className="spinner mx-auto"></div></td></tr>
                                 ) : invoices.length === 0 ? (
-                                    <tr><td colSpan={8} className="text-center py-xl text-muted">No invoices found.</td></tr>
+                                    <tr><td colSpan={8} className="text-center py-xl text-muted-foreground">No invoices found.</td></tr>
                                 ) : invoices.map(invoice => (
                                     <tr key={invoice.id}>
                                         <td className="font-mono text-xs hide-mobile">{invoice.invoiceNumber}</td>
                                         <td>
                                             <div className="font-semibold">{invoice.student?.firstName} {invoice.student?.lastName}</div>
-                                            <div className="text-xs text-muted">{invoice.student?.admissionNumber}</div>
+                                            <div className="text-xs text-muted-foreground">{invoice.student?.admissionNumber}</div>
                                         </td>
                                         <td>{formatCurrency(invoice.totalAmount)}</td>
                                         <td className="text-success hide-mobile">{formatCurrency(invoice.paidAmount)}</td>
@@ -230,7 +230,7 @@ export default function InvoicesPage() {
                                                 {invoice.status === 'PARTIALLY_PAID' ? 'Partial' : invoice.status.replace('_', ' ')}
                                             </span>
                                         </td>
-                                        <td className="text-xs text-muted hide-mobile">{formatDate(invoice.createdAt)}</td>
+                                        <td className="text-xs text-muted-foreground hide-mobile">{formatDate(invoice.createdAt)}</td>
                                         <td>
                                             <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap' }}>
                                                 <button className="btn btn-ghost btn-sm" title="View Details" onClick={() => setSelectedInvoice(invoice)}>

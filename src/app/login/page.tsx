@@ -57,7 +57,7 @@ export default function LoginPage() {
                         alt="PayDesk"
                         style={{ height: '72px', margin: '0 auto var(--spacing-lg)', display: 'block', objectFit: 'contain' }}
                     />
-                    <p className="text-muted">Sign in to manage school fees</p>
+                    <p className="text-muted-foreground">Sign in to manage school fees</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -140,7 +140,7 @@ export default function LoginPage() {
                     borderTop: '1px solid var(--border)',
                     textAlign: 'center'
                 }}>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-muted-foreground">
                         Need help? Contact your school administrator
                     </p>
                 </div>
