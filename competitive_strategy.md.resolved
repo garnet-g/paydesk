@@ -1,0 +1,136 @@
+# PayDesk vs Zeraki — Kenya School Management Market
+
+## Who is Zeraki?
+
+Zeraki is a well-funded Kenyan edtech company (African Union Award winner, Harvard Business School partner) operating in **10 African countries** with **6,000+ schools** and **2.5M+ students**. They have brand recognition, on-site training teams, and 24/7 support. They are the dominant player.
+
+Their product is split into **3 separate apps** (each sold separately):
+
+| Product | What it does |
+|---|---|
+| **Zeraki Finance** | Fee receipting, expense tracking, cashflow summaries, bulk SMS to parents, pledges tracking, financial reports |
+| **Zeraki Analytics** | Attendance, student bio data, results entry, PDF/spreadsheet report cards, parent portal for grades + fees |
+| **Zeraki Learning** | Video lessons, topical quizzes, exam papers, simulations — for students at home. KICD-approved content |
+
+> **Key weakness**: These are **3 disconnected apps**. A school buying all 3 is juggling multiple logins, 3 different billings, 3 support contacts.
+
+---
+
+## Where Zeraki Falls Short (Your Opportunity)
+
+| Gap | What this means for you |
+|---|---|
+| **3 fragmented apps** | No unified dashboard — data doesn't flow between Finance, Analytics & Learning |
+| **No M-Pesa parent self-service** | Parents can't pay online via the app themselves — they pay at the bursar |
+| **No admissions module** | Schools still manage new student intake manually or with a separate tool |
+| **No staff/HR management** | Zeraki does nothing for teacher payroll, leave, or HR |
+| **No transport/canteen** | Zero support for these billable school services |
+| **No timetabling** | Class schedules are still done on paper/Excel |
+| **Learning is B2C bolt-on** | Zeraki Learning feels like a separate tutoring app, not school-integrated |
+| **Pricing opacity** | No public pricing — you have to book a demo. This creates friction |
+
+---
+
+## Your Competitive Positioning
+
+### The Core Pitch:
+> **"One system. Every department. One login."**
+> PayDesk is Kenya's first fully unified school ERP — Finance, Academics, and Operations all in one platform, with M-Pesa built in from day one.
+
+Zeraki sells **3 apps**. You sell **one platform** that does everything — and the data flows automatically between modules.
+
+---
+
+## PayDesk Product Ecosystem (What to Build)
+
+### 🟢 Phase 1 — Launch (Months 1-3) — You partially have this
+What you already have is the foundation. Flesh it out to fully match and beat Zeraki Finance + Analytics combined.
+
+| Module | Key features | Beats Zeraki? |
+|---|---|---|
+| **Finance** | Fee invoicing, M-Pesa payments, receipting, cashflow, expense tracking, bulk SMS | ✅ Yes — M-Pesa self-service for parents |
+| **Student Management** | Student profiles, guardian contacts, enrollment | ✅ Parity |
+| **Attendance** | Daily class attendance, SMS absent alerts | ✅ Parity |
+| **Results & Report Cards** | Score entry, auto PDF report cards, parent portal | ✅ Parity |
+| **Parent Portal** | View fees, pay online, view grades, receive SMS | ✅ Better — M-Pesa pay-in-app |
+
+### 🟡 Phase 2 — Differentiation (Months 4-6)
+Modules Zeraki doesn't have at all.
+
+| Module | Key features | Why directors love it |
+|---|---|---|
+| **Admissions** | Online application, fees payment on apply, approval workflow, auto onboard to SIS | Converts more applicants, less paperwork |
+| **Timetabling** | Class schedule builder, clash detection, teacher allocation | Massive time saver for deputies |
+| **Staff & Payroll** | Staff profiles, monthly payslips, NHIF/NSSF deductions, leave management | Removes need for a separate HR system |
+| **Transport** | Route & vehicle management, transport fee auto-billing per term | Every school with buses wants this |
+
+### 🔵 Phase 3 — Lock-in (Months 7-12)
+Makes switching to Zeraki or anyone else painful.
+
+| Module | Key features | Why it creates stickiness |
+|---|---|---|
+| **Library** | Book catalog, borrowing, overdue fines → auto-billed | Connects to finance automatically |
+| **Canteen/Meals** | Meal plans, parent top-up wallet, daily tracking | Parents love the transparency |
+| **Communication Hub** | Scheduled announcements, class-specific SMS, fee reminders, emergency alerts | Replaces WhatsApp groups |
+| **Director Analytics** | Revenue forecasting, defaulter lists, enrollment trends, subject performance heatmaps | Give the boss the one thing they care about — data at a glance |
+
+---
+
+## Pricing Strategy
+
+Zeraki charges ~**KSh 2,500/month** with no public pricing and requires a demo call.
+
+### Your approach: **Transparent, Tiered, Lower Entry**
+
+| Tier | Price/month | Modules | Target |
+|---|---|---|---|
+| **Starter** | **KSh 1,500** | Finance + Student Management + Attendance + Results + Parent Portal | Budget schools, entry point |
+| **Pro** | **KSh 2,500** | Everything in Starter + Admissions + Timetabling + Communication Hub | Mid-size secondaries |
+| **Enterprise** | **KSh 4,500** | All modules + Staff Payroll + Transport + Library + Canteen + Director Analytics | Large schools, school chains |
+
+### Additional Revenue Levers
+- **SMS top-up credits** — sell SMS bundles (KSh 500 for 500 SMS). You already use Africa's Talking.
+- **Setup fee** — KSh 5,000 one-time onboarding (optional, waived for annual plans)
+- **Annual discount** — 2 months free if they pay yearly (improves cash flow for you)
+- **Per-student pricing** for very large schools (1000+ students) — e.g. KSh 5/student/month
+
+---
+
+## What Will Actually Win Directors Over
+
+Directors are not tech people. They respond to **one thing: less chaos, fewer complaints, faster decisions**.
+
+Frame every feature around their pain:
+
+| Their pain | Your solution | How to say it |
+|---|---|---|
+| Bursar fraud / cash leakage | All payments digital, receipts auto-generated | *"Every shilling is tracked. No cash touches the bursar."* |
+| Parents calling about fee balances | Parent portal + SMS alerts | *"Parents check their balance on their phone. Stop the calls."* |
+| Report card week stress | Auto-generated PDFs in one click | *"End of term reports ready in 10 minutes, not 10 days."* |
+| Not knowing how school is performing | Director dashboard | *"See your school's health in real time, from your phone."* |
+| Managing 3 different systems | One login for everything | *"One system. Your whole school. One bill."* |
+
+---
+
+## Go-to-Market for Kenya
+
+1. **Target counties first**: Start Nairobi, Kiambu, Nakuru — highest density of private/semi-private schools
+2. **Demo model**: Offer a **30-day free full trial** (no credit card). Zeraki requires a demo call — your free trial is a massive advantage.
+3. **Bursar-first sales**: The bursar/accounts clerk is the power user. Win them and they sell upwards to the principal.
+4. **WhatsApp demo videos**: Short WhatsApp clips showing M-Pesa payment working, parent portal loading. Directors share these.
+5. **Schools Network effect**: One school recommends you to a neighboring school. Offer **referral discounts** (1 month free per referral).
+6. **KESSHA / Kenya Secondary Schools Heads Association** — attend their events and advertise in their communications.
+
+---
+
+## Summary: Why You Can Win
+
+| Factor | Zeraki | PayDesk |
+|---|---|---|
+| Unified Platform | ❌ 3 separate apps | ✅ One system |
+| M-Pesa parent payments | ❌ Pay at office | ✅ Built-in |
+| Public pricing | ❌ Book a demo | ✅ Transparent |
+| Free trial | ❌ | ✅ 30 days |
+| Staff/Payroll | ❌ | ✅ Phase 2 |
+| Transport & Canteen | ❌ | ✅ Phase 2/3 |
+| Entry price | KSh 2,500 (opaque) | KSh 1,500 (clear) |
