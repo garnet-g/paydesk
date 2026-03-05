@@ -3,8 +3,9 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await context.params
         const session = await getServerSession(authOptions)
         if (!session?.user?.schoolId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -14,7 +15,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         if (action === 'add') {
             await prisma.student.update({
                 where: { id: studentId, schoolId: session.user.schoolId },
-                data: { transportRouteId: params.id }
+                data: { transportRouteId: id }
             })
         } else if (action === 'remove') {
             await prisma.student.update({
