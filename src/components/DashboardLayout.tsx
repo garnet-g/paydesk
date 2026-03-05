@@ -256,15 +256,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                             display: 'flex',
                                             alignItems: 'center',
                                             gap: 'var(--spacing-md)',
-                                            padding: '10px var(--spacing-md)',
-                                            borderRadius: '12px',
-                                            background: isActive ? 'linear-gradient(90deg, var(--primary-50) 0%, rgba(238, 242, 255, 0.2) 100%)' : 'transparent',
-                                            color: isActive ? 'var(--primary-700)' : 'var(--neutral-500)',
+                                            padding: '12px var(--spacing-md)',
+                                            borderRadius: '14px',
+                                            background: isActive ? 'var(--primary-600)' : 'transparent',
+                                            color: isActive ? 'white' : 'var(--neutral-500)',
                                             fontWeight: isActive ? 700 : 500,
                                             fontSize: '0.875rem',
-                                            transition: 'all 0.2s ease',
+                                            transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
                                             textDecoration: 'none',
-                                            border: isActive ? '1px solid var(--primary-100)' : '1px solid transparent',
+                                            boxShadow: isActive ? '0 8px 20px -6px var(--primary-400)' : 'none',
+                                            border: '1px solid transparent',
                                         }}
                                         className="nav-link"
                                     >
@@ -498,6 +499,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     }
                 }
             `}</style>
-        </div>
+        </div >
     )
 }
