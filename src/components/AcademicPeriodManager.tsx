@@ -114,8 +114,8 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                         <CalendarDays size={28} />
                     </div>
                     <div>
-                        <h3 className="text-3xl font-black uppercase tracking-tighter italic">Term Cycles</h3>
-                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1">Institutional Academic Calendar</p>
+                        <h3 className="text-3xl font-semibold tracking-tight uppercase">Academic Terms</h3>
+                        <p className="text-blue-400 font-semibold text-[10px] uppercase tracking-wide mt-1">School Academic Calendar</p>
                     </div>
                 </div>
                 <div className="relative z-10 flex items-center gap-4">
@@ -125,7 +125,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                             onClick={() => setShowForm(true)}
                         >
                             <Plus size={18} className="mr-2" />
-                            New Period
+                            Add Term
                         </Button>
                     )}
                     {onClose && (
@@ -149,7 +149,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                         <div className="flex justify-between items-center mb-8">
                             <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
                                 <span className="h-1 w-8 bg-blue-600 rounded-full"></span>
-                                Configure Academic Window
+                                New Academic Term
                             </h4>
                             <Button
                                 variant="ghost"
@@ -163,7 +163,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                         <form onSubmit={handleCreate} className="space-y-8">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Term Designation</Label>
+                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Term Name</Label>
                                     <Select value={form.term} onValueChange={v => setForm({ ...form, term: v })}>
                                         <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white">
                                             <SelectValue />
@@ -177,7 +177,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Academic Year</Label>
+                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Academic Year</Label>
                                     <Input
                                         type="number"
                                         className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-lg text-slate-900 dark:text-white"
@@ -188,7 +188,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Commencement Date</Label>
+                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Start Date</Label>
                                     <Input
                                         type="date"
                                         className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white"
@@ -198,7 +198,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Conclusion Date</Label>
+                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">End Date</Label>
                                     <Input
                                         type="date"
                                         className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-900 dark:text-white"
@@ -224,8 +224,8 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                         {form.isActive && <Check size={18} className="text-white" />}
                                     </div>
                                     <div className="cursor-pointer" onClick={() => setForm({ ...form, isActive: !form.isActive })}>
-                                        <div className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.2em]">Deploy As Active Lifecycle</div>
-                                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Deactivates current system default</div>
+                                        <div className="text-[10px] font-semibold text-slate-900 dark:text-white uppercase tracking-wide">Set as current active term</div>
+                                        <div className="text-[9px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">This will be the default term for new invoices</div>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
@@ -261,9 +261,9 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                         <div className="h-24 w-24 bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
                             <Calendar size={48} className="text-slate-200 dark:text-slate-800" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase italic tracking-tight">Timeline Empty</h3>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium italic max-w-sm mx-auto">
-                            No academic periods have been defined for this institution yet. Define a term to start the mission.
+                        <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 uppercase tracking-tight">No Terms Defined</h3>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto">
+                            No academic periods have been defined yet. Add a term to get started.
                         </p>
                     </div>
                 ) : (
@@ -271,11 +271,11 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900">
-                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Descriptor</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Year</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Boundary Dates</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Matrix</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Operations</th>
+                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Term</th>
+                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Year</th>
+                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Dates</th>
+                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Status</th>
+                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
@@ -284,7 +284,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-2 bg-blue-600 rounded-full"></div>
-                                                <span className="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm">{p.term.replace('_', ' ')}</span>
+                                                <span className="font-semibold text-slate-900 dark:text-white uppercase tracking-tight text-sm">{p.term.replace('_', ' ')}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5">
@@ -307,7 +307,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                                 {p.isActive ? (
                                                     <span className="flex items-center gap-1.5 leading-none">
                                                         <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                                        ACTIVE MISSION
+                                                        CURRENT ACTIVE
                                                     </span>
                                                 ) : 'INACTIVE'}
                                             </Badge>

@@ -458,31 +458,30 @@ export default function PaymentsPage() {
                 {/* Page Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
                     <div style={{ flex: '1 1 300px' }}>
-                        <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Payments</h2>
-                        <p className="text-muted">
-                            {isSuperAdmin ? 'Global payment monitoring and financial logs' : isParent ? 'Manage your school fees and payment history' : 'Track and manage payment records'}
+                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Payments</h2>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">
+                            {isSuperAdmin ? 'Monitor school-wide payments' : isParent ? 'Manage your school fees and history' : 'Manage student payment records'}
                         </p>
                     </div>
 
                     <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center', flexWrap: 'wrap' }}>
                         {isAdmin && (
                             <>
-                                <button
-                                    className="btn btn-primary"
+                                <Button
+                                    className="h-10 px-4 rounded-lg bg-slate-900 border-none hover:bg-slate-800 text-white font-medium shadow-none dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 transition-colors"
                                     onClick={() => setShowManualModal(true)}
-                                    style={{ width: '100%', smWidth: 'auto' } as any}
                                 >
-                                    <Plus size={18} />
-                                    Record Manual Payment
-                                </button>
-                                <button
-                                    className="btn btn-outline"
+                                    <Plus size={16} className="mr-2" />
+                                    Manual Payment
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="h-10 px-4 rounded-lg font-medium border-slate-200 dark:border-slate-800"
                                     onClick={() => setShowBankModal(true)}
-                                    style={{ width: '100%', smWidth: 'auto', gap: '8px' } as any}
                                 >
-                                    <Landmark size={18} />
-                                    Record Bank Transfer
-                                </button>
+                                    <Landmark size={16} className="mr-2" />
+                                    Bank Transfer
+                                </Button>
                             </>
                         )}
                         {(isAdmin) && (
@@ -1280,8 +1279,8 @@ export default function PaymentsPage() {
                     <div className="modal" style={{ maxWidth: '480px' }} onClick={e => e.stopPropagation()}>
                         <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <Landmark size={20} style={{ color: 'var(--primary-600)' }} />
-                                <h3 style={{ margin: 0 }}>Record Bank Transfer</h3>
+                                <Landmark size={20} className="text-blue-600" />
+                                <h3 className="text-lg font-semibold m-0">Bank Transfer</h3>
                             </div>
                             <button className="btn btn-ghost btn-sm" onClick={() => setShowBankModal(false)}><X size={18} /></button>
                         </div>
@@ -1314,7 +1313,7 @@ export default function PaymentsPage() {
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={() => setShowBankModal(false)}>Cancel</button>
                                 <button type="submit" className="btn btn-primary" disabled={bankSubmitting}>
-                                    {bankSubmitting ? 'Recording...' : 'Confirm & Record'}
+                                    {bankSubmitting ? 'Recording...' : 'Record Payment'}
                                 </button>
                             </div>
                         </form>

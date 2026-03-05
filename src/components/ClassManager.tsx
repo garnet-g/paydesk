@@ -202,24 +202,24 @@ export default function ClassManager() {
             {/* Page Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Management: Classes</h2>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium italic">Configure academic streams and fee structures</p>
+                    <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Classes</h2>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">Configure classes, streams, and fee structures</p>
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
                     <Button
                         variant="outline"
-                        className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
+                        className="h-12 px-6 rounded-2xl font-semibold text-xs border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
                         onClick={() => setShowPeriodManager(true)}
                     >
                         <Calendar className="mr-2 h-4 w-4" />
-                        Term Cycles
+                        Academic Terms
                     </Button>
                     <Button
-                        className="flex-1 md:flex-none h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200"
+                        className="flex-1 md:flex-none h-12 px-6 rounded-2xl font-semibold text-xs bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200"
                         onClick={() => setShowAddModal(true)}
                     >
                         <Plus className="mr-2 h-4 w-4" />
-                        Create Class
+                        Add New Class
                     </Button>
                 </div>
             </div>
@@ -243,7 +243,7 @@ export default function ClassManager() {
             {loading ? (
                 <div className="py-20 text-center">
                     <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
-                    <p className="font-black text-slate-900 dark:text-white uppercase tracking-widest text-xs">Syncing Class Data...</p>
+                    <p className="font-semibold text-slate-900 dark:text-white text-xs">Loading classes...</p>
                 </div>
             ) : filteredClasses.length === 0 ? (
                 <Card className="border-dashed border-slate-300 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 rounded-3xl">
@@ -251,15 +251,15 @@ export default function ClassManager() {
                         <div className="h-24 w-24 bg-white dark:bg-slate-900 shadow-xl rounded-[2rem] flex items-center justify-center mb-8">
                             <Layers className="h-12 w-12 text-slate-300 dark:text-slate-700" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase italic tracking-tight">Ecosystem Empty</h3>
-                        <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-8 font-medium italic">
-                            No classes have been registered in this system yet. Initialize your first class to begin enrollment.
+                        <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">No Classes Found</h3>
+                        <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-8 font-medium">
+                            No classes have been registered in this system yet. Create your first class to begin enrollment.
                         </p>
                         <Button
-                            className="h-12 px-8 rounded-2xl font-black text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 text-white"
+                            className="h-12 px-8 rounded-2xl font-semibold text-xs bg-blue-600 hover:bg-blue-700 text-white"
                             onClick={() => setShowAddModal(true)}
                         >
-                            CREATE FIRST CLASS
+                            ADD FIRST CLASS
                         </Button>
                     </CardContent>
                 </Card>
@@ -285,38 +285,38 @@ export default function ClassManager() {
                                 </div>
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                        <CardTitle className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">
+                                        <CardTitle className="text-2xl font-semibold text-slate-900 dark:text-white tracking-tight">
                                             {cls.name}
                                         </CardTitle>
                                         {cls.stream && (
-                                            <Badge className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-none font-black text-[10px] items-center px-3 h-6 uppercase tracking-widest">
+                                            <Badge className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-none font-semibold text-xs items-center px-3 h-6">
                                                 {cls.stream}
                                             </Badge>
                                         )}
                                     </div>
-                                    <CardDescription className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">
-                                        Academic Unit ID: {cls.id.slice(0, 8)}
+                                    <CardDescription className="text-slate-400 font-medium text-[10px]">
+                                        Unit ID: {cls.id.slice(0, 8)}
                                     </CardDescription>
                                 </div>
                             </CardHeader>
                             <CardContent className="px-8 py-4 flex-1">
                                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse shadow-lg shadow-emerald-200"></div>
-                                        <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Enrollment Status</span>
+                                        <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                                        <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Enrollment</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Users className="h-4 w-4 text-blue-600" />
-                                        <span className="font-black text-slate-900 dark:text-white">{cls._count?.students || 0}</span>
+                                        <span className="font-semibold text-slate-900 dark:text-white">{cls._count?.students || 0}</span>
                                     </div>
                                 </div>
                             </CardContent>
                             <CardFooter className="p-8 pt-4">
                                 <Button
-                                    className="w-full h-14 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all text-slate-900 dark:text-white font-black text-[10px] uppercase tracking-[0.25em] group/btn shadow-sm"
+                                    className="w-full h-14 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all text-slate-900 dark:text-white font-semibold text-xs group/btn shadow-sm"
                                     onClick={() => openFeeModal(cls)}
                                 >
-                                    CONFIGURE FEES
+                                    Manage Fees
                                     <ChevronRight className="ml-2 h-4 w-4 transform group-hover/btn:translate-x-1 transition-transform" />
                                 </Button>
                             </CardFooter>

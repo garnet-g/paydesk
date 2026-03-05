@@ -157,7 +157,7 @@ export default function AttendancePage() {
                     </div>
                     {activePeriod && (
                         <Badge variant="outline" className="text-sm bg-blue-50 text-blue-700 border-blue-200">
-                            Active Term: {activePeriod.name}
+                            Current Term: {activePeriod.name}
                         </Badge>
                     )}
                 </div>
@@ -166,10 +166,10 @@ export default function AttendancePage() {
                     <CardHeader className="bg-slate-50 border-b border-slate-100 pb-6">
                         <div className="flex flex-col md:flex-row gap-6 items-end">
                             <div className="space-y-2 flex-1">
-                                <Label htmlFor="class" className="text-slate-700 font-bold  text-[10px] ">Select Class</Label>
+                                <Label htmlFor="class" className="text-slate-700 font-semibold text-[10px] ">Select Class</Label>
                                 <Select value={selectedClass} onValueChange={setSelectedClass}>
                                     <SelectTrigger id="class" className="w-full md:w-[280px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm h-11">
-                                        <SelectValue placeholder="Choose a class roster..." />
+                                        <SelectValue placeholder="Select class..." />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {classes.length > 0 ? (
@@ -183,7 +183,7 @@ export default function AttendancePage() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="date" className="text-slate-700 font-bold  text-[10px] ">Date</Label>
+                                <Label htmlFor="date" className="text-slate-700 font-semibold text-[10px] ">Date</Label>
                                 <div className="relative">
                                     <Input
                                         id="date"
@@ -203,21 +203,21 @@ export default function AttendancePage() {
                                 <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
                                     <Users className="h-10 w-10 text-slate-300" />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-800 mb-2">Ready to take roll?</h3>
+                                <h3 className="text-xl font-semibold text-slate-800 mb-2">Mark Attendance</h3>
                                 <p className="max-w-xs mx-auto">Please select a class roster from the dropdown above to begin marking attendance.</p>
                             </div>
                         ) : loading ? (
                             <div className="p-20 text-center text-slate-500">
                                 <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
-                                <p className="font-bold text-slate-800">Compiling class roster...</p>
-                                <p className="text-sm">Fetching student details from database</p>
+                                <p className="font-semibold text-slate-800">Loading student list...</p>
+                                <p className="text-sm">Fetching records from the database</p>
                             </div>
                         ) : records.length === 0 ? (
                             <div className="p-20 text-center text-slate-500">
                                 <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-6 mx-auto">
                                     <AlertCircle className="h-10 w-10 text-amber-500" />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-800 mb-2">No Students Found</h3>
+                                <h3 className="text-xl font-semibold text-slate-800 mb-2">No Students Found</h3>
                                 <p className="max-w-xs mx-auto">This class doesn't seem to have any students assigned to it yet.</p>
                             </div>
                         ) : (
@@ -225,13 +225,13 @@ export default function AttendancePage() {
                                 <div className="p-6 bg-slate-50/50 flex justify-between items-center border-b border-slate-100">
                                     <div>
                                         <span className="text-xs font-semibold text-slate-900   bg-blue-100/50 px-2 py-1 rounded">
-                                            {records.length} Students active
+                                            {records.length} Students
                                         </span>
                                     </div>
                                     {!isExistingData && (
-                                        <Button variant="outline" size="sm" onClick={allPresent} className="h-9 font-bold text-xs bg-white border-slate-200 group">
+                                        <Button variant="outline" size="sm" onClick={allPresent} className="h-9 font-semibold text-xs bg-white border-slate-200 group">
                                             <CheckCircle className="h-4 w-4 mr-2 text-green-500 group-hover:scale-110 transition-transform" />
-                                            ALL PRESENT (QUICK MARK)
+                                            Mark All Present
                                         </Button>
                                     )}
                                 </div>
@@ -244,7 +244,7 @@ export default function AttendancePage() {
                                                     {index + 1}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-lg text-slate-900">
+                                                    <p className="font-semibold text-lg text-slate-900">
                                                         {record.student.firstName} {record.student.lastName}
                                                     </p>
                                                     <div className="flex items-center gap-3">
@@ -308,7 +308,7 @@ export default function AttendancePage() {
                                     "px-4 py-2 rounded-xl text-xs font-semibold  ",
                                     isExistingData ? "bg-slate-200 text-slate-600" : "bg-blue-100 text-blue-700 animate-pulse"
                                 )}>
-                                    {isExistingData ? "Viewing History" : "Recording Draft"}
+                                    {isExistingData ? "Viewing Records" : "Draft Mode"}
                                 </div>
                                 {records.filter(r => r.status === 'ABSENT').length > 0 && (
                                     <div className="flex items-center gap-1.5 text-xs font-semibold text-red-600  ">
@@ -325,7 +325,7 @@ export default function AttendancePage() {
                                     disabled={saving}
                                 >
                                     <Save className="mr-2 h-4 w-4" />
-                                    {saving ? "SYNCING..." : "SAVE ROSTER"}
+                                    {saving ? "Saving..." : "Save Daily Records"}
                                 </Button>
                                 <Button
                                     className="h-12 px-6 rounded-2xl font-semibold text-xs   bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200 w-full sm:w-auto"
@@ -333,7 +333,7 @@ export default function AttendancePage() {
                                     disabled={saving || records.filter(r => r.status === 'ABSENT').length === 0}
                                 >
                                     <Mail className="mr-2 h-4 w-4" />
-                                    SAVE & BROADCAST (SMS)
+                                    SAVE & SEND SMS
                                 </Button>
                             </div>
                         </CardFooter>

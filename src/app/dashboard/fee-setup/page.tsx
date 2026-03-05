@@ -24,10 +24,10 @@ export default function FeeSetupPage() {
                             <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                                 <Settings size={24} className="text-blue-400" />
                             </div>
-                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white  ">Configurator</h2>
+                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Fee Settings</h2>
                         </div>
                         <p className="text-slate-500 dark:text-slate-400 font-medium ">
-                            Architecting financial obligations and <span className="text-blue-600 font-semibold  not-">Academic Terminology</span>
+                            Manage school fee structures and academic terms
                         </p>
                     </div>
                 </div>
@@ -77,14 +77,14 @@ export default function FeeSetupPage() {
                             <Info size={20} className="text-blue-400" />
                         </div>
                         <div>
-                            <div className="text-xs font-semibold  ">Architectural Note</div>
-                            <div className="text-[10px] text-slate-400   font-bold">Modifying fee structures will not affect existing invoices. Only future invoices will be affected.</div>
+                            <div className="text-xs font-semibold">Important Notice</div>
+                            <div className="text-[10px] text-slate-400 font-semibold tracking-wide">Modifying fee structures will only affect newly generated invoices. Existing invoices remain unchanged.</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-8 relative z-10">
                         <div className="text-right">
-                            <div className="text-xs font-semibold   text-blue-400">Institutional Plan</div>
-                            <div className="text-xl font-semibold   tracking-tight">{session?.user?.planTier || 'FREE'} PHASE</div>
+                            <div className="text-xs font-semibold text-blue-400">Subscription Plan</div>
+                            <div className="text-xl font-semibold tracking-tight">{session?.user?.planTier || 'FREE'}</div>
                         </div>
                         <div className="h-10 w-[1px] bg-white/10 hidden md:block"></div>
                         <div className="flex -space-x-3">

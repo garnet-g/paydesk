@@ -156,8 +156,8 @@ export default function ParentsPage() {
                 {/* Page Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
                     <div>
-                        <h2 style={{ fontSize: '1.75rem', marginBottom: 'var(--spacing-xs)' }}>Parents & Guardians</h2>
-                        <p className="text-muted">Manage parent and guardian accounts for {session?.user?.schoolName}</p>
+                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Parents</h2>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">Manage parent and guardian accounts for {session?.user?.schoolName}</p>
                     </div>
                     <button className="btn btn-primary" onClick={handleAddClick}>
                         <Plus size={18} />
@@ -186,9 +186,9 @@ export default function ParentsPage() {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Guardian</th>
+                                    <th>Parent / Guardian</th>
                                     <th className="hide-mobile">Contact</th>
-                                    <th className="hide-mobile">Dependents</th>
+                                    <th className="hide-mobile">Students</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -253,7 +253,7 @@ export default function ParentsPage() {
                                                             </span>
                                                         ))
                                                     ) : (
-                                                        <span className="text-muted text-xs">No dependents</span>
+                                                        <span className="text-muted text-xs">No students linked</span>
                                                     )}
                                                 </div>
                                             </td>

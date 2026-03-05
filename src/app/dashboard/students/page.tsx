@@ -155,12 +155,12 @@ export default function StudentsPage() {
                                     <Users size={24} />
                                 </div>
                             )}
-                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white  ">
-                                {selectedClass ? `${selectedClass.name} ${selectedClass.stream || ''}` : 'Registry'}
+                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                                {selectedClass ? `${selectedClass.name} ${selectedClass.stream || ''}` : 'Students'}
                             </h2>
                         </div>
                         <p className="text-slate-500 dark:text-slate-400 font-medium ">
-                            {selectedClass ? 'Viewing division personnel' : 'Manage student profiles, enrollment, and records'} at <span className="text-blue-600 font-semibold  not-">{session?.user?.schoolName}</span>
+                            {selectedClass ? 'Viewing students in this class' : 'Manage student profiles and class enrollment'} at <span className="text-blue-600 font-semibold  ">{session?.user?.schoolName}</span>
                         </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-4">
@@ -168,7 +168,7 @@ export default function StudentsPage() {
                             <Button asChild variant="outline" className="h-12 px-6 rounded-2xl font-semibold text-xs   border-slate-200 bg-white hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800">
                                 <Link href="/dashboard/settings/import">
                                     <Download size={18} className="mr-2 text-blue-600" />
-                                    Batch Data Import
+                                    Batch Upload
                                 </Link>
                             </Button>
                         )}
@@ -182,7 +182,7 @@ export default function StudentsPage() {
                             onClick={handleAddStudent}
                         >
                             <UserPlus size={18} className="mr-2" />
-                            {isLimitReached ? 'LIMIT REACHED' : 'Add Student'}
+                            {isLimitReached ? 'LIMIT REACHED' : 'Add New Student'}
                         </Button>
                     </div>
                 </div>
@@ -225,7 +225,7 @@ export default function StudentsPage() {
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-6">
-                                        <p className="text-xs font-bold text-slate-400    mb-4">Division</p>
+                                        <p className="text-xs font-semibold text-slate-400 mb-4">Class Overview</p>
                                         <Button variant="ghost" className="w-full justify-between hover:bg-blue-50 hover:text-blue-700 text-slate-500 font-semibold text-[10px]   rounded-xl transition-colors">
                                             View Students
                                             <ChevronRight size={14} />
@@ -246,8 +246,8 @@ export default function StudentsPage() {
                                     <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                     <Input
                                         type="text"
-                                        placeholder=" Search by name, admission ID..."
-                                        className="h-14 pl-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-900 dark:text-white group-focus-within:ring-2 ring-blue-500/20 transition-all shadow-sm"
+                                        placeholder="Search by name or admission number..."
+                                        className="h-14 pl-12 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-semibold text-slate-900 dark:text-white group-focus-within:ring-2 ring-blue-500/20 transition-all shadow-sm"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
@@ -261,15 +261,15 @@ export default function StudentsPage() {
                                             </div>
                                         </SelectTrigger>
                                         <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
-                                            <SelectItem value="ALL" className="font-bold">ALL STUDENTS</SelectItem>
-                                            <SelectItem value="ACTIVE" className="font-bold text-emerald-600">ACTIVE</SelectItem>
-                                            <SelectItem value="INACTIVE" className="font-bold text-slate-500">INACTIVE</SelectItem>
-                                            <SelectItem value="SUSPENDED" className="font-bold text-amber-600">SUSPENDED</SelectItem>
-                                            <SelectItem value="GRADUATED" className="font-bold text-blue-600">GRADUATED</SelectItem>
+                                            <SelectItem value="ALL" className="font-semibold">All Students</SelectItem>
+                                            <SelectItem value="ACTIVE" className="font-semibold text-emerald-600 border-none">Active</SelectItem>
+                                            <SelectItem value="INACTIVE" className="font-semibold text-slate-500 border-none">Inactive</SelectItem>
+                                            <SelectItem value="SUSPENDED" className="font-semibold text-amber-600 border-none">Suspended</SelectItem>
+                                            <SelectItem value="GRADUATED" className="font-semibold text-blue-600 border-none">Graduated</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <div className="hidden lg:flex flex-col items-center justify-center px-6 h-14 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl whitespace-nowrap">
-                                        <span className="text-[10px] font-semibold text-blue-400 dark:text-blue-500   leading-none mb-1">Division Strength</span>
+                                        <span className="text-[10px] font-semibold text-blue-400 dark:text-blue-500 leading-none mb-1">Total Students</span>
                                         <span className="text-xl font-semibold text-blue-700 dark:text-blue-400 leading-none">{filteredStudents.length}</span>
                                     </div>
                                 </div>
@@ -303,7 +303,7 @@ export default function StudentsPage() {
                                             <CardContent className="p-6">
                                                 <div className="flex justify-between items-start mb-6">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center">
+                                                        <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center">
                                                             {student.firstName[0]}{student.lastName[0]}
                                                         </div>
                                                         <div>
@@ -311,32 +311,32 @@ export default function StudentsPage() {
                                                             <p className="text-xs text-slate-500  ">{student.admissionNumber}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="bg-slate-950 text-white font-bold text-[10px] px-3 py-1 rounded-full ">
-                                                        {student.status || 'Active'}
+                                                    <div className="bg-slate-950 text-white font-semibold text-[10px] px-3 py-1 rounded-full capitalize">
+                                                        {student.status?.toLowerCase() || 'Active'}
                                                     </div>
                                                 </div>
 
                                                 <div className="space-y-3 mb-6">
                                                     <div className="flex justify-between items-center text-sm py-2 border-b border-slate-50 dark:border-slate-800">
                                                         <span className="text-slate-500">Class:</span>
-                                                        <span className="font-bold text-slate-900 dark:text-white text-right">
+                                                        <span className="font-semibold text-slate-900 dark:text-white text-right">
                                                             {student.class ? `${student.class.name} ${student.class.stream ? `- ${student.class.stream}` : ''}` : 'Unassigned'}
                                                         </span>
                                                     </div>
                                                     <div className="flex justify-between items-center text-sm py-2 border-b border-slate-50 dark:border-slate-800">
                                                         <span className="text-slate-500">Attendance:</span>
-                                                        <span className="font-bold text-slate-900 dark:text-white text-right">100.0%</span>
+                                                        <span className="font-semibold text-slate-900 dark:text-white text-right">100.0%</span>
                                                     </div>
                                                     <div className="flex justify-between items-start text-sm py-2">
                                                         <span className="text-slate-500 mt-1">Parent/Guardian:</span>
                                                         <div className="text-right">
                                                             {student.guardians && student.guardians.length > 0 ? (
                                                                 <>
-                                                                    <p className="font-bold text-slate-900 dark:text-white capitalize">{student.guardians[0].user.firstName} {student.guardians[0].user.lastName}</p>
+                                                                    <p className="font-semibold text-slate-900 dark:text-white capitalize">{student.guardians[0].user.firstName} {student.guardians[0].user.lastName}</p>
                                                                     <p className="text-xs text-slate-500 mt-1">{student.guardians[0].user.phoneNumber}</p>
                                                                 </>
                                                             ) : (
-                                                                <p className="font-bold text-slate-900 dark:text-white  text-xs">Unassigned</p>
+                                                                <p className="font-semibold text-slate-900 dark:text-white text-xs">Unassigned</p>
                                                             )}
                                                         </div>
                                                     </div>
@@ -344,7 +344,7 @@ export default function StudentsPage() {
 
                                                 <Button
                                                     variant="outline"
-                                                    className="w-full h-11 rounded-xl border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                                    className="w-full h-11 rounded-xl border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                                                     onClick={() => {
                                                         setSelectedProfileStudent(student);
                                                         setShowProfileModal(true);
@@ -362,13 +362,13 @@ export default function StudentsPage() {
                         {/* Footer / Pagination Placeholder */}
                         <div className="bg-slate-50 dark:bg-slate-900/30 border-t border-slate-100 dark:border-slate-900 p-6 flex justify-between items-center whitespace-nowrap overflow-x-auto gap-8">
                             <div className="text-[10px] font-semibold text-slate-400    shrink-0">
-                                Displaying {filteredStudents.length} Students • 
+                                Displaying {filteredStudents.length} Students •
                             </div>
                             {isLimitReached && (
                                 <div className="flex items-center gap-3 px-4 py-2 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/30 rounded-xl shrink-0">
                                     <AlertTriangle size={14} className="text-red-600" />
-                                    <span className="text-[10px] font-semibold text-red-600  tracking-[0.1em]">Free Tier Limit Reached • Enrollment Offline</span>
-                                    <Button variant="link" className="h-auto p-0 text-[10px] font-semibold  text-blue-600 hover:text-blue-700 underline shadow-none">Upgrade Mission</Button>
+                                    <span className="text-[10px] font-semibold text-red-600  tracking-[0.1em]">Free Tier Limit Reached</span>
+                                    <Button variant="link" className="h-auto p-0 text-[10px] font-semibold  text-blue-600 hover:text-blue-700 underline shadow-none">Upgrade</Button>
                                 </div>
                             )}
                         </div>

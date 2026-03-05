@@ -29,7 +29,8 @@ import {
     ArrowRight,
     Crown,
     CalendarCheck,
-    Award
+    Award,
+    Bus
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import ChangePasswordModal from './ChangePasswordModal'
@@ -81,7 +82,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: 'Invoices', href: '/dashboard/invoices', icon: FileText, roles: ['PRINCIPAL', 'PARENT', 'FINANCE_MANAGER'] },
         { name: 'Reports', href: '/dashboard/reports', icon: BarChart3, roles: ['PRINCIPAL', 'FINANCE_MANAGER'], requiresPro: true },
         { name: 'Inquiries', href: '/dashboard/inquiries', icon: MessageSquare, roles: ['PRINCIPAL', 'PARENT', 'TEACHER'] },
-        { name: 'Broadcasts', href: '/dashboard/broadcast', icon: Megaphone, roles: ['SUPER_ADMIN', 'PRINCIPAL'], requiresPro: true },
+        { name: 'Communication', href: '/dashboard/broadcast', icon: MessageSquare, roles: ['SUPER_ADMIN', 'PRINCIPAL'], requiresPro: true },
+        { name: 'Transport', href: '/dashboard/transport', icon: Bus, roles: ['PRINCIPAL', 'SUPER_ADMIN'] },
         { name: 'System Logs', href: '/dashboard/logs', icon: FileText, roles: ['SUPER_ADMIN'] },
         { name: 'App Users', href: '/dashboard/users', icon: Users, roles: ['SUPER_ADMIN'] },
         { name: 'Platform Admins', href: '/dashboard/platform-admins', icon: Crown, roles: ['SUPER_ADMIN'] },
@@ -155,8 +157,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             )}
                         </div>
                         <div style={{ minWidth: 0 }}>
-                            <h2 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {session?.user?.schoolName || 'System Admin'}
+                            <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                School ERP
                             </h2>
                             <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
                                 {userRole.split('_').join(' ')}
@@ -401,7 +403,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                         <div className="mobile-only" style={{ display: 'none', minWidth: 0 }}>
                             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                PayDesk
+                                School ERP
                             </h2>
                         </div>
 

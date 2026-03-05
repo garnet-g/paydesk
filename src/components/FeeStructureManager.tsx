@@ -239,18 +239,18 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                         <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                             <Wallet size={24} />
                         </div>
-                        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Financial Atlas</h2>
+                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Fee Management</h2>
                     </div>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium italic">
-                        Mapping systemic fee structures and <span className="text-blue-600 font-black uppercase not-italic italic">Fiscal Allocations</span>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">
+                        Set up and manage school fee structures and <span className="text-blue-600 font-semibold ">Allocations</span>
                     </p>
                 </div>
                 <Button
-                    className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100/50 dark:shadow-none"
+                    className="h-12 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs tracking-wide shadow-xl shadow-slate-200 dark:shadow-none transition-all"
                     onClick={() => { resetForm(); setShowAddModal(true) }}
                 >
                     <Plus size={18} className="mr-2" />
-                    Deploy New Fee
+                    Add New Fee
                 </Button>
             </div>
 
@@ -259,12 +259,12 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                 <CardHeader className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900 p-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Academic Lifecycle</Label>
+                            <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Academic Term</Label>
                             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                                 <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white transition-all shadow-sm">
                                     <div className="flex items-center gap-2">
                                         <TrendingUp size={16} className="text-blue-600" />
-                                        <SelectValue placeholder="Select Cycle Phase..." />
+                                        <SelectValue placeholder="Select Term..." />
                                     </div>
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
@@ -281,7 +281,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Division Filter</Label>
+                            <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Class Filter</Label>
                             <Select value={selectedClass} onValueChange={setSelectedClass}>
                                 <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-slate-900 dark:text-white transition-all shadow-sm">
                                     <div className="flex items-center gap-2">
@@ -290,7 +290,7 @@ export default function FeeStructureManager({ schoolId }: FeeStructureManagerPro
                                     </div>
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800">
-                                    <SelectItem value="all_classes" className="font-bold">ALL DIVISIONS</SelectItem>
+                                    <SelectItem value="all_classes" className="font-bold">ALL CLASSES</SelectItem>
                                     {classes.map(cls => (
                                         <SelectItem key={cls.id} value={cls.id} className="font-bold">
                                             {cls.name} {cls.stream}

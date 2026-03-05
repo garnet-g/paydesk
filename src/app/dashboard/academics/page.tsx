@@ -89,10 +89,10 @@ export default function AcademicsPage() {
             <div className="animate-fade-in">
                 <div className="page-header">
                     <div>
-                        <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-900)', letterSpacing: '-0.025em' }}>
-                            Academic Office
+                        <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                            Academics
                         </h2>
-                        <p className="text-muted font-medium">Manage daily attendance and examination outcomes</p>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">Manage student attendance and examination records</p>
                     </div>
                 </div>
 
@@ -101,13 +101,13 @@ export default function AcademicsPage() {
                         className={`pb-md px-lg font-bold text-xs   transition-all ${activeTab === 'attendance' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-neutral-400'}`}
                         onClick={() => setActiveTab('attendance')}
                     >
-                        Daily Attendance
+                        Attendance
                     </button>
                     <button
                         className={`pb-md px-lg font-bold text-xs   transition-all ${activeTab === 'results' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-neutral-400'}`}
                         onClick={() => setActiveTab('results')}
                     >
-                        Examination Results
+                        Examinations
                     </button>
                 </div>
 
@@ -129,7 +129,7 @@ export default function AcademicsPage() {
                                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                                 <input
                                     className="form-input pl-10 text-sm"
-                                    placeholder="Search student..."
+                                    placeholder="Search students..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
@@ -140,9 +140,9 @@ export default function AcademicsPage() {
                             <table className="table-modern w-full">
                                 <thead>
                                     <tr className="bg-neutral-50/50">
-                                        <th className="text-[10px] font-semibold   text-muted p-md border-b">Student</th>
-                                        <th className="text-[10px] font-semibold   text-muted p-md border-b">Class</th>
-                                        <th className="text-[10px] font-semibold   text-muted p-md border-b text-center">Protocol Actions</th>
+                                        <th className="text-[10px] font-semibold text-muted p-md border-b">Student</th>
+                                        <th className="text-[10px] font-semibold text-muted p-md border-b">Class</th>
+                                        <th className="text-[10px] font-semibold text-muted p-md border-b text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -154,8 +154,8 @@ export default function AcademicsPage() {
                                                 <div className="flex items-center gap-sm">
                                                     <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center text-[10px] font-semibold">{student.firstName[0]}{student.lastName[0]}</div>
                                                     <div>
-                                                        <div className="text-sm font-bold text-primary-900">{student.firstName} {student.lastName}</div>
-                                                        <div className="text-[10px] font-bold text-muted ">{student.admissionNumber}</div>
+                                                        <div className="text-sm font-semibold text-primary-900">{student.firstName} {student.lastName}</div>
+                                                        <div className="text-[10px] font-semibold text-muted ">{student.admissionNumber}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -191,7 +191,7 @@ export default function AcademicsPage() {
                                 <p className="text-xs text-muted font-medium ">Create and manage standardized assessments</p>
                             </div>
                             <button className="btn btn-primary shadow-xl shadow-primary-100 px-xl text-xs font-semibold  " onClick={() => setShowExamModal(true)}>
-                                <Plus size={18} /> New Examination
+                                <Plus size={18} /> New Exam
                             </button>
                         </div>
 
@@ -211,7 +211,7 @@ export default function AcademicsPage() {
 
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <div className="text-[9px] font-bold text-muted ">Registry Entries</div>
+                                            <div className="text-[9px] font-semibold text-muted ">Results Recorded</div>
                                             <div className="text-2xl font-semibold text-primary-600">{exam.results?.length || 0}</div>
                                         </div>
                                         <button
@@ -247,7 +247,7 @@ export default function AcademicsPage() {
                                     <label className="text-[10px] font-semibold  text-muted mb-xs block">Examination Date</label>
                                     <input
                                         type="date"
-                                        className="form-input font-bold"
+                                        className="form-input font-semibold"
                                         required
                                         value={examForm.date}
                                         onChange={e => setExamForm({ ...examForm, date: e.target.value })}

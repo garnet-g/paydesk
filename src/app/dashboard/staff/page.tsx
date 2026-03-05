@@ -89,10 +89,10 @@ export default function StaffPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                         <div className="flex items-center gap-3 mb-1">
-                            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Staff & Payroll</h2>
+                            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Staff Management</h2>
                         </div>
                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                            Manage employees and process salaries
+                            Manage staff directory and payroll
                         </p>
                     </div>
                     <Button
@@ -131,7 +131,7 @@ export default function StaffPage() {
                                                 {member.firstName[0]}{member.lastName[0]}
                                             </div>
                                             <div>
-                                                <h3 className="font-semibold text-slate-900 dark:text-white">{member.firstName} {member.lastName}</h3>
+                                                <h3 className="font-semibold text-slate-900 dark:text-white capitalize">{member.firstName} {member.lastName}</h3>
                                                 <p className="text-sm text-slate-500 capitalize">{member.role.replace('_', ' ').toLowerCase()}</p>
                                             </div>
                                         </div>

@@ -3,7 +3,18 @@
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import DashboardLayout from '@/components/DashboardLayout'
-import { Megaphone, Mail, Bell, Send, Users, ShieldAlert, Sparkles, MessageSquare, Radio, Mic, Loader2, Lock } from 'lucide-react'
+import {
+    MessageSquare,
+    Send,
+    Users,
+    Bell,
+    Mail,
+    History,
+    Search,
+    CheckCircle2,
+    Info,
+    MoreHorizontal
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -14,259 +25,208 @@ import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
-export default function BroadcastPage() {
+export default function CommunicationPage() {
     const { data: session } = useSession()
     const [subject, setSubject] = useState('')
     const [message, setMessage] = useState('')
-    const [recipientGroup, setRecipientGroup] = useState('ALL_PRINCIPALS')
-    const [channel, setChannel] = useState('EMAIL')
-    const [loading, setLoading] = useState(false)
+    const [recipient, setRecipient] = useState('ALL_PARENTS')
+    const [submitting, setSubmitting] = useState(false)
 
-    const planTier = session?.user?.planTier || 'FREE'
-    const isPro = planTier === 'PRO' || planTier === 'ENTERPRISE' || session?.user?.role === 'SUPER_ADMIN'
+    // Mock history data consistent with screenshot
+    const messageHistory = [
+        {
+            id: 1,
+            title: 'School Reopening Notice',
+            recipient: 'All Parents',
+            message: 'School will reopen on March 10, 2025. Please ensure all fees are paid.',
+            date: '3/1/2026',
+            channel: 'Both',
+            status: 'Sent'
+        },
+        {
+            id: 2,
+            title: 'Exam Schedule',
+            recipient: 'Grade 10',
+            message: 'Mid-term exams begin on March 15, 2026.',
+            date: '3/2/2026',
+            channel: 'SMS',
+            status: 'Sent'
+        }
+    ]
 
-    if (session?.user?.role !== 'SUPER_ADMIN' && session?.user?.role !== 'PRINCIPAL') {
-        return (
-            <DashboardLayout>
-                <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 animate-in fade-in duration-500">
-                    <div className="h-24 w-24 bg-red-100 dark:bg-red-900/30 rounded-[2rem] flex items-center justify-center text-red-600 mb-8 border-4 border-white dark:border-slate-800 shadow-xl">
-                        <ShieldAlert size={48} />
-                    </div>
-                    <h2 className="text-3xl font-semibold text-slate-900 dark:text-white   tracking-tight mb-4 text-center">Unauthorized Transmission</h2>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium  text-center max-w-md">
-                        Broadcasting capabilities are restricted to <span className="text-red-600 font-semibold ">Command Staff</span> only.
-                    </p>
-                    <Button variant="outline" className="mt-8 rounded-xl font-semibold text-xs  " onClick={() => window.history.back()}>
-                        Abort Access
-                    </Button>
-                </div>
-            </DashboardLayout>
-        )
-    }
-
-    const handleSend = async (e: React.FormEvent) => {
+    const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault()
-        setLoading(true)
+        if (!subject || !message) {
+            toast.error("Missing Information", {
+                description: "Please provide both a subject and a message."
+            })
+            return
+        }
 
-        // Simulate sending a broadcast
+        setSubmitting(true)
+        // Simulate API call
         setTimeout(() => {
-            setLoading(false)
-            toast.success("TRANSMISSION SUCCESSFUL", {
-                description: `Broadcast queued for ${recipientGroup.replace('_', ' ')} via ${channel}.`,
-                className: "bg-slate-900 text-white rounded-2xl border-blue-600 border-2"
+            setSubmitting(false)
+            toast.success("Message Sent", {
+                description: `Announcement has been successfully sent to ${recipient.replace('_', ' ').toLowerCase()}.`
             })
             setSubject('')
             setMessage('')
         }, 1500)
     }
 
-    const getRecipientLabel = (val: string) => {
-        const options: any = {
-            'ALL_PRINCIPALS': 'Principals & Admins',
-            'ALL_FINANCE_MANAGERS': 'Finance Managers',
-            'ALL_PARENTS': 'Registered Parents',
-            'ALL_USERS': 'Every Platform User',
-            'ALL_STAFF': 'School Staff',
-            'FEE_DEFAULTERS': 'Fee Defaulters'
-        }
-        return options[val] || val
-    }
-
     return (
         <DashboardLayout>
-            <div className="flex-1 space-y-8 p-8 pt-6 animate-in fade-in duration-500">
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                                <Radio size={24} className="text-blue-400 animate-pulse" />
-                            </div>
-                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white  ">Broadcaster</h2>
-                        </div>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium ">
-                            Disseminating critical intelligence to <span className="text-blue-600 font-semibold  not-">Institutional Channels</span>
-                        </p>
-                    </div>
+            <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-700">
+                {/* Header */}
+                <div className="space-y-1">
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Communication Hub</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Send SMS and announcements to parents</p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    {/* Main Broadcaster Interface */}
-                    <Card className="lg:col-span-8 border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden relative">
-                        {!isPro && (
-                            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 dark:bg-slate-950/60 backdrop-blur-md p-8">
-                                <div className="max-w-sm w-full bg-slate-900 rounded-[2.5rem] p-10 text-center shadow-2xl border-t-4 border-blue-600 animate-in zoom-in-95 duration-300">
-                                    <div className="h-20 w-20 bg-blue-600/20 rounded-[2rem] flex items-center justify-center text-blue-400 mx-auto mb-8">
-                                        <Lock size={40} />
-                                    </div>
-                                    <h3 className="text-2xl font-semibold text-white   tracking-tight mb-4">Channel Locked</h3>
-                                    <p className="text-slate-400 font-bold text-sm  mb-8  tracking-tight">
-                                        Mass communication requires <span className="text-blue-400">PRO LEVEL</span> clearance. Upgrade your institutional tier to authorize broadcasts.
-                                    </p>
-                                    <Button className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl  " onClick={() => toast("Please upgrade your plan to access this feature.")}>
-                                        Request Access
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-
-                        <CardHeader className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-900 p-8">
-                            <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600 shadow-inner">
-                                    <Mic size={24} />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white  tracking-tight ">New Transmission</CardTitle>
-                                    <CardDescription className="text-slate-400 font-medium   text-[10px]  mt-1">Compose and dispatch announcements</CardDescription>
-                                </div>
-                            </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    {/* Send Message Form */}
+                    <Card className="border-none shadow-sm bg-white dark:bg-slate-950 rounded-2xl overflow-hidden ring-1 ring-slate-100 dark:ring-slate-900">
+                        <CardHeader className="p-6 pb-2">
+                            <CardTitle className="text-lg font-semibold">Send Message</CardTitle>
+                            <CardDescription>Bulk SMS to parents</CardDescription>
                         </CardHeader>
-
-                        <CardContent className="p-8 space-y-8">
-                            <form onSubmit={handleSend} className="space-y-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-3">
-                                        <Label className="text-[10px] font-semibold text-slate-400   ml-1">Target Recipients</Label>
-                                        <Select value={recipientGroup} onValueChange={setRecipientGroup}>
-                                            <SelectTrigger className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-semibold  text-xs ">
-                                                <div className="flex items-center gap-3">
-                                                    <Users size={16} className="text-blue-600" />
-                                                    <SelectValue />
-                                                </div>
-                                            </SelectTrigger>
-                                            <SelectContent className="rounded-2xl">
-                                                {session?.user?.role === 'SUPER_ADMIN' ? (
-                                                    <>
-                                                        <SelectItem value="ALL_PRINCIPALS" className="font-bold">ALL PRINCIPALS & ADMINS</SelectItem>
-                                                        <SelectItem value="ALL_FINANCE_MANAGERS" className="font-bold">ALL FINANCE MANAGERS</SelectItem>
-                                                        <SelectItem value="ALL_PARENTS" className="font-bold">ALL REGISTERED PARENTS</SelectItem>
-                                                        <SelectItem value="ALL_USERS" className="font-bold">EVERY REGISTERED ENTITY</SelectItem>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <SelectItem value="ALL_PARENTS" className="font-bold text-slate-900 dark:text-white">ALL SCHOOL PARENTS</SelectItem>
-                                                        <SelectItem value="ALL_STAFF" className="font-bold">ALL SCHOOL STAFF</SelectItem>
-                                                        <SelectItem value="FEE_DEFAULTERS" className="font-bold text-red-600">FEE DEFAULTERS ONLY</SelectItem>
-                                                    </>
-                                                )}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-[10px] font-semibold text-slate-400   ml-1">Transmission Channel</Label>
-                                        <Select value={channel} onValueChange={setChannel}>
-                                            <SelectTrigger className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-semibold  text-xs ">
-                                                <div className="flex items-center gap-3">
-                                                    {channel === 'EMAIL' ? <Mail size={16} className="text-blue-600" /> : <Bell size={16} className="text-blue-600" />}
-                                                    <SelectValue />
-                                                </div>
-                                            </SelectTrigger>
-                                            <SelectContent className="rounded-2xl">
-                                                <SelectItem value="EMAIL" className="font-bold">SECURE EMAIL BLAST</SelectItem>
-                                                <SelectItem value="IN_APP" className="font-bold">IN-APP BANNER ALERT</SelectItem>
-                                                <SelectItem value="SMS" className="font-bold">DIRECT SMS (PREMIUM)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                        <CardContent className="p-6 pt-4">
+                            <form onSubmit={handleSendMessage} className="space-y-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="recipient" className="text-sm font-medium">Recipient</Label>
+                                    <Select value={recipient} onValueChange={setRecipient}>
+                                        <SelectTrigger id="recipient" className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl">
+                                            <SelectValue placeholder="Select Recipient" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="ALL_PARENTS">All Parents</SelectItem>
+                                            <SelectItem value="ALL_STAFF">All Staff</SelectItem>
+                                            <SelectItem value="GRADE_10">Grade 10 Parents</SelectItem>
+                                            <SelectItem value="FEE_DEFAULTERS">Fee Defaulters</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <Label className="text-[10px] font-semibold text-slate-400   ml-1">Transmission Subject</Label>
+                                <div className="space-y-2">
+                                    <Label htmlFor="subject" className="text-sm font-medium">Subject</Label>
                                     <Input
-                                        className="h-14 bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-2xl font-semibold text-slate-900 dark:text-white  placeholder:text-slate-300 dark:placeholder:text-slate-700"
-                                        placeholder="E.G. SCHEDULED INSTITUTIONAL MAINTENANCE"
+                                        id="subject"
+                                        placeholder="Message subject"
                                         value={subject}
                                         onChange={(e) => setSubject(e.target.value)}
-                                        required
+                                        className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl"
                                     />
                                 </div>
 
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center ml-1">
-                                        <Label className="text-[10px] font-semibold text-slate-400  ">Message Payload</Label>
-                                        <Badge variant="outline" className="text-[8px] font-semibold   border-slate-200 text-slate-400">RAW DATA</Badge>
-                                    </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="message" className="text-sm font-medium">Message</Label>
                                     <Textarea
-                                        className="min-h-[250px] bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 rounded-[2rem] p-8 font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 leading-relaxed resize-none transition-all focus:ring-4 focus:ring-blue-600/10"
-                                        placeholder="INPUT TRANSMISSION CONTENT HERE..."
+                                        id="message"
+                                        placeholder="Type your message here..."
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        required
+                                        className="min-h-[120px] bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl resize-none p-4"
                                     />
-                                    <p className="text-[9px] font-semibold text-slate-400  tracking-[0.2em] mt-3  flex items-center gap-2">
-                                        <ShieldAlert size={12} className="text-blue-600" /> Verification Protocol: Message will be dispatched exactly as encoded above.
-                                    </p>
                                 </div>
+
+                                <Button
+                                    type="submit"
+                                    className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl font-semibold transition-all shadow-lg active:scale-[0.98]"
+                                    disabled={submitting}
+                                >
+                                    {submitting ? (
+                                        "Sending..."
+                                    ) : (
+                                        <>
+                                            <Send size={18} className="mr-2" />
+                                            Send Message
+                                        </>
+                                    )}
+                                </Button>
                             </form>
                         </CardContent>
+                    </Card>
 
-                        <CardFooter className="bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-900 p-8 flex justify-between items-center">
-                            <div className="hidden md:flex flex-col">
-                                <span className="text-[9px] font-semibold text-slate-400   mb-1 ">Network Status</span>
-                                <div className="flex items-center gap-2">
-                                    <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                                    <span className="text-[10px] font-semibold text-slate-900 dark:text-white   tracking-tight">Satellite Uplink Active</span>
-                                </div>
-                            </div>
-                            <Button
-                                className="h-14 px-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm   shadow-2xl shadow-blue-500/40 dark:shadow-none group"
-                                disabled={loading || !subject || !message || !isPro}
-                                onClick={handleSend}
-                            >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="animate-spin mr-3" size={24} />
-                                        DECODING...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Send size={20} className="mr-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                        Dispatch Broadcast
-                                    </>
+                    {/* Message History */}
+                    <Card className="border-none shadow-sm bg-white dark:bg-slate-950 rounded-2xl overflow-hidden ring-1 ring-slate-100 dark:ring-slate-900">
+                        <CardHeader className="p-6 flex flex-row items-center justify-between space-y-0">
+                            <CardTitle className="text-lg font-semibold">Message History</CardTitle>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                                <Search size={16} className="text-slate-400" />
+                            </Button>
+                        </CardHeader>
+                        <CardContent className="p-6 pt-0">
+                            <div className="space-y-4">
+                                {messageHistory.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="p-5 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 group hover:border-slate-300 dark:hover:border-slate-600 transition-all cursor-pointer relative"
+                                    >
+                                        <div className="flex justify-between items-start mb-1">
+                                            <h3 className="font-semibold text-slate-900 dark:text-white">{item.title}</h3>
+                                            <Badge className="bg-slate-900 text-white border-none rounded-lg text-[10px] px-2 py-0.5">
+                                                {item.status}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400 font-medium mb-2  tracking-wide">{item.recipient}</p>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-3">
+                                            {item.message}
+                                        </p>
+                                        <div className="flex items-center gap-3 text-[10px] text-slate-400 font-medium ">
+                                            <span className="flex items-center gap-1">
+                                                Sent on {item.date} via {item.channel}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {messageHistory.length === 0 && (
+                                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                                        <div className="h-16 w-16 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-300 mb-4">
+                                            <History size={32} />
+                                        </div>
+                                        <h3 className="font-semibold text-slate-900 dark:text-white">No history yet</h3>
+                                        <p className="text-sm text-slate-500 max-w-[200px] mx-auto mt-1">Your sent announcements will appear here</p>
+                                    </div>
                                 )}
+                            </div>
+                        </CardContent>
+                        <CardFooter className="p-6 border-t border-slate-50 dark:border-slate-900">
+                            <Button variant="ghost" className="w-full text-xs font-semibold text-slate-400 hover:text-slate-900">
+                                View Full History
                             </Button>
                         </CardFooter>
                     </Card>
+                </div>
 
-                    {/* Broadcast Stats / Info Sidebar */}
-                    <div className="lg:col-span-4 space-y-8">
-                        <Card className="border-none shadow-xl bg-slate-900 text-white rounded-[2.5rem] overflow-hidden relative">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
-                            <CardHeader className="p-8">
-                                <CardTitle className="text-sm font-semibold   text-blue-400 mb-1 leading-none ">Transmission Stats</CardTitle>
-                                <CardDescription className="text-slate-400 font-bold  text-[9px] tracking-tight m-0">Institutional Reach Analytics</CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-8 pt-0 space-y-6">
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-[10px] font-semibold   opacity-60">
-                                        <span>Target Capacity</span>
-                                        <span>EST. {recipientGroup === 'ALL_PARENTS' ? '450' : '1.2k'} UNITS</span>
-                                    </div>
-                                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                                        <div className="h-full bg-blue-600 w-3/4 shadow-[0_0_10px_rgba(37,99,235,0.8)]"></div>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-                                        <div className="text-[8px] font-semibold   text-slate-400 mb-2">Delivery Rate</div>
-                                        <div className="text-2xl font-semibold text-blue-400 leading-none">99.8%</div>
-                                    </div>
-                                    <div className="p-5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-                                        <div className="text-[8px] font-semibold   text-slate-400 mb-2">Latency</div>
-                                        <div className="text-2xl font-semibold text-emerald-400 leading-none">1.2s</div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <div className="p-8 bg-blue-600/5 dark:bg-blue-900/10 border-2 border-dashed border-blue-600/20 rounded-[2.5rem] space-y-4">
-                            <div className="h-12 w-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
-                                <Sparkles size={24} />
-                            </div>
-                            <h4 className="text-base font-semibold text-slate-900 dark:text-white   tracking-tight">Pro Tip</h4>
-                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed   tracking-tight">
-                                Use <span className="text-blue-600 font-semibold">Dynamic Placeholders</span> like <code className="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">{"{PARENT_NAME}"}</code> to personalize your transmissions and increase engagement frequency.
-                            </p>
+                {/* Info Section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-6 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/20 rounded-2xl flex items-start gap-4">
+                        <div className="h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 shrink-0">
+                            <Bell size={20} />
+                        </div>
+                        <div>
+                            <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300">In-App Notifications</h4>
+                            <p className="text-xs text-blue-700/70 dark:text-blue-400/60 mt-1">Messages are automatically delivered to parents' mobile dashboards.</p>
+                        </div>
+                    </div>
+                    <div className="p-6 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100/50 dark:border-emerald-900/20 rounded-2xl flex items-start gap-4">
+                        <div className="h-10 w-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-600 shrink-0">
+                            <Mail size={20} />
+                        </div>
+                        <div>
+                            <h4 className="text-sm font-semibold text-emerald-900 dark:text-emerald-300">Email Updates</h4>
+                            <p className="text-xs text-emerald-700/70 dark:text-emerald-400/60 mt-1">Important notices are mirrored to registered email addresses.</p>
+                        </div>
+                    </div>
+                    <div className="p-6 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-start gap-4">
+                        <div className="h-10 w-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 shrink-0">
+                            <Info size={20} />
+                        </div>
+                        <div>
+                            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-300">Support Center</h4>
+                            <p className="text-xs text-slate-500 mt-1">Need help with mass messaging? Contact our technical team.</p>
                         </div>
                     </div>
                 </div>
