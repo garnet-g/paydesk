@@ -170,11 +170,11 @@ export default function TransportManagementPage() {
                                 </div>
                             </CardContent>
 
-                            <CardFooter className="p-8 pt-0 flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button variant="ghost" className="h-10 rounded-xl text-slate-400 hover:text-foreground font-bold text-xs  ">
+                            <CardFooter className="p-8 pt-0 flex justify-end gap-3">
+                                <Button variant="ghost" className="h-10 rounded-xl text-primary-600 hover:bg-primary-50 font-bold text-xs">
                                     Edit Route
                                 </Button>
-                                <Button variant="outline" className="h-10 rounded-xl border-border font-bold text-xs  ">
+                                <Button variant="outline" className="h-10 rounded-xl border-primary-100 text-primary-700 font-bold text-xs bg-primary-50/30 hover:bg-primary-50">
                                     Manage Registry
                                 </Button>
                             </CardFooter>

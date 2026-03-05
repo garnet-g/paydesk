@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, ArrowLeft, Download, Loader2 } from 'lucide-react'
 import DashboardLayout from '@/components/DashboardLayout'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 export default function ImportDataPage() {
     const [importType, setImportType] = useState<'STUDENTS' | 'PARENTS' | 'BALANCES'>('STUDENTS')
@@ -80,29 +82,42 @@ export default function ImportDataPage() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-lg mb-2xl">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-xl mb-2xl">
                     {(['STUDENTS', 'PARENTS', 'BALANCES'] as const).map(type => (
                         <button
                             key={type}
                             onClick={() => { setImportType(type); setFile(null); setResult(null); }}
-                            className={`group relative overflow-hidden card p-xl text-center transition-all duration-300 ${importType === type
-                                ? 'border-primary-500 bg-primary-600 text-white shadow-xl shadow-primary-200 scale-105'
-                                : 'hover:border-primary-200 hover:bg-primary-50/50'
-                                }`}
-                        >
-                            {importType === type && (
-                                <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8 blur-lg" />
+                            className={cn(
+                                "group relative overflow-hidden p-xl text-center transition-all duration-500 rounded-[2rem] border-2",
+                                importType === type
+                                    ? "bg-white border-primary-500 shadow-2xl shadow-primary-200/50 scale-[1.02]"
+                                    : "bg-white/50 border-transparent hover:border-neutral-200 hover:bg-white shadow-sm"
                             )}
-                            <div className={`w-16 h-16 rounded-2xl mx-auto mb-lg flex items-center justify-center transition-transform group-hover:scale-110 ${importType === type ? 'bg-white/20' : 'bg-primary-50 text-primary-600'
-                                }`}>
+                        >
+                            <div className={cn(
+                                "w-16 h-16 rounded-2xl mx-auto mb-lg flex items-center justify-center transition-all duration-500",
+                                importType === type
+                                    ? "bg-primary-600 text-white shadow-lg shadow-primary-200 scale-110"
+                                    : "bg-neutral-100 text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-600"
+                            )}>
                                 <FileSpreadsheet size={32} />
                             </div>
-                            <div className="font-semibold text-lg  tracking-tight">{type}</div>
-                            <div className={`text-[10px] font-bold mt-sm   ${importType === type ? 'text-white/70' : 'text-muted'}`}>
+                            <div className={cn(
+                                "font-bold text-lg tracking-tight transition-colors",
+                                importType === type ? "text-primary-900" : "text-neutral-500"
+                            )}>{type}</div>
+                            <div className={cn(
+                                "text-[10px] font-black uppercase tracking-widest mt-sm transition-colors",
+                                importType === type ? "text-primary-600" : "text-neutral-400"
+                            )}>
                                 {type === 'STUDENTS' && 'Identity & Structure'}
                                 {type === 'PARENTS' && 'Guardian Linkage'}
                                 {type === 'BALANCES' && 'Financial History'}
                             </div>
+
+                            {importType === type && (
+                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary-600 rounded-t-full" />
+                            )}
                         </button>
                     ))}
                 </div>
@@ -118,10 +133,12 @@ export default function ImportDataPage() {
                             </h3>
 
                             <div
-                                className={`relative border-2 border-dashed rounded-3xl p-3xl text-center transition-all duration-500 min-h-[300px] flex flex-col items-center justify-center cursor-pointer ${file
-                                    ? 'border-success-500 bg-success-50/30'
-                                    : 'border-neutral-200 hover:border-primary-400 hover:bg-primary-50/30'
-                                    }`}
+                                className={cn(
+                                    "relative border-2 border-dashed rounded-[2.5rem] p-3xl text-center transition-all duration-500 min-h-[350px] flex flex-col items-center justify-center cursor-pointer group/drop",
+                                    file
+                                        ? "border-success-500 bg-success-50/20 shadow-xl shadow-success-100/50"
+                                        : "border-neutral-200 bg-neutral-50/50 hover:border-primary-400 hover:bg-white hover:shadow-2xl hover:shadow-primary-100/50"
+                                )}
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={(e) => {
                                     e.preventDefault();
@@ -130,23 +147,33 @@ export default function ImportDataPage() {
                                 onClick={() => document.getElementById('file-upload')?.click()}
                             >
                                 {file ? (
-                                    <div className="animate-fade-in text-center">
-                                        <div className="w-20 h-20 bg-success-100 text-success-600 rounded-2xl flex items-center justify-center mx-auto mb-lg shadow-lg">
-                                            <CheckCircle size={40} />
+                                    <div className="animate-in zoom-in-95 duration-500 text-center">
+                                        <div className="w-24 h-24 bg-success-600 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-lg shadow-2xl shadow-success-200 scale-110">
+                                            <CheckCircle size={48} />
                                         </div>
-                                        <div className="font-semibold text-xl text-primary-900 mb-xs">{file.name}</div>
-                                        <div className="text-xs font-bold text-success-600  ">
-                                            {(file.size / 1024).toFixed(1)} KB • Ready for upload
+                                        <div className="font-bold text-2xl text-neutral-900 mb-xs">{file.name}</div>
+                                        <div className="flex items-center justify-center gap-md">
+                                            <Badge variant="outline" className="bg-success-50 text-success-700 border-success-200 px-4 py-1.5 rounded-full font-bold uppercase text-[10px] tracking-widest">
+                                                {(file.size / 1024).toFixed(1)} KB
+                                            </Badge>
+                                            <Badge variant="outline" className="bg-success-50 text-success-700 border-success-200 px-4 py-1.5 rounded-full font-bold uppercase text-[10px] tracking-widest">
+                                                Ready for upload
+                                            </Badge>
                                         </div>
                                     </div>
                                 ) : (
-                                    <>
-                                        <div className="w-20 h-20 bg-neutral-50 text-neutral-300 rounded-2xl flex items-center justify-center mx-auto mb-lg group-hover:text-primary-400 transition-colors">
-                                            <Upload size={40} />
+                                    <div className="space-y-6">
+                                        <div className="w-24 h-24 bg-white text-neutral-300 rounded-[2rem] flex items-center justify-center mx-auto shadow-sm ring-1 ring-neutral-100 group-hover/drop:text-primary-600 group-hover/drop:scale-110 group-hover/drop:shadow-2xl group-hover/drop:shadow-primary-200 transition-all duration-700">
+                                            <Upload size={48} />
                                         </div>
-                                        <div className="font-semibold text-xl text-primary-900 mb-xs">Drop your CSV file here</div>
-                                        <div className="text-sm font-medium text-muted-foreground">Maximum file size: 10MB</div>
-                                    </>
+                                        <div>
+                                            <div className="font-bold text-2xl text-neutral-900 mb-xs">Drop your CSV file here</div>
+                                            <div className="text-neutral-500 font-medium">Click to browse or drag and drop your file</div>
+                                        </div>
+                                        <div className="inline-flex items-center gap-sm px-4 py-2 bg-neutral-100 text-neutral-500 rounded-full text-[10px] font-black uppercase tracking-widest">
+                                            Maximum file size: 10MB
+                                        </div>
+                                    </div>
                                 )}
                                 <input
                                     id="file-upload"
