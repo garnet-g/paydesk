@@ -283,10 +283,10 @@ export default function DashboardPage() {
                                 <table className="w-full text-left">
                                     <thead>
                                         <tr className="bg-muted/30">
-                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500  ">Student</th>
-                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500  ">Amount</th>
-                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500  ">Status</th>
-                                            <th className="px-8 py-5 text-[10px] font-semibold text-slate-500   text-right">Date</th>
+                                            <th className="px-4 md:px-8 py-5 text-[10px] font-semibold text-slate-500  ">Student</th>
+                                            <th className="px-4 md:px-8 py-5 text-[10px] font-semibold text-slate-500  ">Amount</th>
+                                            <th className="px-4 md:px-8 py-5 text-[10px] font-semibold text-slate-500  ">Status</th>
+                                            <th className="px-4 md:px-8 py-5 text-[10px] font-semibold text-slate-500   text-right">Date</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
@@ -297,7 +297,7 @@ export default function DashboardPage() {
                                         ) : (
                                             recentPayments.map((p) => (
                                                 <tr key={p.id} className="hover:bg-muted transition-colors group">
-                                                    <td className="px-8 py-5">
+                                                    <td className="px-4 md:px-8 py-5">
                                                         <div className="flex items-center gap-3">
                                                             <div className="h-8 w-8 bg-muted rounded-lg flex items-center justify-center text-[10px] font-bold text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                                                                 {p.student.firstName[0]}
@@ -307,8 +307,8 @@ export default function DashboardPage() {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-5 font-bold text-foreground">KES {p.amount.toLocaleString()}</td>
-                                                    <td className="px-8 py-5">
+                                                    <td className="px-4 md:px-8 py-5 font-bold text-foreground">KES {p.amount.toLocaleString()}</td>
+                                                    <td className="px-4 md:px-8 py-5">
                                                         <Badge variant="outline" className={cn(
                                                             "font-semibold text-[9px]   h-6 rounded-lg",
                                                             p.status === 'COMPLETED' ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-amber-50 text-amber-700 border-amber-100"
@@ -316,7 +316,7 @@ export default function DashboardPage() {
                                                             {p.status}
                                                         </Badge>
                                                     </td>
-                                                    <td className="px-8 py-5 text-right text-xs font-bold text-slate-400">
+                                                    <td className="px-4 md:px-8 py-5 text-right text-xs font-bold text-slate-400">
                                                         {new Date(p.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
                                                     </td>
                                                 </tr>

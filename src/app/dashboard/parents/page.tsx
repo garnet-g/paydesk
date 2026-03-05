@@ -263,7 +263,7 @@ export default function ParentsPage() {
                                                 </span>
                                             </td>
                                             <td>
-                                                <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+                                                <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap', minWidth: '120px' }}>
                                                     <button
                                                         className="btn btn-ghost btn-sm"
                                                         title="Edit"
