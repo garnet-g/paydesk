@@ -190,6 +190,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             '/dashboard': { label: 'Main' },
                             '/dashboard/parents': { label: 'People' },
                             '/dashboard/students': { label: 'School' },
+                            '/dashboard/attendance': { label: 'Academic' },
                             '/dashboard/payments': { label: 'Financials' },
                             '/dashboard/reports': { label: 'Insights' },
                         }

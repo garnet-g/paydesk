@@ -524,12 +524,12 @@ export default function DashboardPage() {
                             <div style={{ flex: 1, padding: 'var(--spacing-xl) var(--spacing-md) var(--spacing-md) 0' }}>
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={[
-                                        { name: 'Week 1', revenue: 120000, collections: 80000 },
-                                        { name: 'Week 2', revenue: 250000, collections: 140000 },
-                                        { name: 'Week 3', revenue: 410000, collections: 290000 },
-                                        { name: 'Week 4', revenue: 580000, collections: 420000 },
-                                        { name: 'Week 5', revenue: 720000, collections: 510000 },
-                                        { name: 'Week 6', revenue: 850000, collections: 680000 },
+                                        { name: 'Jan', revenue: 450000, collections: 320000 },
+                                        { name: 'Feb', revenue: 520000, collections: 410000 },
+                                        { name: 'Mar', revenue: 480000, collections: 440000 },
+                                        { name: 'Apr', revenue: 610000, collections: 520000 },
+                                        { name: 'May', revenue: 550000, collections: 510000 },
+                                        { name: 'Jun', revenue: 670000, collections: 610000 },
                                     ]}>
                                         <defs>
                                             <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
