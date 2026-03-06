@@ -72,22 +72,22 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Invalid credentials')
                 }
 
-                // Update last login
-                await prisma.user.update({
-                    where: { id: user.id },
-                    data: { lastLogin: new Date() },
-                })
-
-                // Create audit log
-                await prisma.auditLog.create({
-                    data: {
-                        action: 'LOGIN',
-                        entityType: 'User',
-                        entityId: user.id,
-                        userId: user.id,
-                        schoolId: user.schoolId,
-                    },
-                })
+                // Fire and forget updating last login and audit logs to speed up login
+                Promise.all([
+                    prisma.user.update({
+                        where: { id: user.id },
+                        data: { lastLogin: new Date() },
+                    }),
+                    prisma.auditLog.create({
+                        data: {
+                            action: 'LOGIN',
+                            entityType: 'User',
+                            entityId: user.id,
+                            userId: user.id,
+                            schoolId: user.schoolId,
+                        },
+                    })
+                ]).catch(console.error)
 
                 return {
                     id: user.id,
