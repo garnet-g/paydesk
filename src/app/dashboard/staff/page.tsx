@@ -132,7 +132,10 @@ export default function StaffPage() {
                                             </div>
                                             <div>
                                                 <h3 className="font-semibold text-foreground dark:text-white capitalize">{member.firstName} {member.lastName}</h3>
-                                                <p className="text-sm text-slate-500 capitalize">{member.role.replace('_', ' ').toLowerCase()}</p>
+                                                <p className="text-sm text-slate-500 capitalize">
+                                                    {member.role.replace('_', ' ').toLowerCase()}
+                                                    {member.designation && <span className="ml-2 font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider">{member.designation}</span>}
+                                                </p>
                                             </div>
                                         </div>
                                         {member.id !== session.user.id && member.role !== 'PRINCIPAL' && (

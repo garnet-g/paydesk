@@ -16,6 +16,9 @@ export async function GET() {
         include: {
             _count: {
                 select: { students: true }
+            },
+            homeroomTeacher: {
+                select: { id: true, firstName: true, lastName: true, designation: true }
             }
         }
     })
@@ -32,7 +35,7 @@ export async function POST(req: Request) {
 
     try {
         const body = await req.json()
-        const { name, stream } = body
+        const { name, stream, homeroomTeacherId } = body
 
         if (!name) {
             return new NextResponse('Class name is required', { status: 400 })
@@ -56,6 +59,7 @@ export async function POST(req: Request) {
                 name,
                 stream: stream || null,
                 schoolId: session.user.schoolId,
+                homeroomTeacherId: homeroomTeacherId || null,
                 capacity: 40 // Default capacity
             }
         })

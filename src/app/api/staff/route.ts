@@ -29,7 +29,8 @@ export async function GET(req: Request) {
                 isActive: true,
                 createdAt: true,
                 lastLogin: true,
-                salary: true
+                salary: true,
+                designation: true
             }
         })
 
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
 
     try {
         const data = await req.json()
-        const { firstName, lastName, email, phoneNumber, role, salary } = data
+        const { firstName, lastName, email, phoneNumber, role, salary, designation } = data
 
         if (email && !isOfficialEmail(email)) {
             return new NextResponse('Staff email must be an official domain email', { status: 400 })
@@ -76,6 +77,7 @@ export async function POST(req: Request) {
                 phoneNumber,
                 role,
                 salary: salary || 0,
+                designation: designation || null,
                 schoolId: session.user.schoolId,
                 password: hashedPassword,
                 requiresPasswordChange: true

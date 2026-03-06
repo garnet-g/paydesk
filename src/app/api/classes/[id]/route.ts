@@ -23,6 +23,9 @@ export async function GET(
         include: {
             _count: {
                 select: { students: true }
+            },
+            homeroomTeacher: {
+                select: { id: true, firstName: true, lastName: true, designation: true }
             }
         }
     })
@@ -47,7 +50,7 @@ export async function PATCH(
 
     try {
         const body = await req.json()
-        const { name, stream } = body
+        const { name, stream, homeroomTeacherId } = body
 
         // Verify ownership
         const existingClass = await prisma.class.findFirst({
@@ -78,7 +81,8 @@ export async function PATCH(
             where: { id },
             data: {
                 ...(name && { name }),
-                ...(stream !== undefined && { stream: stream || null })
+                ...(stream !== undefined && { stream: stream || null }),
+                ...(homeroomTeacherId !== undefined && { homeroomTeacherId: homeroomTeacherId || null })
             }
         })
 

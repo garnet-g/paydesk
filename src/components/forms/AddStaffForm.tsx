@@ -21,7 +21,8 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
         lastName: '',
         email: '',
         phoneNumber: '',
-        role: 'FINANCE_MANAGER',
+        role: 'TEACHER', // default to teacher
+        designation: '', // new field
         salary: ''
     })
 
@@ -138,7 +139,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Designated Role</Label>
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Staff Role</Label>
                             <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
                                 <SelectTrigger className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
                                     <SelectValue />
@@ -153,18 +154,30 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Salary Package (Monthly)</Label>
-                        <div className="relative">
-                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xs">KES</div>
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Designation Tag / Title</Label>
                             <Input
-                                type="number"
-                                className="h-14 pl-12 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
-                                placeholder="0.00"
-                                value={formData.salary}
-                                onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-                                required
+                                type="text"
+                                className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
+                                placeholder="e.g. Head of Mathematics"
+                                value={formData.designation}
+                                onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
                             />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Salary Package (Monthly)</Label>
+                            <div className="relative">
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xs">KES</div>
+                                <Input
+                                    type="number"
+                                    className="h-14 pl-12 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white"
+                                    placeholder="0.00"
+                                    value={formData.salary}
+                                    onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
+                                    required
+                                />
+                            </div>
                         </div>
                     </div>
 

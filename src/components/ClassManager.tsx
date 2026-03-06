@@ -20,16 +20,19 @@ export default function ClassManager() {
     const [showEditModal, setShowEditModal] = useState(false)
     const [submitting, setSubmitting] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
+    const [staff, setStaff] = useState<any[]>([])
 
     // Forms State
     const [formData, setFormData] = useState({
         name: '',
-        stream: ''
+        stream: '',
+        homeroomTeacherId: ''
     })
     const [editData, setEditData] = useState({
         id: '',
         name: '',
-        stream: ''
+        stream: '',
+        homeroomTeacherId: ''
     })
 
     // Fee Management State
@@ -45,7 +48,21 @@ export default function ClassManager() {
 
     useEffect(() => {
         fetchClasses()
+        fetchStaff()
     }, [])
+
+    const fetchStaff = async () => {
+        try {
+            const res = await fetch('/api/staff')
+            if (res.ok) {
+                const data = await res.json()
+                // Only show teachers
+                setStaff(data.filter((s: any) => s.role === 'TEACHER'))
+            }
+        } catch (error) {
+            console.error('Failed to fetch staff', error)
+        }
+    }
 
     const fetchClasses = async () => {
         setLoading(true)
@@ -76,7 +93,7 @@ export default function ClassManager() {
             if (res.ok) {
                 fetchClasses()
                 setShowAddModal(false)
-                setFormData({ name: '', stream: '' })
+                setFormData({ name: '', stream: '', homeroomTeacherId: '' })
                 toast.success("Class created successfully")
             } else {
                 const err = await res.text()
@@ -98,7 +115,8 @@ export default function ClassManager() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: editData.name,
-                    stream: editData.stream
+                    stream: editData.stream,
+                    homeroomTeacherId: editData.homeroomTeacherId || null
                 })
             })
 
@@ -121,7 +139,8 @@ export default function ClassManager() {
         setEditData({
             id: cls.id,
             name: cls.name,
-            stream: cls.stream || ''
+            stream: cls.stream || '',
+            homeroomTeacherId: cls.homeroomTeacher?.id || ''
         })
         setShowEditModal(true)
     }
@@ -296,6 +315,7 @@ export default function ClassManager() {
                                     </div>
                                     <CardDescription className="text-slate-400 font-medium text-[10px]">
                                         Unit ID: {cls.id.slice(0, 8)}
+                                        {cls.homeroomTeacher ? ` • Homeroom: ${cls.homeroomTeacher.firstName} ${cls.homeroomTeacher.lastName}` : ' • Unassigned'}
                                     </CardDescription>
                                 </div>
                             </CardHeader>
@@ -500,6 +520,23 @@ export default function ClassManager() {
                                     onChange={e => setFormData({ ...formData, stream: e.target.value })}
                                 />
                             </div>
+
+                            <div className="space-y-2">
+                                <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Homeroom Teacher (Optional)</Label>
+                                <Select value={formData.homeroomTeacherId || 'none'} onValueChange={(val) => setFormData({ ...formData, homeroomTeacherId: val === 'none' ? '' : val })}>
+                                    <SelectTrigger className="h-14 bg-muted dark:bg-slate-900 border-none rounded-2xl font-semibold focus-visible:ring-blue-600 outline-none">
+                                        <SelectValue placeholder="Select a teacher" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl">
+                                        <SelectItem value="none">Unassigned</SelectItem>
+                                        {staff.map(teacher => (
+                                            <SelectItem key={teacher.id} value={teacher.id}>
+                                                {teacher.firstName} {teacher.lastName} {teacher.designation ? `(${teacher.designation})` : ''}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
 
                         <DialogFooter className="gap-4">
@@ -553,6 +590,23 @@ export default function ClassManager() {
                                     value={editData.stream}
                                     onChange={e => setEditData({ ...editData, stream: e.target.value })}
                                 />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Homeroom Teacher</Label>
+                                <Select value={editData.homeroomTeacherId || 'none'} onValueChange={(val) => setEditData({ ...editData, homeroomTeacherId: val === 'none' ? '' : val })}>
+                                    <SelectTrigger className="h-14 bg-muted dark:bg-slate-900 border-none rounded-2xl font-semibold focus-visible:ring-blue-600 outline-none">
+                                        <SelectValue placeholder="Select a teacher" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl">
+                                        <SelectItem value="none">Unassigned</SelectItem>
+                                        {staff.map(teacher => (
+                                            <SelectItem key={teacher.id} value={teacher.id}>
+                                                {teacher.firstName} {teacher.lastName} {teacher.designation ? `(${teacher.designation})` : ''}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
 
