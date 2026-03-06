@@ -97,8 +97,24 @@ model School {
   users                   User[]
   transportRoutes         TransportRoute[]
   transportRuns           TransportRun[]
+  announcements           Announcement[]
 
   @@index([code])
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  message     String
+  recipient   String   // ALL_PARENTS, ALL_STAFF, etc.
+  channel     String   @default("EMAIL") // EMAIL, SMS, BOTH
+  schoolId    String
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  sentById    String
+  status      String   @default("SENT")
+
+  @@index([schoolId])
 }
 
 model SubscriptionPayment {

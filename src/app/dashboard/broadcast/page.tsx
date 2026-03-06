@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import DashboardLayout from '@/components/DashboardLayout'
 import {
@@ -13,7 +13,8 @@ import {
     Search,
     CheckCircle2,
     Info,
-    MoreHorizontal
+    MoreHorizontal,
+    Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
@@ -31,6 +32,26 @@ export default function CommunicationPage() {
     const [message, setMessage] = useState('')
     const [recipient, setRecipient] = useState('ALL_PARENTS')
     const [submitting, setSubmitting] = useState(false)
+    const [history, setHistory] = useState<any[]>([])
+    const [loadingHistory, setLoadingHistory] = useState(true)
+
+    useEffect(() => {
+        fetchHistory()
+    }, [])
+
+    const fetchHistory = async () => {
+        try {
+            const res = await fetch('/api/communications/email')
+            if (res.ok) {
+                const data = await res.json()
+                setHistory(data)
+            }
+        } catch (error) {
+            console.error('History fetch error:', error)
+        } finally {
+            setLoadingHistory(false)
+        }
+    }
 
     // Mock history data consistent with screenshot
     const messageHistory = [
@@ -64,15 +85,35 @@ export default function CommunicationPage() {
         }
 
         setSubmitting(true)
-        // Simulate API call
-        setTimeout(() => {
-            setSubmitting(false)
-            toast.success("Message Sent", {
-                description: `Announcement has been successfully sent to ${recipient.replace('_', ' ').toLowerCase()}.`
+        try {
+            const res = await fetch('/api/communications/email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recipient, subject, message })
             })
-            setSubject('')
-            setMessage('')
-        }, 1500)
+
+            const data = await res.json()
+
+            if (res.ok) {
+                toast.success("Broadcast Delivered", {
+                    description: `Announcement has been successfully sent to ${recipient.replace('_', ' ').toLowerCase()}.`
+                })
+                setSubject('')
+                setMessage('')
+                fetchHistory()
+            } else {
+                toast.error("Delivery Failed", {
+                    description: data.error || "Failed to send broadcast"
+                })
+            }
+        } catch (error) {
+            toast.error("System Error", {
+                description: "An unexpected error occurred."
+            })
+        } finally {
+            setSubmitting(true) // wait a sec 
+            setTimeout(() => setSubmitting(false), 1000)
+        }
     }
 
     return (
@@ -158,7 +199,12 @@ export default function CommunicationPage() {
                         </CardHeader>
                         <CardContent className="p-6 pt-0">
                             <div className="space-y-4">
-                                {messageHistory.map((item) => (
+                                {loadingHistory ? (
+                                    <div className="flex flex-col items-center justify-center py-12 text-center opacity-50">
+                                        <Loader2 className="animate-spin mb-4" size={32} />
+                                        <p className="text-sm font-bold uppercase tracking-widest text-slate-400">Loading History...</p>
+                                    </div>
+                                ) : history.map((item) => (
                                     <div
                                         key={item.id}
                                         className="p-5 bg-muted dark:bg-slate-900/50 rounded-2xl border border-border dark:border-slate-800 group hover:border-slate-300 dark:hover:border-slate-600 transition-all cursor-pointer relative"
@@ -169,19 +215,19 @@ export default function CommunicationPage() {
                                                 {item.status}
                                             </Badge>
                                         </div>
-                                        <p className="text-[10px] text-slate-400 font-medium mb-2  tracking-wide">{item.recipient}</p>
+                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 italic">{item.recipient}</p>
                                         <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-3">
                                             {item.message}
                                         </p>
                                         <div className="flex items-center gap-3 text-[10px] text-slate-400 font-medium ">
                                             <span className="flex items-center gap-1">
-                                                Sent on {item.date} via {item.channel}
+                                                Sent on {new Date(item.createdAt).toLocaleDateString()} {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} via {item.channel}
                                             </span>
                                         </div>
                                     </div>
                                 ))}
 
-                                {messageHistory.length === 0 && (
+                                {!loadingHistory && history.length === 0 && (
                                     <div className="flex flex-col items-center justify-center py-12 text-center">
                                         <div className="h-16 w-16 bg-muted dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-300 mb-4">
                                             <History size={32} />
