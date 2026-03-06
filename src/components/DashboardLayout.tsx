@@ -158,7 +158,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         </div>
                         <div style={{ minWidth: 0 }}>
                             <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                School ERP
+                                {session?.user?.schoolName || 'School ERP'}
                             </h2>
                             <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
                                 {userRole.split('_').join(' ')}
@@ -403,8 +403,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         </button>
 
                         <div className="mobile-only" style={{ display: 'none', minWidth: 0 }}>
-                            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                School ERP
+                            <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {session?.user?.schoolName || 'School ERP'}
                             </h2>
                         </div>
 
@@ -447,11 +447,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </main>
 
                 {/* Forced Password Change Modal */}
-                {session?.user?.requiresPasswordChange === true && (
-                    <ChangePasswordModal onSuccess={() => {
-                        window.location.reload()
-                    }} />
-                )}
+                {
+                    session?.user?.requiresPasswordChange === true && (
+                        <ChangePasswordModal onSuccess={() => {
+                            window.location.reload()
+                        }} />
+                    )
+                }
             </div>
 
             <style jsx>{`
@@ -464,7 +466,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 .mobile-only {
                     display: none !important;
                 }
-                
+
                 @media (max-width: 768px) {
                     .main-wrapper {
                         margin-left: 0 !important;
@@ -499,6 +501,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     }
                 }
             `}</style>
-        </div >
+        </div>
     )
 }
