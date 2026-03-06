@@ -454,45 +454,53 @@ export default function PaymentsPage() {
 
     return (
         <DashboardLayout>
-            <div className="animate-fade-in">
+            <div className="space-y-10 animate-fade-in pb-12">
                 {/* Page Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                    <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-white uppercase italic">Payments</h1>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium italic">
-                            {isSuperAdmin ? 'School-wide financial oversight' : isParent ? 'Your school fee records and history' : 'Student payment management'}
+                <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                            <DollarSign size={20} className="text-emerald-600" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                {isSuperAdmin ? 'Global Financial Oversight' : 'Institutional Ledger'}
+                            </span>
+                        </div>
+                        <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl uppercase italic">
+                            Payments
+                        </h1>
+                        <p className="max-w-xl text-sm font-medium text-muted-foreground">
+                            {isSuperAdmin ? 'Comprehensive school-wide financial auditing and oversight.' : isParent ? 'Your student enrollment fees and transaction history.' : 'Manage student payment registries and authorisations.'}
                         </p>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-4">
                         {isAdmin && (
                             <>
-                                <Button
-                                    className="h-11 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] uppercase tracking-widest shadow-lg dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                                <button
+                                    className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#030213] px-6 text-xs font-bold uppercase tracking-widest text-white shadow-xl shadow-gray-200/50 transition-all hover:bg-black active:scale-[0.98]"
                                     onClick={() => setShowManualModal(true)}
                                 >
-                                    <Plus size={16} className="mr-2" />
-                                    Manual Payment
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="h-11 px-6 rounded-xl font-bold text-[10px] uppercase tracking-widest border-border dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
+                                    <Plus size={18} />
+                                    Manual Entry
+                                </button>
+                                <button
+                                    className="flex h-12 items-center justify-center gap-2 rounded-2xl border border-border bg-white px-6 text-xs font-bold uppercase tracking-widest text-foreground shadow-sm hover:bg-accent transition-all active:scale-[0.98]"
                                     onClick={() => setShowBankModal(true)}
                                 >
-                                    <Landmark size={16} className="mr-2" />
+                                    <Landmark size={18} className="text-blue-600" />
                                     Bank Transfer
-                                </Button>
+                                </button>
                             </>
                         )}
+
                         {isAdmin && (
-                            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-2xl border border-border dark:border-slate-800">
+                            <div className="flex rounded-2xl border border-border bg-muted/30 p-1.5 shadow-inner">
                                 <button
                                     onClick={() => setActiveTab('ledger')}
                                     className={cn(
-                                        "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic",
+                                        "rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all",
                                         activeTab === 'ledger'
-                                            ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm"
-                                            : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                            ? "bg-white text-blue-600 shadow-sm ring-1 ring-border"
+                                            : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
                                     Ledger
@@ -500,15 +508,15 @@ export default function PaymentsPage() {
                                 <button
                                     onClick={() => setActiveTab('approvals')}
                                     className={cn(
-                                        "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 italic",
+                                        "relative flex items-center gap-2 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all",
                                         activeTab === 'approvals'
-                                            ? "bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-sm"
-                                            : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                            ? "bg-white text-amber-600 shadow-sm ring-1 ring-border"
+                                            : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
-                                    Approvals
+                                    Authorisations
                                     {pendingApprovalCount > 0 && (
-                                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white text-[9px] font-black shadow-sm">
+                                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[8px] font-black text-white">
                                             {pendingApprovalCount}
                                         </span>
                                     )}
@@ -519,164 +527,161 @@ export default function PaymentsPage() {
                 </div>
 
                 {/* Filter Bar */}
-                <div className="bg-white dark:bg-slate-950 p-6 rounded-[2rem] border border-border dark:border-slate-800 mb-8 shadow-sm">
-                    <div className="flex flex-col lg:flex-row gap-6 items-center">
-                        <div className="relative flex-1 w-full">
-                            <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <div className="rounded-[2.5rem] border border-border bg-card p-6 shadow-sm">
+                    <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+                        <div className="relative group flex-1">
+                            <Search size={20} className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 transition-colors group-focus-within:text-blue-600" />
                             <input
                                 type="text"
-                                placeholder="Search payments by student or reference..."
-                                className="w-full h-14 pl-14 pr-6 bg-slate-50 dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl font-medium focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
+                                placeholder="Search by student, reference number or amount..."
+                                className="w-full h-16 rounded-[1.5rem] border border-border bg-muted/5 pl-14 pr-6 text-base font-medium transition-all focus:border-blue-600/50 focus:outline-none focus:ring-4 focus:ring-blue-600/5"
+                            // Reusing any filter if existing, but the original logic didn't have search text bound to state besides studentSearchTerm
                             />
                         </div>
 
-                        <div className="flex flex-wrap gap-4 w-full lg:w-auto">
+                        <div className="flex flex-wrap items-center gap-3">
                             {isSuperAdmin && (
-                                <select
-                                    className="h-14 px-6 bg-slate-50 dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl font-bold text-[10px] uppercase tracking-widest outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                                    value={filters.schoolId}
-                                    onChange={(e) => setFilters({ ...filters, schoolId: e.target.value })}
-                                >
-                                    <option value="">All Schools</option>
-                                    {schools.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                                </select>
+                                <Select value={filters.schoolId} onValueChange={v => setFilters({ ...filters, schoolId: v })}>
+                                    <SelectTrigger className="h-16 w-full lg:w-[220px] rounded-2xl border-border bg-muted/5 font-bold text-[11px] uppercase tracking-widest text-muted-foreground">
+                                        <SelectValue placeholder="All Institutions" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border">
+                                        <SelectItem value="ALL" className="font-bold text-xs uppercase italic">All Schools</SelectItem>
+                                        {schools.map(s => <SelectItem key={s.id} value={s.id} className="font-bold text-xs uppercase italic">{s.name}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
                             )}
 
-                            <select
-                                className="h-14 px-6 bg-slate-50 dark:bg-slate-900 border border-border dark:border-slate-800 rounded-2xl font-bold text-[10px] uppercase tracking-widest outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                                value={filters.status}
-                                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                            >
-                                <option value="">Status: All</option>
-                                <option value="COMPLETED">Completed</option>
-                                <option value="PENDING">Pending</option>
-                                <option value="FAILED">Failed</option>
-                                <option value="DISPUTED">Disputed</option>
-                            </select>
+                            <Select value={filters.status} onValueChange={v => setFilters({ ...filters, status: v })}>
+                                <SelectTrigger className="h-16 w-full lg:w-[180px] rounded-2xl border-border bg-muted/5 font-bold text-[11px] uppercase tracking-widest text-muted-foreground">
+                                    <SelectValue placeholder="All Statuses" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-2xl border-border">
+                                    <SelectItem value="ALL" className="font-bold text-xs uppercase italic">EVERYTHING</SelectItem>
+                                    <SelectItem value="COMPLETED" className="font-bold text-xs text-green-600 italic">COMPLETED</SelectItem>
+                                    <SelectItem value="PENDING" className="font-bold text-xs text-amber-600 italic">PENDING</SelectItem>
+                                    <SelectItem value="FAILED" className="font-bold text-xs text-red-600 italic">FAILED</SelectItem>
+                                    <SelectItem value="DISPUTED" className="font-bold text-xs text-purple-600 italic">DISPUTED</SelectItem>
+                                </SelectContent>
+                            </Select>
 
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-14 w-14 rounded-2xl border border-border dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900"
-                                    onClick={fetchPayments}
-                                    title="Refresh"
+                            <button
+                                onClick={fetchPayments}
+                                className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] border border-border bg-muted/5 text-muted-foreground transition-all hover:bg-accent"
+                            >
+                                <RefreshCw size={20} className={cn(loading && "animate-spin")} />
+                            </button>
+
+                            {isAdmin && (
+                                <button
+                                    onClick={() => window.open('/api/payments/export', '_blank')}
+                                    className="flex h-16 items-center justify-center gap-2 rounded-[1.5rem] border border-border bg-muted/5 px-8 text-[11px] font-black uppercase tracking-widest text-muted-foreground transition-all hover:bg-accent"
                                 >
-                                    <RefreshCw size={20} className={cn("text-slate-400", loading && "animate-spin")} />
-                                </Button>
-                                {isAdmin && (
-                                    <Button
-                                        variant="outline"
-                                        className="h-14 px-8 rounded-2xl border-border dark:border-slate-800 font-bold text-[10px] uppercase tracking-widest italic"
-                                        onClick={() => window.open('/api/payments/export', '_blank')}
-                                    >
-                                        <Download size={16} className="mr-2" />
-                                        Export CSV
-                                    </Button>
-                                )}
-                            </div>
+                                    <Download size={18} />
+                                    CSV Export
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {activeTab === 'approvals' ? (
                     /* =================== APPROVALS TAB =================== */
-                    <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <div className="p-8 border-b border-border dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
-                            <div>
-                                <h3 className="text-xl font-bold text-foreground dark:text-white uppercase italic">Pending Authorizations</h3>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 italic">Financial adjustments requiring review</p>
+                    <div className="overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-sm">
+                        <div className="border-b border-border bg-muted/30 p-8">
+                            <div className="space-y-1">
+                                <h3 className="text-xl font-extrabold tracking-tight text-foreground uppercase">Pending Authorisations</h3>
+                                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">Financial adjustments awaiting higher-level review</p>
                             </div>
                         </div>
 
-                        <div>
+                        <div className="divide-y divide-border/50">
                             {approvalRequests.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: 'var(--spacing-3xl)', color: 'var(--muted-foreground)' }}>
-                                    <CheckCircle size={48} style={{ opacity: 0.2, marginBottom: 'var(--spacing-md)' }} />
-                                    <p>No pending approval requests.</p>
+                                <div className="flex flex-col items-center justify-center py-24 text-center">
+                                    <CheckCircle size={48} className="text-muted-foreground/10 mb-6" />
+                                    <p className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground/40">Queue Synchronized</p>
                                 </div>
                             ) : approvalRequests.map(req => {
                                 const payload = JSON.parse(req.payload)
                                 return (
-                                    <div key={req.id} style={{
-                                        padding: 'var(--spacing-lg)',
-                                        borderBottom: '1px solid var(--border)',
-                                        transition: 'background 0.2s'
-                                    }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-md)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                                                <div style={{
-                                                    width: '40px', height: '40px', borderRadius: 'var(--radius-lg)',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    background: req.status === 'PENDING' ? 'var(--warning-100)' :
-                                                        req.status === 'APPROVED' ? 'var(--success-100)' : 'var(--error-100)',
-                                                    color: req.status === 'PENDING' ? 'var(--warning-700)' :
-                                                        req.status === 'APPROVED' ? 'var(--success-700)' : 'var(--error-700)'
-                                                }}>
-                                                    {req.type === 'INVOICE_CANCELLATION' ? <X size={20} /> : <TrendingUp size={20} />}
+                                    <div key={req.id} className="p-8 transition-colors hover:bg-muted/5">
+                                        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                                            <div className="flex items-center gap-6">
+                                                <div className={cn(
+                                                    "flex h-16 w-16 items-center justify-center rounded-[1.5rem] shadow-sm",
+                                                    req.status === 'PENDING' ? "bg-amber-50 text-amber-600" :
+                                                        req.status === 'APPROVED' ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
+                                                )}>
+                                                    {req.type === 'INVOICE_CANCELLATION' ? <X size={24} /> : <TrendingUp size={24} />}
                                                 </div>
-                                                <div>
-                                                    <div className="font-semibold">{req.type.replace(/_/g, ' ')}</div>
-                                                    <div className="text-xs text-muted-foreground">
-                                                        Requested by {req.requestedBy.firstName} ({req.requestedBy.role}) • {formatDateTime(req.createdAt)}
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <h4 className="text-lg font-black tracking-tight text-foreground uppercase">
+                                                            {req.type.replace(/_/g, ' ')}
+                                                        </h4>
+                                                        <span className={cn(
+                                                            "rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-widest",
+                                                            req.status === 'PENDING' ? "bg-amber-50 text-amber-600" :
+                                                                req.status === 'APPROVED' ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
+                                                        )}>
+                                                            {req.status}
+                                                        </span>
                                                     </div>
+                                                    <p className="text-[11px] font-bold text-muted-foreground/60">
+                                                        Requested by <span className="text-foreground">{req.requestedBy.firstName}</span> ({req.requestedBy.role}) • {formatDateTime(req.createdAt)}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <span className={`badge ${req.status === 'PENDING' ? 'badge-warning' :
-                                                req.status === 'APPROVED' ? 'badge-success' : 'badge-error'}`}>
-                                                {req.status}
-                                            </span>
-                                        </div>
 
-                                        <div style={{
-                                            background: 'var(--neutral-50)',
-                                            borderRadius: 'var(--radius-md)',
-                                            padding: 'var(--spacing-md)',
-                                            marginBottom: 'var(--spacing-md)',
-                                            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-lg)'
-                                        }}>
-                                            <div>
-                                                <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Resource</div>
-                                                <div className="text-sm font-semibold">Invoice: {payload.invoiceNumber || 'Manual Adjustment'}</div>
-                                            </div>
-                                            <div>
-                                                <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Reason</div>
-                                                <div className="text-sm" style={{ fontStyle: '' }}>"{req.reason || 'No reason provided'}"</div>
+                                            <div className="flex flex-col gap-2 rounded-2xl bg-muted/10 p-4 md:w-80">
+                                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                                                    <span>Resource</span>
+                                                    <span>Balance</span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-sm font-bold text-foreground">
+                                                    <span>{payload.invoiceNumber || 'ID: ' + (payload.invoiceId?.slice(0, 8) || 'N/A')}</span>
+                                                    <span className="text-blue-600">{formatCurrency(payload.amount || 0)}</span>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        {req.status === 'PENDING' && isPrincipal && req.requestedById !== session?.user?.id && (
-                                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-sm)' }}>
-                                                <button
-                                                    onClick={() => handleApprovalAction(req.id, 'REJECTED')}
-                                                    disabled={approvingId === req.id}
-                                                    className="btn btn-ghost btn-sm"
-                                                    style={{ color: 'var(--error-600)' }}
-                                                >
-                                                    Reject
-                                                </button>
-                                                <button
-                                                    onClick={() => handleApprovalAction(req.id, 'APPROVED')}
-                                                    disabled={approvingId === req.id}
-                                                    className="btn btn-primary btn-sm"
-                                                >
-                                                    {approvingId === req.id ? 'Processing...' : 'Authorize'}
-                                                </button>
+                                        <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                                            <div className="flex items-start gap-3 text-sm text-muted-foreground">
+                                                <AlertCircle size={18} className="mt-0.5 shrink-0 text-amber-500/50" />
+                                                <p className="italic font-medium">"{req.reason || 'Standard operational adjustment'}"</p>
                                             </div>
-                                        )}
 
-                                        {req.requestedById === session?.user?.id && req.status === 'PENDING' && (
-                                            <div className="text-xs" style={{ color: 'var(--primary-600)', background: 'var(--primary-50)', padding: '6px 12px', borderRadius: 'var(--radius-md)', width: 'fit-content' }}>
-                                                Waiting for another administrator to authorize...
-                                            </div>
-                                        )}
+                                            {req.status === 'PENDING' && (isPrincipal || isFinanceManager) && req.requestedById !== session?.user?.id && (
+                                                <div className="flex items-center gap-3">
+                                                    <button
+                                                        onClick={() => handleApprovalAction(req.id, 'REJECTED')}
+                                                        disabled={approvingId === req.id}
+                                                        className="h-11 rounded-xl px-6 text-[10px] font-black uppercase tracking-widest text-red-600 transition-all hover:bg-red-50 disabled:opacity-50"
+                                                    >
+                                                        Decline
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleApprovalAction(req.id, 'APPROVED')}
+                                                        disabled={approvingId === req.id}
+                                                        className="h-11 rounded-xl bg-[#030213] px-8 text-[10px] font-black uppercase tracking-widest text-white shadow-lg transition-all hover:bg-black disabled:opacity-50 active:scale-[0.98]"
+                                                    >
+                                                        {approvingId === req.id ? 'Authorising...' : 'Authorise Adjustment'}
+                                                    </button>
+                                                </div>
+                                            )}
 
-                                        {req.status !== 'PENDING' && (
-                                            <div className="text-xs text-muted-foreground" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                {req.status === 'APPROVED' ? <CheckCircle size={14} style={{ color: 'var(--success-600)' }} /> : <X size={14} style={{ color: 'var(--error-600)' }} />}
-                                                Processed by {req.approvedBy?.firstName || 'System'}
-                                            </div>
-                                        )}
+                                            {req.requestedById === session?.user?.id && req.status === 'PENDING' && (
+                                                <div className="rounded-xl bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/10">
+                                                    Waiting for counter-authorization...
+                                                </div>
+                                            )}
+
+                                            {req.status !== 'PENDING' && (
+                                                <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+                                                    Processed by {req.approvedBy?.firstName || 'Institutional Audit'}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 )
                             })}
@@ -684,624 +689,639 @@ export default function PaymentsPage() {
                     </div>
                 ) : (
                     /* =================== LEDGER TAB =================== */
-                    <div className={isParent ? "grid grid-cols-1 gap-xl" : ""}>
-                        <div className={`payments-layout ${isParent ? 'grid grid-cols-1 lg:grid-cols-12 gap-xl items-start' : ''}`}>
-
-                            {/* Outstanding Invoices — Parent View */}
-                            {isParent && (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }} className="lg:col-span-5">
-                                    {/* Active Invoices Card */}
-                                    <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                                        <div className="p-8 bg-blue-600 text-white rounded-t-[2rem]">
-                                            <h3 className="text-lg font-bold uppercase italic">Pending Balances</h3>
-                                            <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mt-1 italic">Active Student Invoices</p>
+                    <div className={cn("grid gap-10", isParent ? "lg:grid-cols-12 items-start" : "grid-cols-1")}>
+                        {/* Outstanding Invoices — Parent View */}
+                        {isParent && (
+                            <div className="space-y-8 lg:col-span-5">
+                                {/* Active Invoices Card */}
+                                <div className="overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-sm">
+                                    <div className="bg-[#030213] p-8 text-white">
+                                        <div className="flex justify-between items-center">
+                                            <div className="space-y-1">
+                                                <h3 className="text-xl font-extrabold tracking-tight uppercase">Pending Balances</h3>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-white/50">Active Student Accounts</p>
+                                            </div>
+                                            <Receipt size={32} className="text-white/20" />
                                         </div>
-                                        <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                                            {loading && invoices.length === 0 ? (
-                                                <div style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                                                    <div className="spinner" style={{ margin: '0 auto' }}></div>
+                                    </div>
+
+                                    <div className="divide-y divide-border">
+                                        {loading && invoices.length === 0 ? (
+                                            <div className="flex justify-center p-12">
+                                                <Loader2 className="h-10 w-10 animate-spin text-blue-600/40" />
+                                            </div>
+                                        ) : invoices.length === 0 ? (
+                                            <div className="py-20 text-center">
+                                                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-emerald-50 text-emerald-600 shadow-sm border border-emerald-100">
+                                                    <CheckCircle size={32} />
                                                 </div>
-                                            ) : invoices.length === 0 ? (
-                                                <div style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                                                    <div className="h-16 w-16 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                                                        <CheckCircle size={32} />
-                                                    </div>
-                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] italic">All Accounts are Settled</p>
-                                                </div>
-                                            ) : (
-                                                invoices.map(invoice => (
-                                                    <div key={invoice.id} style={{
-                                                        padding: 'var(--spacing-md) var(--spacing-lg)',
-                                                        borderBottom: '1px solid var(--border)',
-                                                        transition: 'background 0.2s',
-                                                        cursor: 'pointer'
-                                                    }}
-                                                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--neutral-50)')}
-                                                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                                                    >
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px', marginBottom: 'var(--spacing-sm)' }}>
-                                                            <div>
-                                                                <div className="font-semibold text-sm">{invoice.student?.firstName} {invoice.student?.lastName}</div>
-                                                                <div className="text-xs text-muted-foreground">{invoice.invoiceNumber}</div>
-                                                            </div>
-                                                            <div style={{ textAlign: 'right' }}>
-                                                                <div style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--error-600)' }}>{formatCurrency(invoice.balance)}</div>
-                                                                <div className="text-xs text-muted-foreground">Balance</div>
-                                                            </div>
+                                                <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em]">All Accounts Reconciled</p>
+                                            </div>
+                                        ) : (
+                                            invoices.map(invoice => (
+                                                <div key={invoice.id} className="group p-6 transition-colors hover:bg-muted/5">
+                                                    <div className="flex justify-between items-start mb-6">
+                                                        <div className="space-y-1">
+                                                            <div className="text-lg font-black text-foreground capitalize">{invoice.student?.firstName} {invoice.student?.lastName}</div>
+                                                            <div className="text-xs font-bold font-mono text-muted-foreground/60">{invoice.invoiceNumber}</div>
                                                         </div>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', justifyContent: 'flex-end' }}>
-                                                            {/* All parents can pay now. Payment Plans remain Pro/Enterprise feature. */}
-                                                            {isPro && (
-                                                                <button
-                                                                    className="btn btn-ghost btn-sm"
-                                                                    style={{ fontSize: '0.6875rem' }}
-                                                                    onClick={() => handleCommitClick(invoice)}
-                                                                >
-                                                                    Payment Plan
-                                                                </button>
-                                                            )}
+                                                        <div className="text-right">
+                                                            <div className="text-2xl font-black text-red-600">{formatCurrency(invoice.balance)}</div>
+                                                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Total Arrears</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        {isPro && (
                                                             <button
-                                                                className="btn btn-primary btn-sm"
-                                                                style={{ fontSize: '0.6875rem' }}
-                                                                onClick={() => handlePayClick(invoice)}
+                                                                className="flex-1 h-11 rounded-xl border border-border bg-white text-[10px] font-black uppercase tracking-widest text-foreground transition-all hover:bg-accent"
+                                                                onClick={() => handleCommitClick(invoice)}
                                                             >
-                                                                Pay Now <ArrowRight size={12} />
+                                                                Commitment Plan
                                                             </button>
-                                                        </div>
+                                                        )}
+                                                        <button
+                                                            className="flex-[2] h-11 rounded-xl bg-blue-600 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-blue-100 transition-all hover:bg-blue-700 active:scale-[0.98]"
+                                                            onClick={() => handlePayClick(invoice)}
+                                                        >
+                                                            Instant Settlement
+                                                        </button>
                                                     </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Active Payment Plans */}
-                                    {commitments.length > 0 && (
-                                        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                                            <div className="p-8 bg-slate-900 text-white rounded-t-[2rem] border-b border-white/10">
-                                                <div>
-                                                    <h3 className="text-lg font-bold uppercase italic">Payment Plans</h3>
-                                                    <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mt-1 italic">Active installment tracking</p>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                {commitments.map(commit => (
-                                                    <div key={commit.id} style={{ padding: 'var(--spacing-md) var(--spacing-lg)', borderBottom: '1px solid var(--border)' }}>
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xs)' }}>
-                                                            <span className="badge badge-neutral" style={{ fontSize: '0.6875rem' }}>{commit.frequency}</span>
-                                                            <span className="badge badge-success" style={{ fontSize: '0.6875rem' }}>Active</span>
-                                                        </div>
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                                                            <div>
-                                                                <div style={{ fontSize: '1.125rem', fontWeight: 700 }}>{formatCurrency(commit.amount)}</div>
-                                                                <div className="text-xs text-muted-foreground">Next: {formatDate(commit.startDate)}</div>
-                                                            </div>
-                                                            <div style={{ textAlign: 'right' }}>
-                                                                <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Invoice: {commit.invoice?.invoiceNumber}</div>
-                                                                <div style={{ width: '80px', height: '6px', background: 'var(--neutral-100)', borderRadius: '3px', overflow: 'hidden' }}>
-                                                                    <div style={{ height: '100%', width: '45%', background: 'var(--primary-600)', borderRadius: '3px' }} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Transaction Table */}
-                            <div style={{ minWidth: 0 }} className={isParent ? "lg:col-span-7" : ""}>
-                                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                                    <div className="card-header" style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', marginBottom: 0 }}>
-                                        <div>
-                                            <h3 className="card-title">Transaction History</h3>
-                                            <p className="card-description">Verified payment records</p>
-                                        </div>
-                                    </div>
-                                    <div className="responsive-container">
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    {isSuperAdmin && <th>School</th>}
-                                                    <th>Student</th>
-                                                    <th>Amount</th>
-                                                    <th className="hide-mobile">Method</th>
-                                                    <th>Status</th>
-                                                    <th style={{ textAlign: 'right' }}>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {loading && payments.length === 0 ? (
-                                                    <tr>
-                                                        <td colSpan={8} style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                                                            <div className="spinner" style={{ margin: '0 auto' }}></div>
-                                                        </td>
-                                                    </tr>
-                                                ) : payments.length === 0 ? (
-                                                    <tr>
-                                                        <td colSpan={8} className="text-center py-20 bg-slate-50/50 dark:bg-slate-900/50">
-                                                            <div className="h-16 w-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border dark:border-slate-800 shadow-sm text-slate-300">
-                                                                <DollarSign size={32} />
-                                                            </div>
-                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">No payment history available</p>
-                                                        </td>
-                                                    </tr>
-                                                ) : (
-                                                    payments.map(payment => (
-                                                        <tr key={payment.id}>
-                                                            <td>
-                                                                <div className="text-sm">{formatDateTime(payment.createdAt).split(' ')[0]}</div>
-                                                                <div className="text-xs text-muted-foreground">{formatDateTime(payment.createdAt).split(' ').slice(1).join(' ')}</div>
-                                                            </td>
-                                                            {isSuperAdmin && (
-                                                                <td className="text-sm font-semibold">{payment.school?.name}</td>
-                                                            )}
-                                                            <td>
-                                                                <div className="font-bold text-sm text-foreground dark:text-white">{payment.student?.firstName} {payment.student?.lastName}</div>
-                                                                <div className="text-[10px] font-bold text-slate-400 uppercase italic">Admission: {payment.student?.admissionNumber}</div>
-                                                            </td>
-                                                            <td>
-                                                                <span className="font-semibold">{formatCurrency(payment.amount)}</span>
-                                                            </td>
-                                                            <td className="hide-mobile">
-                                                                <span className="badge badge-neutral">{payment.method}</span>
-                                                            </td>
-                                                            <td>
-                                                                <span className={`badge ${payment.status === 'COMPLETED' ? 'badge-success' :
-                                                                    payment.status === 'FAILED' ? 'badge-error' :
-                                                                        payment.status === 'DISPUTED' ? 'badge-error' : 'badge-warning'
-                                                                    }`}>
-                                                                    {payment.status}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '4px' }}>
-                                                                    <button
-                                                                        className="btn btn-ghost btn-sm"
-                                                                        title="Download Receipt"
-                                                                        onClick={() => generateReceiptPDF(payment, 'download')}
-                                                                        disabled={payment.status !== 'COMPLETED'}
-                                                                        style={{ padding: '6px' }}
-                                                                    >
-                                                                        <Download size={14} />
-                                                                    </button>
-                                                                    {isSuperAdmin && (
-                                                                        <button
-                                                                            className="btn btn-ghost btn-sm"
-                                                                            title="Flag for Dispute"
-                                                                            onClick={() => handleDispute(payment.id)}
-                                                                            style={{ padding: '6px', color: 'var(--error-600)' }}
-                                                                        >
-                                                                            <ShieldAlert size={14} />
-                                                                        </button>
-                                                                    )}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* =================== COMMITMENT MODAL =================== */}
-                {showCommitModal && (
-                    <div className="modal-overlay" onClick={() => setShowCommitModal(false)}>
-                        <div className="modal-content" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
-                            <div className="p-8 bg-slate-900 text-white rounded-t-[2.5rem] border-b border-white/5 flex items-center justify-between">
-                                <div>
-                                    <h3 className="text-xl font-bold uppercase italic">Setup Payment Plan</h3>
-                                    <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mt-1 italic">Structured Installment schedule</p>
-                                </div>
-                                <button className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors" onClick={() => setShowCommitModal(false)}>
-                                    <X size={20} className="opacity-60" />
-                                </button>
-                            </div>
-
-                            <div className="modal-body">
-                                <div style={{
-                                    padding: 'var(--spacing-md)',
-                                    background: 'var(--neutral-50)',
-                                    borderRadius: 'var(--radius-md)',
-                                    marginBottom: 'var(--spacing-lg)',
-                                    border: '1px solid var(--border)'
-                                }}>
-                                    <div className="text-xs text-muted-foreground" style={{ marginBottom: '4px' }}>Invoice Balance</div>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary-700)' }}>{formatCurrency(selectedInvoice?.balance)}</div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Installment Amount</label>
-                                    <input
-                                        type="number"
-                                        className="form-input"
-                                        value={commitForm.amount}
-                                        onChange={(e) => setCommitForm({ ...commitForm, amount: e.target.value })}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Frequency</label>
-                                    <select
-                                        className="form-select"
-                                        value={commitForm.frequency}
-                                        onChange={(e) => setCommitForm({ ...commitForm, frequency: e.target.value })}
-                                    >
-                                        <option value="WEEKLY">Weekly</option>
-                                        <option value="MONTHLY">Monthly</option>
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Start Date</label>
-                                    <input
-                                        type="date"
-                                        className="form-input"
-                                        value={commitForm.startDate}
-                                        onChange={(e) => setCommitForm({ ...commitForm, startDate: e.target.value })}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="modal-footer">
-                                <button className="btn btn-secondary" onClick={() => setShowCommitModal(false)}>Cancel</button>
-                                <button className="btn btn-primary" onClick={handleCreateCommitment}>
-                                    Activate Plan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* =================== PAYMENT MODAL =================== */}
-                {showPayModal && (
-                    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowPayModal(false)}>
-                        <div className="modal-content" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
-                            {!paymentSuccess ? (
-                                <>
-                                    {/* Header with Amount */}
-                                    <div style={{
-                                        padding: 'var(--spacing-xl)',
-                                        background: 'linear-gradient(135deg, var(--primary-600), var(--primary-700))',
-                                        color: 'white',
-                                        position: 'relative',
-                                        overflow: 'hidden'
-                                    }}>
-                                        <div style={{
-                                            position: 'absolute', top: '-30px', right: '-30px',
-                                            width: '100px', height: '100px',
-                                            background: 'rgba(255,255,255,0.08)',
-                                            borderRadius: '50%'
-                                        }} />
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative' }}>
-                                            <div>
-                                                <h3 className="text-xl font-bold uppercase italic text-white">Checkout</h3>
-                                                <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mt-1 italic text-white">Secure M-Pesa payment</p>
-                                            </div>
-                                            <button onClick={() => setShowPayModal(false)} style={{
-                                                background: 'rgba(255,255,255,0.15)',
-                                                border: 'none', borderRadius: '50%',
-                                                width: '32px', height: '32px',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                color: 'white', cursor: 'pointer'
-                                            }}>
-                                                <X size={16} />
-                                            </button>
-                                        </div>
-
-                                        <div style={{
-                                            marginTop: 'var(--spacing-lg)',
-                                            background: 'rgba(255,255,255,0.1)',
-                                            backdropFilter: 'blur(10px)',
-                                            border: '1px solid rgba(255,255,255,0.15)',
-                                            padding: 'var(--spacing-lg)',
-                                            borderRadius: 'var(--radius-lg)',
-                                            position: 'relative'
-                                        }}>
-                                            <div style={{ fontSize: '0.6875rem', opacity: 0.7, marginBottom: '4px' }}>Amount Payable</div>
-                                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                                <span style={{ fontSize: '1.5rem', fontWeight: 800 }}>KES</span>
-                                                <input
-                                                    type="number"
-                                                    value={customAmount}
-                                                    onChange={(e) => setCustomAmount(e.target.value)}
-                                                    style={{
-                                                        background: 'transparent',
-                                                        border: 'none',
-                                                        borderBottom: '2px solid rgba(255,255,255,0.5)',
-                                                        color: 'white',
-                                                        fontSize: '2rem',
-                                                        fontWeight: 800,
-                                                        width: '100%',
-                                                        outline: 'none'
-                                                    }}
-                                                />
-                                            </div>
-                                            <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                                                <button onClick={() => setCustomAmount(selectedInvoice?.balance?.toString())} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>Pay Total ({formatCurrency(selectedInvoice?.balance)})</button>
-                                                <button onClick={() => setCustomAmount((selectedInvoice?.balance / 2)?.toString())} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>Pay Half</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Payment Form */}
-                                    <div style={{ padding: 'var(--spacing-xl)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', marginBottom: 'var(--spacing-lg)' }}>
-                                            <div style={{
-                                                width: '40px', height: '40px',
-                                                background: 'var(--success-100)', color: 'var(--success-700)',
-                                                borderRadius: 'var(--radius-md)',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                <Smartphone size={20} />
-                                            </div>
-                                            <div>
-                                                <div className="font-semibold">M-Pesa STK Push</div>
-                                                <div className="text-xs text-muted-foreground">You'll receive a prompt on your phone</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="form-group" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                                            <label className="form-label">M-Pesa Phone Number</label>
-                                            <input
-                                                type="tel"
-                                                className="form-input"
-                                                placeholder="e.g. 254712345678"
-                                                value={phoneNumber}
-                                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                                style={{ fontSize: '1.125rem', fontWeight: 600, letterSpacing: '0.05em' }}
-                                            />
-                                            <p className="form-hint" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                <ShieldAlert size={12} />
-                                                Funds will be debited upon PIN confirmation.
-                                            </p>
-                                        </div>
-
-                                        <button
-                                            className="btn btn-primary"
-                                            style={{ width: '100%', padding: 'var(--spacing-md)', fontSize: '0.9375rem', fontWeight: 700 }}
-                                            onClick={handleInitiatePayment}
-                                            disabled={isProcessing}
-                                        >
-                                            {isProcessing ? (
-                                                <><Loader2 className="animate-spin" size={18} /> Processing...</>
-                                            ) : (
-                                                'Complete Payment'
-                                            )}
-                                        </button>
-                                    </div>
-                                </>
-                            ) : (
-                                <div style={{ textAlign: 'center', padding: 'var(--spacing-3xl)' }}>
-                                    <div style={{
-                                        width: '80px', height: '80px',
-                                        background: 'var(--success-50)', color: 'var(--success-600)',
-                                        borderRadius: 'var(--radius-full)',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        margin: '0 auto var(--spacing-xl)'
-                                    }}>
-                                        <CheckCircle size={48} />
-                                    </div>
-                                    <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 'var(--spacing-sm)' }}>Payment Initiated!</h3>
-                                    <p className="text-muted-foreground" style={{ maxWidth: '320px', margin: '0 auto var(--spacing-xl)' }}>
-                                        We've sent a prompt to your phone. Please enter your M-Pesa PIN to finalize.
-                                    </p>
-                                    <div style={{
-                                        background: 'var(--neutral-50)',
-                                        padding: 'var(--spacing-sm) var(--spacing-md)',
-                                        borderRadius: 'var(--radius-md)',
-                                        fontSize: '0.75rem',
-                                        color: 'var(--muted-foreground)'
-                                    }}>
-                                        Awaiting confirmation...
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {/* =================== MANUAL PAYMENT MODAL =================== */}
-                {showManualModal && (
-                    <div className="modal-overlay" onClick={() => setShowManualModal(false)}>
-                        <div className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
-                            <div className="modal-header">
-                                <h3 className="modal-title">Record Manual Payment</h3>
-                                <button className="btn btn-ghost btn-sm" onClick={() => setShowManualModal(false)}>
-                                    <X size={20} />
-                                </button>
-                            </div>
-                            <form onSubmit={handleRecordManualPayment}>
-                                <div className="modal-body">
-                                    <div className="form-group" style={{ position: 'relative' }}>
-                                        <label className="form-label">Select Student</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
-                                            <input
-                                                type="text"
-                                                className="form-input"
-                                                required={!manualForm.studentId}
-                                                placeholder="Search student by name, adm, or school..."
-                                                style={{ paddingLeft: '36px' }}
-                                                value={manualForm.studentId
-                                                    ? `${students.find(s => s.id === manualForm.studentId)?.firstName || ''} ${students.find(s => s.id === manualForm.studentId)?.lastName || ''} - ${students.find(s => s.id === manualForm.studentId)?.admissionNumber || ''}`
-                                                    : studentSearchTerm}
-                                                onChange={(e) => {
-                                                    setStudentSearchTerm(e.target.value)
-                                                    setManualForm({ ...manualForm, studentId: '' })
-                                                    setShowStudentSearch(true)
-                                                }}
-                                                onFocus={() => setShowStudentSearch(true)}
-                                                onBlur={() => setTimeout(() => setShowStudentSearch(false), 200)} // delay to allow click event
-                                            />
-                                        </div>
-
-                                        {showStudentSearch && (
-                                            <div style={{
-                                                position: 'absolute', top: '100%', left: 0, right: 0,
-                                                background: 'var(--card-bg)', border: '1px solid var(--border)',
-                                                borderRadius: 'var(--radius-md)', zIndex: 100,
-                                                maxHeight: '250px', overflowY: 'auto',
-                                                boxShadow: 'var(--shadow-lg)', marginTop: '4px'
-                                            }}>
-                                                {students.filter(s => `${s.firstName} ${s.lastName} ${s.admissionNumber} ${s.school?.name || ''}`.toLowerCase().includes(studentSearchTerm.toLowerCase())).slice(0, 50).map(s => (
-                                                    <div
-                                                        key={s.id}
-                                                        style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid var(--border)', transition: 'background 0.2s' }}
-                                                        onClick={() => {
-                                                            setManualForm({ ...manualForm, studentId: s.id })
-                                                            setStudentSearchTerm(`${s.firstName} ${s.lastName}`)
-                                                            setShowStudentSearch(false)
-                                                        }}
-                                                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--neutral-50)'}
-                                                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                                                    >
-                                                        <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{s.firstName} {s.lastName}</div>
-                                                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
-                                                            Adm: {s.admissionNumber} {isSuperAdmin && s.school ? ` • ${s.school.name}` : ''}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                {students.filter(s => `${s.firstName} ${s.lastName} ${s.admissionNumber} ${s.school?.name || ''}`.toLowerCase().includes(studentSearchTerm.toLowerCase())).length === 0 && (
-                                                    <div style={{ padding: '12px', fontSize: '0.875rem', color: 'var(--muted-foreground)', textAlign: 'center' }}>
-                                                        No students found.
-                                                    </div>
-                                                )}
-                                            </div>
+                                            ))
                                         )}
                                     </div>
-
-                                    <div className="grid grid-cols-2 gap-md">
-                                        <div className="form-group">
-                                            <label className="form-label">Amount (KES)</label>
-                                            <input
-                                                type="number"
-                                                className="form-input"
-                                                required
-                                                min="1"
-                                                value={manualForm.amount}
-                                                onChange={(e) => setManualForm({ ...manualForm, amount: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Date</label>
-                                            <input
-                                                type="date"
-                                                className="form-input"
-                                                required
-                                                value={manualForm.date}
-                                                onChange={(e) => setManualForm({ ...manualForm, date: e.target.value })}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label className="form-label">Payment Method</label>
-                                        <select
-                                            className="form-select"
-                                            value={manualForm.method}
-                                            onChange={(e) => setManualForm({ ...manualForm, method: e.target.value })}
-                                        >
-                                            <option value="CASH">Cash</option>
-                                            <option value="BANK_TRANSFER">Bank Deposit</option>
-                                            <option value="MPESA">M-Pesa (Direct)</option>
-                                            <option value="CHEQUE">Cheque</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label className="form-label">Transaction Reference (Optional)</label>
-                                        <input
-                                            type="text"
-                                            className="form-input"
-                                            placeholder="Bank Ref, Cheque No, etc."
-                                            value={manualForm.transactionRef}
-                                            onChange={(e) => setManualForm({ ...manualForm, transactionRef: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label className="form-label">Notes/Description</label>
-                                        <textarea
-                                            className="form-textarea"
-                                            placeholder="Details about the payment..."
-                                            value={manualForm.description}
-                                            onChange={(e) => setManualForm({ ...manualForm, description: e.target.value })}
-                                        />
-                                    </div>
                                 </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowManualModal(false)}>Cancel</button>
-                                    <button type="submit" className="btn btn-primary" disabled={isProcessing}>
-                                        {isProcessing ? 'Recording...' : 'Save Payment Record'}
-                                    </button>
+
+                                {/* Active Payment Plans */}
+                                {commitments.length > 0 && (
+                                    <div className="overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-sm">
+                                        <div className="p-8 border-b border-border bg-muted/20">
+                                            <h3 className="text-xl font-extrabold tracking-tight text-foreground uppercase">Commitment Tracking</h3>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Active voluntary payment schedules</p>
+                                        </div>
+                                        <div className="divide-y divide-border">
+                                            {commitments.map(commit => (
+                                                <div key={commit.id} className="p-6">
+                                                    <div className="flex justify-between items-center mb-6">
+                                                        <span className="rounded-full bg-blue-50 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/10">
+                                                            {commit.frequency}
+                                                        </span>
+                                                        <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-emerald-600">
+                                                            <div className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                                                            Active Cycle
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex justify-between items-end">
+                                                        <div className="space-y-1">
+                                                            <div className="text-2xl font-black text-foreground">{formatCurrency(commit.amount)}</div>
+                                                            <div className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Due {formatDate(commit.startDate)}</div>
+                                                        </div>
+                                                        <div className="text-right space-y-2">
+                                                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Schedule Progression</div>
+                                                            <div className="h-2 w-32 rounded-full bg-muted overflow-hidden">
+                                                                <div className="h-full w-[45%] bg-blue-600 rounded-full" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Transaction List / Ledger */}
+                        <div className={cn("overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-sm", isParent ? "lg:col-span-7" : "col-span-1")}>
+                            <div className="flex flex-col gap-4 border-b border-border bg-muted/20 p-8 md:flex-row md:items-center md:justify-between">
+                                <div className="space-y-1">
+                                    <h3 className="text-xl font-extrabold tracking-tight text-foreground uppercase">Verified Transactions</h3>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Authentic record of institutional liquidity</p>
                                 </div>
-                            </form>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full border-collapse text-left">
+                                    <thead>
+                                        <tr className="border-b border-border/50 bg-muted/5">
+                                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Date</th>
+                                            {isSuperAdmin && <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Institution</th>}
+                                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Student Registry</th>
+                                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 text-right">Liquidity</th>
+                                            <th className="hidden px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 md:table-cell">Channel</th>
+                                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Standing</th>
+                                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 text-right">Audit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-border/50">
+                                        {loading && payments.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={8} className="px-8 py-20 text-center">
+                                                    <Loader2 className="mx-auto h-10 w-10 animate-spin text-blue-600/40" />
+                                                </td>
+                                            </tr>
+                                        ) : payments.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={8} className="px-8 py-24 text-center">
+                                                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[2rem] border border-border bg-muted/10 text-muted-foreground/30">
+                                                        <History size={32} />
+                                                    </div>
+                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 italic">Null Revenue History</p>
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            payments.map(payment => (
+                                                <tr key={payment.id} className="group transition-colors hover:bg-muted/5">
+                                                    <td className="px-8 py-6">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm font-bold text-foreground">
+                                                                {formatDateTime(payment.createdAt).split(' ')[0]}
+                                                            </span>
+                                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                                                                {formatDateTime(payment.createdAt).split(' ').slice(1).join(' ')}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    {isSuperAdmin && (
+                                                        <td className="px-8 py-6">
+                                                            <span className="text-xs font-black uppercase tracking-widest text-foreground">
+                                                                {payment.school?.name}
+                                                            </span>
+                                                        </td>
+                                                    )}
+                                                    <td className="px-8 py-6">
+                                                        <div className="space-y-1">
+                                                            <div className="text-sm font-extrabold text-foreground group-hover:text-blue-600 transition-colors">
+                                                                {payment.student?.firstName} {payment.student?.lastName}
+                                                            </div>
+                                                            <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-muted-foreground/50">
+                                                                <User size={10} />
+                                                                {payment.student?.admissionNumber}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-6 text-right">
+                                                        <span className="text-sm font-black text-foreground">
+                                                            {formatCurrency(payment.amount)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="hidden px-8 py-6 md:table-cell">
+                                                        <span className="rounded-lg bg-muted/40 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-muted-foreground ring-1 ring-border">
+                                                            {payment.method}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-8 py-6">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className={cn(
+                                                                "h-1.5 w-1.5 rounded-full",
+                                                                payment.status === 'COMPLETED' ? "bg-emerald-500" :
+                                                                    payment.status === 'FAILED' ? "bg-red-500" :
+                                                                        payment.status === 'DISPUTED' ? "bg-purple-500" : "bg-amber-500"
+                                                            )} />
+                                                            <span className={cn(
+                                                                "text-[10px] font-black uppercase tracking-widest",
+                                                                payment.status === 'COMPLETED' ? "text-emerald-600" :
+                                                                    payment.status === 'FAILED' ? "text-red-600" :
+                                                                        payment.status === 'DISPUTED' ? "text-purple-600" : "text-amber-600"
+                                                            )}>
+                                                                {payment.status}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-6">
+                                                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                                            <button
+                                                                className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/10 text-muted-foreground transition-all hover:bg-blue-600 hover:text-white disabled:opacity-30"
+                                                                title="Download Verifiable Receipt"
+                                                                onClick={() => generateReceiptPDF(payment, 'download')}
+                                                                disabled={payment.status !== 'COMPLETED'}
+                                                            >
+                                                                <Download size={14} />
+                                                            </button>
+                                                            {isSuperAdmin && (
+                                                                <button
+                                                                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-50 text-red-600 transition-all hover:bg-red-600 hover:text-white"
+                                                                    title="Initialize Audit Dispute"
+                                                                    onClick={() => handleDispute(payment.id)}
+                                                                >
+                                                                    <ShieldAlert size={14} />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Record Bank Transfer Modal */}
-            {showBankModal && (
-                <div className="modal-overlay" onClick={() => setShowBankModal(false)}>
-                    <div className="modal" style={{ maxWidth: '480px' }} onClick={e => e.stopPropagation()}>
-                        <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <Landmark size={20} className="text-blue-600" />
-                                <h3 className="text-lg font-semibold m-0">Bank Transfer</h3>
+            {/* =================== COMMITMENT MODAL =================== */}
+            <Dialog open={showCommitModal} onOpenChange={setShowCommitModal}>
+                <DialogContent className="max-w-[460px] rounded-[2.5rem] border-border bg-card p-0 overflow-hidden shadow-2xl">
+                    <div className="bg-[#030213] p-8 text-white">
+                        <div className="flex justify-between items-center">
+                            <div className="space-y-1">
+                                <h3 className="text-xl font-extrabold tracking-tight uppercase">Setup Payment Plan</h3>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white/50">Structured Installment schedule</p>
                             </div>
-                            <button className="btn btn-ghost btn-sm" onClick={() => setShowBankModal(false)}><X size={18} /></button>
+                            <Calendar size={32} className="text-white/20" />
                         </div>
-                        <form onSubmit={handleRecordBankTransfer}>
-                            <div className="modal-body" style={{ padding: 'var(--spacing-xl)', display: 'grid', gap: 'var(--spacing-lg)' }}>
-                                {bankError && <div className="alert alert-error" style={{ fontSize: '0.85rem' }}>{bankError}</div>}
-                                {bankSuccess && <div className="alert alert-success" style={{ fontSize: '0.85rem' }}>{bankSuccess}</div>}
-                                <div className="form-group">
-                                    <label className="form-label">Invoice Number *</label>
-                                    <input type="text" className="form-input" placeholder="e.g. INV-2025-001" value={bankForm.invoiceNumber} onChange={e => setBankForm({ ...bankForm, invoiceNumber: e.target.value })} required />
-                                    <p style={{ fontSize: '0.75rem', color: 'var(--neutral-400)', marginTop: '4px' }}>Enter the exact invoice number the payment is for.</p>
+                    </div>
+
+                    <div className="p-8 space-y-6">
+                        <div className="rounded-2xl border border-border bg-muted/5 p-6 space-y-2">
+                            <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Total Outstanding Balance</div>
+                            <div className="text-3xl font-black text-blue-600">{formatCurrency(selectedInvoice?.balance || 0)}</div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Installment Amount (KES)</Label>
+                                <Input
+                                    type="number"
+                                    className="h-14 rounded-xl border-border bg-muted/5 font-bold transition-all focus:ring-4 focus:ring-blue-600/5"
+                                    value={commitForm.amount}
+                                    onChange={(e) => setCommitForm({ ...commitForm, amount: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Schedule Frequency</Label>
+                                <Select value={commitForm.frequency} onValueChange={v => setCommitForm({ ...commitForm, frequency: v })}>
+                                    <SelectTrigger className="h-14 rounded-xl border-border bg-muted/5 font-bold text-xs uppercase tracking-widest italic">
+                                        <SelectValue placeholder="Select Frequency" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-xl border-border">
+                                        <SelectItem value="WEEKLY" className="font-bold text-xs uppercase italic">WEEKLY CYCLE</SelectItem>
+                                        <SelectItem value="MONTHLY" className="font-bold text-xs uppercase italic">MONTHLY CYCLE</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Commencement Date</Label>
+                                <Input
+                                    type="date"
+                                    className="h-14 rounded-xl border-border bg-muted/5 font-bold transition-all focus:ring-4 focus:ring-blue-600/5"
+                                    value={commitForm.startDate}
+                                    onChange={(e) => setCommitForm({ ...commitForm, startDate: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="p-8 border-t border-border bg-muted/10">
+                        <button
+                            className="w-full h-14 rounded-2xl bg-[#030213] text-xs font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-gray-200/50 transition-all hover:bg-black active:scale-[0.98]"
+                            onClick={handleCreateCommitment}
+                        >
+                            Authorize Commitment Plan
+                        </button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* =================== PAYMENT MODAL =================== */}
+            <Dialog open={showPayModal} onOpenChange={setShowPayModal}>
+                <DialogContent className="max-w-[480px] rounded-[2.5rem] border-border bg-card p-0 overflow-hidden shadow-2xl">
+                    {!paymentSuccess ? (
+                        <>
+                            <div className="bg-[#030213] p-10 text-white relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl" />
+                                <div className="space-y-2 relative z-10">
+                                    <h3 className="text-2xl font-black tracking-tight uppercase italic">Secure Checkout</h3>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 italic">Verified M-Pesa Liquidity Service</p>
                                 </div>
-                                <div className="form-group">
-                                    <label className="form-label">Amount Received (KES) *</label>
-                                    <input type="number" className="form-input" placeholder="e.g. 15000" min="1" step="0.01" value={bankForm.amount} onChange={e => setBankForm({ ...bankForm, amount: e.target.value })} required />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Bank Reference / Deposit Slip No. *</label>
-                                    <input type="text" className="form-input" placeholder="e.g. BNK-202502-0012" value={bankForm.bankReference} onChange={e => setBankForm({ ...bankForm, bankReference: e.target.value })} required />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Date Received</label>
-                                    <input type="date" className="form-input" value={bankForm.paidAt} onChange={e => setBankForm({ ...bankForm, paidAt: e.target.value })} />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Notes (optional)</label>
-                                    <textarea className="form-textarea" rows={2} placeholder="e.g. International wire from parent abroad" value={bankForm.notes} onChange={e => setBankForm({ ...bankForm, notes: e.target.value })} />
+                                <div className="mt-8 rounded-2xl bg-white/5 border border-white/10 p-6 relative z-10 backdrop-blur-md">
+                                    <div className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 italic">Settlement amount (KES)</div>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-xl font-bold text-white/40 italic">KES</span>
+                                        <input
+                                            type="number"
+                                            value={customAmount}
+                                            onChange={(e) => setCustomAmount(e.target.value)}
+                                            className="w-full bg-transparent border-none text-4xl font-black text-white p-0 focus:outline-none focus:ring-0 placeholder-white/20"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                    <div className="flex gap-2 mt-4">
+                                        <button
+                                            onClick={() => setCustomAmount(selectedInvoice?.balance?.toString() || '0')}
+                                            className="px-3 py-1.5 rounded-lg bg-white/10 text-[9px] font-black uppercase tracking-widest text-white/80 hover:bg-white/20 transition-colors"
+                                        >
+                                            Full Balance
+                                        </button>
+                                        <button
+                                            onClick={() => setCustomAmount(((selectedInvoice?.balance || 0) / 2).toString())}
+                                            className="px-3 py-1.5 rounded-lg bg-white/10 text-[9px] font-black uppercase tracking-widest text-white/80 hover:bg-white/20 transition-colors"
+                                        >
+                                            Partial (50%)
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowBankModal(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" disabled={bankSubmitting}>
-                                    {bankSubmitting ? 'Recording...' : 'Record Payment'}
+
+                            <div className="p-8 space-y-8">
+                                <div className="flex items-center gap-6 p-4 rounded-2xl border border-emerald-100 bg-emerald-50/30">
+                                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.25rem] bg-emerald-500 text-white shadow-lg shadow-emerald-200 transition-all">
+                                        <Smartphone size={24} />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className="text-sm font-black text-foreground uppercase tracking-tight">STK Direct Push</div>
+                                        <div className="text-[10px] font-bold text-muted-foreground italic">Instant mobile authorization prompt</div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">M-Pesa Mobile Identity</Label>
+                                    <div className="relative group">
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground/30 group-focus-within:text-blue-600 transition-colors">+254</div>
+                                        <Input
+                                            type="tel"
+                                            className="h-16 pl-14 rounded-xl border-border bg-muted/5 font-black text-lg tracking-[0.2em] transition-all focus:ring-4 focus:ring-blue-600/5 group-focus-within:border-blue-600/50"
+                                            placeholder="712345678"
+                                            value={phoneNumber.startsWith('254') ? phoneNumber.slice(3) : phoneNumber}
+                                            onChange={(e) => setPhoneNumber('254' + e.target.value.replace(/[^0-9]/g, ''))}
+                                        />
+                                    </div>
+                                    <p className="flex items-center gap-2 text-[9px] font-bold text-muted-foreground/60 italic ml-1 mt-2">
+                                        <ShieldCheck size={12} className="text-emerald-500" />
+                                        Encryption-secured institutional transaction
+                                    </p>
+                                </div>
+
+                                <button
+                                    className="w-full h-16 rounded-2xl bg-blue-600 text-sm font-black uppercase tracking-[0.2em] text-white shadow-2xl shadow-blue-200 transition-all hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
+                                    onClick={handleInitiatePayment}
+                                    disabled={isProcessing}
+                                >
+                                    {isProcessing ? (
+                                        <div className="flex items-center justify-center gap-3 italic">
+                                            <Loader2 size={20} className="animate-spin" />
+                                            Encrypting...
+                                        </div>
+                                    ) : (
+                                        'Initialize Settlement'
+                                    )}
                                 </button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                        </>
+                    ) : (
+                        <div className="p-12 text-center space-y-8 animate-fade-in">
+                            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-emerald-50 text-emerald-600 shadow-inner border border-emerald-100">
+                                <CheckCircle size={48} className="animate-pulse" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-2xl font-black tracking-tight text-foreground uppercase italic">Prompt Despatched</h3>
+                                <p className="text-sm font-medium text-muted-foreground max-w-[280px] mx-auto italic">
+                                    Kindly finalize secure authorization on your mobile device via PIN.
+                                </p>
+                            </div>
+                            <div className="rounded-xl border border-border bg-muted/20 py-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 animate-pulse italic">
+                                Synchronizing Network state...
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
 
-            <style jsx>{`
-                @media (max-width: 768px) {
-                    .payments-layout {
-                        grid-template-columns: 1fr !important;
-                    }
-                }
-            `}</style>
+            {/* =================== MANUAL PAYMENT MODAL =================== */}
+            <Dialog open={showManualModal} onOpenChange={setShowManualModal}>
+                <DialogContent className="max-w-[500px] rounded-[2.5rem] border-border bg-card p-0 overflow-hidden shadow-2xl">
+                    <div className="bg-[#030213] p-8 text-white">
+                        <div className="flex justify-between items-center">
+                            <div className="space-y-1">
+                                <h3 className="text-xl font-extrabold tracking-tight uppercase italic">Record Manual Entry</h3>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white/50 italic">Verified direct liquidity intake</p>
+                            </div>
+                            <Wallet size={32} className="text-white/20" />
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleRecordManualPayment}>
+                        <div className="p-8 space-y-6">
+                            <div className="space-y-2 relative">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Student Registry Entity</Label>
+                                <div className="relative group">
+                                    <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-blue-600 transition-colors" />
+                                    <Input
+                                        type="text"
+                                        className="h-16 pl-14 rounded-xl border-border bg-muted/5 font-black text-sm uppercase transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        required={!manualForm.studentId}
+                                        placeholder="Search by name, ID or school..."
+                                        value={manualForm.studentId
+                                            ? `${students.find(s => s.id === manualForm.studentId)?.firstName || ''} ${students.find(s => s.id === manualForm.studentId)?.lastName || ''}`
+                                            : studentSearchTerm}
+                                        onChange={(e) => {
+                                            setStudentSearchTerm(e.target.value)
+                                            setManualForm({ ...manualForm, studentId: '' })
+                                            setShowStudentSearch(true)
+                                        }}
+                                        onFocus={() => setShowStudentSearch(true)}
+                                    />
+                                    {showStudentSearch && (
+                                        <div className="absolute top-[calc(100%+8px)] left-0 right-0 z-50 rounded-2xl border border-border bg-card p-2 shadow-2xl max-h-60 overflow-y-auto overflow-x-hidden animate-slide-up">
+                                            {students.filter(s => `${s.firstName} ${s.lastName} ${s.admissionNumber}`.toLowerCase().includes(studentSearchTerm.toLowerCase())).slice(0, 10).map(s => (
+                                                <button
+                                                    key={s.id}
+                                                    type="button"
+                                                    className="w-full flex flex-col gap-0.5 p-4 rounded-xl transition-all hover:bg-muted/30 text-left shrink-0"
+                                                    onClick={() => {
+                                                        setManualForm({ ...manualForm, studentId: s.id })
+                                                        setStudentSearchTerm(`${s.firstName} ${s.lastName}`)
+                                                        setShowStudentSearch(false)
+                                                    }}
+                                                >
+                                                    <span className="text-sm font-black text-foreground uppercase">{s.firstName} {s.lastName}</span>
+                                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
+                                                        ADM: {s.admissionNumber} {isSuperAdmin && `• ${s.school?.name}`}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Amount (KES)</Label>
+                                    <Input
+                                        type="number"
+                                        className="h-14 rounded-xl border-border bg-muted/5 font-bold transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        required
+                                        value={manualForm.amount}
+                                        onChange={(e) => setManualForm({ ...manualForm, amount: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Date of Tally</Label>
+                                    <Input
+                                        type="date"
+                                        className="h-14 rounded-xl border-border bg-muted/5 font-bold transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        required
+                                        value={manualForm.date}
+                                        onChange={(e) => setManualForm({ ...manualForm, date: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Registry Method</Label>
+                                <Select value={manualForm.method} onValueChange={v => setManualForm({ ...manualForm, method: v })}>
+                                    <SelectTrigger className="h-14 rounded-xl border-border bg-muted/5 font-bold text-xs uppercase tracking-widest italic">
+                                        <SelectValue placeholder="Select Method" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-xl border-border">
+                                        <SelectItem value="CASH" className="font-bold text-xs uppercase italic">LIQUID CASH</SelectItem>
+                                        <SelectItem value="BANK_TRANSFER" className="font-bold text-xs uppercase italic">CHANNEX/BANK</SelectItem>
+                                        <SelectItem value="MPESA" className="font-bold text-xs uppercase italic">EXTERNAL MOBILE</SelectItem>
+                                        <SelectItem value="CHEQUE" className="font-bold text-xs uppercase italic">CHEQUE/VOUCHER</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Channel Descriptor (Ref)</Label>
+                                <Input
+                                    className="h-14 rounded-xl border-border bg-muted/5 font-bold transition-all focus:ring-4 focus:ring-blue-600/5"
+                                    placeholder="Enter identifier number"
+                                    value={manualForm.transactionRef}
+                                    onChange={(e) => setManualForm({ ...manualForm, transactionRef: e.target.value })}
+                                />
+                            </div>
+                        </div>
+
+                        <DialogFooter className="p-8 border-t border-border bg-muted/10 items-center justify-between gap-4">
+                            <button
+                                type="button"
+                                className="h-14 px-8 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground transition-all hover:bg-muted/50"
+                                onClick={() => setShowManualModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="h-14 px-10 rounded-xl bg-blue-600 text-[10px] font-black uppercase tracking-widest text-white shadow-xl shadow-blue-100 transition-all hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
+                                disabled={isProcessing}
+                            >
+                                {isProcessing ? 'SYNCHRONIZING...' : 'RECORD SETTLEMENT'}
+                            </button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* =================== BANK TRANSFER MODAL =================== */}
+            <Dialog open={showBankModal} onOpenChange={setShowBankModal}>
+                <DialogContent className="max-w-[480px] rounded-[2.5rem] border-border bg-card p-0 overflow-hidden shadow-2xl">
+                    <div className="bg-[#030213] p-8 text-white">
+                        <div className="flex justify-between items-center">
+                            <div className="space-y-1">
+                                <h3 className="text-xl font-extrabold tracking-tight uppercase italic text-white leading-none">Record Bank Transfer</h3>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white/50 italic">Inter-institutional liquidity credit</p>
+                            </div>
+                            <Landmark size={32} className="text-white/20" />
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleRecordBankTransfer}>
+                        <div className="p-8 space-y-6">
+                            {bankError && (
+                                <div className="rounded-xl bg-red-50 p-4 flex items-center gap-3 text-red-600 ring-1 ring-red-100 italic animate-shake">
+                                    <AlertCircle size={16} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">{bankError}</span>
+                                </div>
+                            )}
+                            {bankSuccess && (
+                                <div className="rounded-xl bg-emerald-50 p-4 flex items-center gap-3 text-emerald-600 ring-1 ring-emerald-100 italic">
+                                    <CheckCircle size={16} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">{bankSuccess}</span>
+                                </div>
+                            )}
+
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Invoice Descriptor *</Label>
+                                    <Input
+                                        className="h-14 rounded-xl border-border bg-muted/5 font-black uppercase transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        placeholder="e.g. INV-2025-001"
+                                        value={bankForm.invoiceNumber}
+                                        onChange={e => setBankForm({ ...bankForm, invoiceNumber: e.target.value })}
+                                        required
+                                    />
+                                    <p className="text-[9px] font-bold text-muted-foreground/50 ml-1 italic uppercase tracking-widest">Must match registry invoice exactly</p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Liquidity Amount (KES) *</Label>
+                                    <Input
+                                        type="number"
+                                        className="h-14 rounded-xl border-border bg-muted/5 font-black transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        placeholder="0.00"
+                                        value={bankForm.amount}
+                                        onChange={e => setBankForm({ ...bankForm, amount: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Audit Reference No. *</Label>
+                                    <Input
+                                        className="h-14 rounded-xl border-border bg-muted/5 font-black uppercase transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        placeholder="Enter Slip ID or Bank Ref"
+                                        value={bankForm.bankReference}
+                                        onChange={e => setBankForm({ ...bankForm, bankReference: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Effective Date</Label>
+                                    <Input
+                                        type="date"
+                                        className="h-14 rounded-xl border-border bg-muted/5 font-bold transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        value={bankForm.paidAt}
+                                        onChange={e => setBankForm({ ...bankForm, paidAt: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 italic">Institutional Notes</Label>
+                                    <Textarea
+                                        className="rounded-xl border-border bg-muted/5 min-h-[100px] font-medium transition-all focus:ring-4 focus:ring-blue-600/5"
+                                        placeholder="Verified transfer details..."
+                                        value={bankForm.notes}
+                                        onChange={e => setBankForm({ ...bankForm, notes: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <DialogFooter className="p-8 border-t border-border bg-muted/10 items-center justify-between gap-4">
+                            <button
+                                type="button"
+                                className="h-14 px-8 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground transition-all hover:bg-muted/50"
+                                onClick={() => setShowBankModal(false)}
+                            >
+                                Abandon
+                            </button>
+                            <button
+                                type="submit"
+                                className="h-14 px-10 rounded-xl bg-blue-600 text-[10px] font-black uppercase tracking-widest text-white shadow-xl shadow-blue-100 transition-all hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
+                                disabled={bankSubmitting}
+                            >
+                                {bankSubmitting ? 'SYNCHRONIZING...' : 'RECORD CHANNEL CREDIT'}
+                            </button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </DashboardLayout>
     )
 }

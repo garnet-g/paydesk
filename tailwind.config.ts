@@ -45,6 +45,10 @@ const config: Config = {
                 input: 'var(--input)',
                 ring: 'var(--ring)',
             },
+            fontFamily: {
+                inter: ['var(--font-inter)', 'sans-serif'],
+                outfit: ['var(--font-outfit)', 'sans-serif'],
+            },
         },
     },
     plugins: [],
