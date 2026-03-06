@@ -2,10 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { Download, Printer, Plus, X } from 'lucide-react'
+import { Download, Printer, Plus, X, History as HistoryIcon, Wallet } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+    DialogDescription
+} from '@/components/ui/dialog'
 
 interface StudentStatementProps {
     studentId: string
@@ -189,21 +197,28 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
     }
 
     if (loading) return (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-2xl)' }}>
-            <div className="spinner"></div>
+        <div className="flex items-center justify-center p-20">
+            <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
     )
 
     if (!statement || statement.length === 0) {
         return (
-            <div className="card" style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
-                <p className="text-muted-foreground">No financial history found for this student.</p>
+            <div className="card rounded-[2.5rem] p-12 text-center flex flex-col items-center gap-6">
+                <div className="h-20 w-20 bg-muted/5 rounded-full flex items-center justify-center">
+                    <HistoryIcon size={40} className="text-muted-foreground opacity-20" />
+                </div>
+                <div className="space-y-2">
+                    <p className="text-lg font-outfit font-semibold text-foreground">Zero Liquidity History</p>
+                    <p className="text-muted-foreground text-sm max-w-xs">No financial audit records exist for this student profile yet.</p>
+                </div>
                 {(session?.user?.role === 'PRINCIPAL' || session?.user?.role === 'SUPER_ADMIN') && (
-                    <div className="flex justify-center gap-md mt-lg">
-                        <button className="btn btn-primary btn-sm" onClick={() => setShowFeeModal(true)}>
-                            <Plus size={16} /> Add First Fee
-                        </button>
-                    </div>
+                    <button
+                        className="h-12 px-8 bg-primary text-primary-foreground rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all"
+                        onClick={() => setShowFeeModal(true)}
+                    >
+                        Initialize Ledger
+                    </button>
                 )}
             </div>
         )
@@ -212,174 +227,241 @@ export default function StudentStatement({ studentId }: StudentStatementProps) {
     const currentBalance = statement[statement.length - 1]?.runningBalance || 0
 
     return (
-        <div className="card animate-fade-in shadow-sm">
-            <div className="flex justify-between items-start mb-lg">
-                <div>
-                    <h2 className="text-xl font-bold mb-xs">Financial Ledger</h2>
-                    <p className="text-muted-foreground text-sm">Statement for {student.name} | Adm: {student.admissionNumber}</p>
+        <div className="flex flex-col gap-8 animate-in fade-in duration-700">
+            {/* Header / Summary Card */}
+            <div className="card rounded-[2.5rem] bg-primary text-primary-foreground p-10 flex flex-col md:flex-row justify-between items-center gap-8 shadow-2xl">
+                <div className="flex items-center gap-6">
+                    <div className="h-20 w-20 bg-white/10 rounded-[2rem] flex items-center justify-center backdrop-blur-md">
+                        <Wallet size={36} className="text-white" />
+                    </div>
+                    <div className="space-y-1">
+                        <h2 className="text-3xl font-outfit font-bold tracking-tight">Audit Ledger</h2>
+                        <p className="text-white/60 text-sm font-medium uppercase tracking-[0.2em]">{student.name} • ADM-{student.admissionNumber}</p>
+                    </div>
                 </div>
-                <div className="text-right">
-                    <p className="text-xs uppercase font-bold text-muted-foreground mb-xs">Net Balance</p>
-                    <h3 className={`text-2xl font-bold ${currentBalance > 0 ? 'text-error' : 'text-success'}`}>
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 px-10 rounded-[2rem] text-center md:text-right min-w-[240px]">
+                    <p className="text-[10px] uppercase font-black tracking-[0.3em] text-white/40 mb-1">Settlement Status</p>
+                    <h3 className={`text-4xl font-outfit font-black tracking-tighter ${currentBalance > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                         {formatCurrency(currentBalance)}
                     </h3>
                 </div>
             </div>
 
-            <div className="flex justify-between items-center mb-md">
-                <div className="flex gap-sm">
+            {/* Actions Bar */}
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-muted/5 p-4 rounded-[2rem] border border-border">
+                <div className="flex gap-3">
                     {(session?.user?.role === 'PRINCIPAL' || session?.user?.role === 'SUPER_ADMIN') && (
                         <>
-                            <button className="btn btn-primary btn-sm" onClick={() => setShowPaymentModal(true)}>
-                                <Plus size={16} /> Record Payment
+                            <button
+                                className="h-12 px-6 bg-primary text-primary-foreground rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all active:scale-95"
+                                onClick={() => setShowPaymentModal(true)}
+                            >
+                                <Plus size={16} className="mr-2 inline" /> Record Credit
                             </button>
-                            <button className="btn btn-outline btn-sm" onClick={() => setShowFeeModal(true)}>
-                                <Plus size={16} /> Add Fee
+                            <button
+                                className="h-12 px-6 bg-background border border-border text-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/50 transition-all active:scale-95"
+                                onClick={() => setShowFeeModal(true)}
+                            >
+                                <Plus size={16} className="mr-2 inline" /> Add Debit
                             </button>
                         </>
                     )}
                 </div>
-                <div className="flex gap-sm">
-                    <button className="btn btn-secondary btn-sm" onClick={() => window.print()}>
-                        <Printer size={16} /> Print
+                <div className="flex gap-3">
+                    <button
+                        className="h-12 px-5 bg-muted/10 border border-border text-foreground/70 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/20 transition-all"
+                        onClick={() => window.print()}
+                    >
+                        <Printer size={16} className="mr-2 inline" /> Print
                     </button>
-                    <button className="btn btn-ghost btn-sm" onClick={handleDownloadPDF}>
-                        <Download size={16} /> PDF
+                    <button
+                        className="h-12 px-5 bg-muted/10 border border-border text-foreground/70 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/20 transition-all"
+                        onClick={handleDownloadPDF}
+                    >
+                        <Download size={16} className="mr-2 inline" /> Export PDF
                     </button>
                 </div>
             </div>
 
-            <div className="table-wrapper">
-                <table className="table w-full">
-                    <thead>
-                        <tr className="bg-neutral-50 text-left text-xs uppercase text-muted-foreground font-semibold border-b">
-                            <th className="p-sm">Date</th>
-                            <th className="p-sm">Description</th>
-                            <th className="p-sm text-right">Debit (+)</th>
-                            <th className="p-sm text-right">Credit (-)</th>
-                            <th className="p-sm text-right">Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-sm">
-                        {statement.map((tx, idx) => (
-                            <tr key={idx} className="border-b hover:bg-neutral-50">
-                                <td className="p-sm text-muted-foreground">{formatDate(tx.date)}</td>
-                                <td className="p-sm">
-                                    <div className="font-semibold">{tx.type === 'INVOICE' ? 'Debit' : 'Credit'}</div>
-                                    <div className="text-xs text-muted-foreground truncate max-w-[250px]" title={tx.details || tx.description}>
-                                        {tx.description} {tx.details && ` - ${tx.details}`}
-                                    </div>
-                                </td>
-                                <td className="p-sm text-right font-medium">
-                                    {tx.type === 'INVOICE' ? formatCurrency(Math.abs(tx.amount)) : '-'}
-                                </td>
-                                <td className="p-sm text-right font-medium text-success-600">
-                                    {tx.type === 'PAYMENT' ? formatCurrency(Math.abs(tx.amount)) : '-'}
-                                </td>
-                                <td className={`p-sm text-right font-bold ${tx.runningBalance > 0 ? 'text-error-600' : 'text-success-600'}`}>
-                                    {formatCurrency(tx.runningBalance)}
-                                </td>
+            {/* Ledger Table */}
+            <div className="card rounded-[2.5rem] overflow-hidden border-border p-0 shadow-xl bg-card">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-muted/5 border-b border-border">
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Verification Date</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Transaction Details</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-right">Debit (+)</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-right">Credit (-)</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-right">Ledger Balance</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="mt-lg p-md bg-neutral-50 rounded text-center text-xs text-muted-foreground">
-                <p>This statement reflects all financial activities for this student at {student.schoolName}.</p>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                            {statement.map((tx, idx) => (
+                                <tr key={idx} className="hover:bg-muted/5 transition-colors group">
+                                    <td className="px-8 py-6">
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-bold text-foreground font-inter">{formatDate(tx.date)}</span>
+                                            <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">{tx.type}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-sm font-semibold text-foreground tracking-tight italic">
+                                                {tx.description}
+                                            </span>
+                                            {tx.details && (
+                                                <span className="text-xs text-muted-foreground opacity-60 font-medium">
+                                                    Ref: {tx.details}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6 text-right">
+                                        <span className={`text-sm font-bold font-inter ${tx.type === 'INVOICE' ? 'text-foreground' : 'text-muted-foreground/20'}`}>
+                                            {tx.type === 'INVOICE' ? formatCurrency(Math.abs(tx.amount)) : '—'}
+                                        </span>
+                                    </td>
+                                    <td className="px-8 py-6 text-right">
+                                        <span className={`text-sm font-bold font-inter ${tx.type === 'PAYMENT' ? 'text-emerald-600' : 'text-muted-foreground/20'}`}>
+                                            {tx.type === 'PAYMENT' ? `- ${formatCurrency(Math.abs(tx.amount))}` : '—'}
+                                        </span>
+                                    </td>
+                                    <td className="px-8 py-6 text-right">
+                                        <div className="flex flex-col items-end">
+                                            <span className={`text-sm font-black font-inter ${tx.runningBalance > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                                {formatCurrency(tx.runningBalance)}
+                                            </span>
+                                            <div className="h-1 w-8 rounded-full bg-border group-hover:bg-primary/20 transition-all mt-1" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="p-8 bg-muted/5 border-t border-border flex justify-center">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.25em] opacity-40">
+                        Official Audited Statement • End of Records
+                    </p>
+                </div>
             </div>
 
             {/* Manual Fee Modal */}
-            {showFeeModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] animate-fade-in" onClick={() => setShowFeeModal(false)}>
-                    <div className="bg-white p-2xl rounded-xl shadow-2xl w-full max-w-md animate-slide-up" onClick={e => e.stopPropagation()}>
-                        <div className="flex justify-between items-center mb-xl">
-                            <h3 className="text-xl font-bold">Add Manual Fee Charge</h3>
-                            <button onClick={() => setShowFeeModal(false)} className="text-muted-foreground hover:text-foreground">
-                                <X size={24} />
-                            </button>
+            <Dialog open={showFeeModal} onOpenChange={setShowFeeModal}>
+                <DialogContent className="max-w-xl p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl">
+                    <DialogHeader className="p-10 pb-0 bg-primary text-primary-foreground rounded-t-[2.5rem]">
+                        <div className="flex justify-between items-start">
+                            <div className="space-y-2">
+                                <DialogTitle className="text-3xl font-outfit font-bold tracking-tight italic">Inject Debit</DialogTitle>
+                                <DialogDescription className="text-white/60 text-sm font-medium uppercase tracking-widest">Manual Fee Adjustment</DialogDescription>
+                            </div>
+                            <div className="h-12 w-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md">
+                                <Plus className="text-white" size={24} />
+                            </div>
                         </div>
-                        <form onSubmit={handleAddFee} className="space-y-lg">
-                            <div className="form-group mb-0">
-                                <label className="form-label">Description</label>
-                                <input name="description" required className="form-input" placeholder="e.g. Library Fine, Trip Fee" />
+                    </DialogHeader>
+
+                    <form onSubmit={handleAddFee} className="p-10 space-y-8 bg-card">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Ledger Description</label>
+                                <input name="description" required className="h-14 w-full bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="e.g. Field Trip" />
                             </div>
-                            <div className="form-group mb-0">
-                                <label className="form-label">Amount (KES)</label>
-                                <input name="amount" type="number" step="0.01" required className="form-input" placeholder="0.00" />
+                            <div className="space-y-3">
+                                <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Asset Value (KES)</label>
+                                <input name="amount" type="number" step="0.01" required className="h-14 w-full bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="0.00" />
                             </div>
-                            <div className="form-group mb-0">
-                                <label className="form-label">Category</label>
-                                <select name="category" className="form-select">
-                                    <option value="OTHER">Other</option>
-                                    <option value="TUITION">Tuition</option>
-                                    <option value="BOARDING">Boarding</option>
-                                    <option value="TRANSPORT">Transport</option>
-                                    <option value="TRIPS">Trips</option>
-                                    <option value="UNIFORMS">Uniforms</option>
-                                    <option value="BOOKS">Books</option>
-                                    <option value="ACTIVITIES">Activities</option>
-                                </select>
-                            </div>
-                            <div className="flex justify-end gap-md pt-lg">
-                                <button type="button" className="btn btn-ghost" onClick={() => setShowFeeModal(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                                    {isSubmitting ? 'Adding...' : 'Add Fee Charge'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Classification Hub</label>
+                            <select name="category" className="h-14 w-full bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none cursor-pointer">
+                                <option value="OTHER">Generic Adjustment</option>
+                                <option value="TUITION">Academic Tuition</option>
+                                <option value="BOARDING">Residential Services</option>
+                                <option value="TRANSPORT">Logistical Transit</option>
+                                <option value="TRIPS">External Expeditions</option>
+                                <option value="UNIFORMS">Apparel Hub</option>
+                                <option value="BOOKS">Resource Materials</option>
+                                <option value="ACTIVITIES">Extracurricular Hub</option>
+                            </select>
+                        </div>
+
+                        <DialogFooter className="pt-8 border-t border-border flex items-center justify-between gap-4">
+                            <button type="button" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/50 h-14 px-8 rounded-2xl transition-all" onClick={() => setShowFeeModal(false)}>Abandon</button>
+                            <button
+                                type="submit"
+                                className="h-14 px-10 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center justify-center"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'SYNCHRONIZING...' : 'COMMIT DEBIT'}
+                            </button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
             {/* Manual Payment Modal */}
-            {showPaymentModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] animate-fade-in" onClick={() => setShowPaymentModal(false)}>
-                    <div className="bg-white p-2xl rounded-xl shadow-2xl w-full max-w-md animate-slide-up" onClick={e => e.stopPropagation()}>
-                        <div className="flex justify-between items-center mb-xl">
-                            <h3 className="text-xl font-bold">Record Manual Payment</h3>
-                            <button onClick={() => setShowPaymentModal(false)} className="text-muted-foreground hover:text-foreground">
-                                <X size={24} />
-                            </button>
+            <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+                <DialogContent className="max-w-xl p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl">
+                    <DialogHeader className="p-10 pb-0 bg-primary text-primary-foreground rounded-t-[2.5rem]">
+                        <div className="flex justify-between items-start">
+                            <div className="space-y-2">
+                                <DialogTitle className="text-3xl font-outfit font-bold tracking-tight italic">Authorize Credit</DialogTitle>
+                                <DialogDescription className="text-white/60 text-sm font-medium uppercase tracking-widest">Manual Inflow Registry</DialogDescription>
+                            </div>
+                            <div className="h-12 w-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md">
+                                <Wallet className="text-white" size={24} />
+                            </div>
                         </div>
-                        <form onSubmit={handleRecordPayment} className="space-y-lg">
-                            <div className="form-group mb-0">
-                                <label className="form-label">Amount Paid (KES)</label>
-                                <input name="amount" type="number" step="0.01" required className="form-input" placeholder="0.00" />
+                    </DialogHeader>
+
+                    <form onSubmit={handleRecordPayment} className="p-10 space-y-8 bg-card">
+                        <div className="space-y-3">
+                            <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Inflow Value (KES)</label>
+                            <input name="amount" type="number" step="0.01" required className="h-14 w-full bg-muted/5 border border-border px-5 rounded-2xl text-xl font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="0.00" />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Credit Channel</label>
+                                <select name="method" className="h-14 w-full bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none cursor-pointer" required>
+                                    <option value="CASH">Physical Cash</option>
+                                    <option value="BANK_TRANSFER">Bank Settlement</option>
+                                    <option value="MPESA">Digital Payload</option>
+                                    <option value="CHEQUE">Bank Instrument</option>
+                                </select>
                             </div>
-                            <div className="grid grid-cols-2 gap-md">
-                                <div className="form-group mb-0">
-                                    <label className="form-label">Method</label>
-                                    <select name="method" className="form-select" required>
-                                        <option value="CASH">Cash</option>
-                                        <option value="BANK_TRANSFER">Bank Deposit</option>
-                                        <option value="MPESA">M-Pesa (Direct)</option>
-                                        <option value="CHEQUE">Cheque</option>
-                                    </select>
-                                </div>
-                                <div className="form-group mb-0">
-                                    <label className="form-label">Date</label>
-                                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="form-input" />
-                                </div>
+                            <div className="space-y-3">
+                                <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Accounting Date</label>
+                                <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="h-14 w-full bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
                             </div>
-                            <div className="form-group mb-0">
-                                <label className="form-label">Reference Number (Optional)</label>
-                                <input name="transactionRef" className="form-input" placeholder="Bank ref, Cheque no, etc." />
-                            </div>
-                            <div className="form-group mb-0">
-                                <label className="form-label">Notes</label>
-                                <textarea name="description" className="form-textarea" placeholder="Any additional details..." />
-                            </div>
-                            <div className="flex justify-end gap-md pt-lg">
-                                <button type="button" className="btn btn-ghost" onClick={() => setShowPaymentModal(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                                    {isSubmitting ? 'Recording...' : 'Save Payment'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Verification Reference</label>
+                            <input name="transactionRef" className="h-14 w-full bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Bank ref, Cheque no, etc." />
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Audit Notes</label>
+                            <textarea name="description" className="h-24 w-full bg-muted/5 border border-border p-5 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none" placeholder="Any additional details..." />
+                        </div>
+
+                        <DialogFooter className="pt-8 border-t border-border flex items-center justify-between gap-4">
+                            <button type="button" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/50 h-14 px-8 rounded-2xl transition-all" onClick={() => setShowPaymentModal(false)}>Abandon</button>
+                            <button
+                                type="submit"
+                                className="h-14 px-10 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center justify-center"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'SYNCHRONIZING...' : 'COMMIT CREDIT'}
+                            </button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

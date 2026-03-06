@@ -68,108 +68,101 @@ export default function SchoolLoginPage() {
     }
 
     const schoolName = school?.name || 'PayDesk'
-    const brandColor = '#4f46e5' // Could be dynamic if school had a primary color field
 
     return (
-        <div className="page-wrapper" style={{
-            background: school ? 'var(--neutral-50)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 'var(--spacing-lg)'
-        }}>
-            <div className="card" style={{
-                maxWidth: '450px',
-                width: '100%',
-                boxShadow: 'var(--shadow-2xl)',
-                animation: 'slideUp 0.5s ease-out',
-                background: 'white',
-                border: school ? `2px solid var(--primary-100)` : 'none'
-            }}>
-                <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-                    {school?.logoUrl ? (
-                        <img src={school.logoUrl} alt={schoolName} style={{ height: '80px', margin: '0 auto var(--spacing-lg)', objectFit: 'contain', display: 'block' }} />
-                    ) : (
-                        <img
-                            src="/paydesk-logo.png"
-                            alt="PayDesk"
-                            style={{ height: '72px', margin: '0 auto var(--spacing-lg)', display: 'block', objectFit: 'contain' }}
-                        />
-                    )}
-                    <h1 style={{ marginBottom: 'var(--spacing-xs)', fontSize: '1.5rem' }}>{schoolName}</h1>
-                    <p className="text-muted">Sign in to your account</p>
-                </div>
-
-                <form onSubmit={handleSubmit}>
-                    {error && (
-                        <div className="alert alert-error" style={{ marginBottom: 'var(--spacing-lg)' }}>
-                            <span>⚠️</span>
-                            <span>{error}</span>
-                        </div>
-                    )}
-
-                    <div className="form-group">
-                        <label htmlFor="email" className="form-label">Email Address</label>
-                        <input
-                            id="email"
-                            type="email"
-                            className="form-input"
-                            placeholder="your@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            className="form-input"
-                            placeholder="Enter password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-lg)', fontSize: '0.875rem' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <input type="checkbox" /> Remember me
-                        </label>
-                        <a href="#" className="text-primary">Forgot password?</a>
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        style={{ width: '100%', padding: '0.875rem' }}
-                        disabled={loading}
-                    >
-                        {loading ? 'Signing in...' : 'Sign In'}
-                    </button>
-                </form>
-
-                <div style={{ marginTop: 'var(--spacing-xl)', paddingTop: 'var(--spacing-lg)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-                    <p className="text-xs text-muted">
-                        Official {schoolName} Portal
-                        <br />
-                        {school?.phoneNumber && `Support: ${school.phoneNumber}`}
-                    </p>
-                </div>
+        <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-slate-950 font-inter">
+            {/* Background decorative elements */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-20 dark:opacity-10">
+                <div className="absolute top-[10%] left-[10%] w-[40%] h-[40%] bg-primary/20 blur-[120px] rounded-full" />
+                <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] bg-blue-600/20 blur-[120px] rounded-full" />
             </div>
 
-            <div style={{
-                position: 'fixed',
-                bottom: '20px',
-                color: school ? 'var(--neutral-500)' : 'white',
-                fontSize: '0.75rem',
-                textAlign: 'center',
-                width: '100%'
-            }}>
-                Powered by PayDesk © 2026 <span style={{ opacity: 0.5 }}>v1.0.1</span>
+            <div className="relative z-10 w-full max-w-[440px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="card rounded-[2.5rem] p-10 border-border dark:bg-card shadow-2xl flex flex-col gap-8">
+                    <div className="text-center flex flex-col gap-4">
+                        <div className="flex justify-center h-20 items-center">
+                            {school?.logoUrl ? (
+                                <img src={school.logoUrl} alt={schoolName} className="h-full object-contain" />
+                            ) : (
+                                <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center">
+                                    <span className="text-white text-2xl font-bold">P</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className="space-y-1">
+                            <h1 className="text-2xl font-outfit font-semibold tracking-tight text-foreground">{schoolName}</h1>
+                            <p className="text-muted-foreground text-sm font-medium uppercase tracking-widest opacity-60">Security Access Terminal</p>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                        {error && (
+                            <div className="bg-destructive/10 text-destructive text-xs py-3 px-4 rounded-xl border border-destructive/20 flex items-center gap-3">
+                                <span className="text-sm">⚠️</span>
+                                <span className="font-medium">{error}</span>
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="email" className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Coordinates</label>
+                            <input
+                                id="email"
+                                type="email"
+                                className="h-14 bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                placeholder="name@example.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="password" title="password" className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-1">Security Key</label>
+                            <input
+                                id="password"
+                                type="password"
+                                className="h-14 bg-muted/5 border border-border px-5 rounded-2xl text-sm font-medium transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-between px-1">
+                            <label className="flex items-center gap-3 cursor-pointer group">
+                                <input type="checkbox" className="w-4 h-4 rounded border-border text-primary focus:ring-primary transition-all" />
+                                <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors">Persistence</span>
+                            </label>
+                            <a href="#" className="text-xs font-semibold text-primary/80 hover:text-primary transition-colors">Credential Recovery</a>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="h-14 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all disabled:opacity-50"
+                            disabled={loading}
+                        >
+                            {loading ? 'AUTHENTICATING...' : 'INITIATE ACCESS'}
+                        </button>
+                    </form>
+
+                    <div className="pt-8 border-t border-border/50 text-center space-y-2">
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40">
+                            Verified Official {schoolName} Portal
+                        </p>
+                        {school?.phoneNumber && (
+                            <p className="text-[11px] font-semibold text-muted-foreground">
+                                Technical Support: {school.phoneNumber}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="mt-8 text-center flex flex-col items-center gap-3">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.25em] opacity-30">
+                        Powered by PayDesk &copy; 2026 <span className="mx-2">/</span> Core v1.0.1
+                    </p>
+                </div>
             </div>
         </div>
     )
