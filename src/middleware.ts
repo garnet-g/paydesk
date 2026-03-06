@@ -33,10 +33,10 @@ const AUTH_PATHS = ['/dashboard', '/api']  // require login
 
 // Stricter limits for sensitive endpoints
 const STRICT_PATHS = ['/api/auth/signin', '/api/users/change-password', '/api/admin']
-const STRICT_LIMIT = 10   // 10 requests per minute
-const DEFAULT_LIMIT = 120  // 120 requests per minute
+const STRICT_LIMIT = 50   // Increased from 10 to 50
+const DEFAULT_LIMIT = 500  // Increased from 120 to 500
 
-export async function proxy(req: NextRequest) {
+export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl
 
     // ── 1. Skip static files ─────────────────────────────────────────────────
@@ -51,11 +51,11 @@ export async function proxy(req: NextRequest) {
 
     const isStrict = STRICT_PATHS.some(p => pathname.startsWith(p))
     const limit = isStrict ? STRICT_LIMIT : DEFAULT_LIMIT
-    const window = isStrict ? 60_000 : 60_000 // 1 minute window
+    const window = 60_000 // 1 minute window
 
     if (!rateLimit(ip, limit, window)) {
         return NextResponse.json(
-            { error: 'Too many requests. Please slow down.' },
+            { error: 'Too many requests. Please wait a moment.' },
             {
                 status: 429,
                 headers: {
