@@ -102,92 +102,47 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--neutral-50)' }}>
+        <div className="flex min-h-screen bg-gray-50 font-sans text-foreground transition-colors duration-300 dark:bg-background">
             {/* Mobile sidebar backdrop */}
             {sidebarOpen && (
                 <div
-                    className="modal-overlay"
-                    style={{ zIndex: 40 }}
+                    className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity md:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             <aside
-                style={{
-                    width: '280px',
-                    background: 'var(--card-bg)',
-                    borderRight: '1px solid var(--border)',
-                    position: 'fixed',
-                    height: '100vh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    transition: 'transform var(--transition-base)',
-                    zIndex: 50,
-                    backdropFilter: 'blur(16px)'
-                }}
-                className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}
+                className={`fixed left-0 top-0 z-50 h-screen w-64 flex-col border-r border-border bg-card transition-transform duration-300 md:flex ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+                    }`}
             >
                 {/* Header Section */}
-                <div style={{ padding: 'var(--spacing-lg) var(--spacing-xl)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                        <div style={{
-                            width: '40px',
-                            height: '40px',
-                            background: session?.user?.logoUrl ? 'white' : 'var(--primary-600)',
-                            color: 'white',
-                            borderRadius: '14px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '1.125rem',
-                            fontWeight: 800,
-                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                            border: '2px solid white',
-                            overflow: 'hidden',
-                            flexShrink: 0
-                        }}>
+                <div className="flex items-center justify-between border-b border-border p-6">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-primary text-white shadow-sm ring-1 ring-white/20">
                             {session?.user?.logoUrl ? (
                                 <img
                                     src={session.user.logoUrl}
                                     alt="School Logo"
-                                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                    className="h-full w-full object-contain"
                                 />
                             ) : (
-                                session?.user?.schoolName?.[0] || 'S'
+                                <span className="text-lg font-bold">{session?.user?.schoolName?.[0] || 'S'}</span>
                             )}
                         </div>
-                        <div style={{ minWidth: 0 }}>
-                            <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <div className="min-w-0">
+                            <h2 className="truncate text-sm font-semibold tracking-tight text-foreground">
                                 {session?.user?.schoolName || 'School ERP'}
                             </h2>
-                            <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600/80">
                                 {userRole.split('_').join(' ')}
                             </p>
                         </div>
                     </div>
-                    <button
-                        className="mobile-only"
-                        onClick={() => setSidebarOpen(false)}
-                        style={{ display: 'none', border: 'none', background: 'var(--neutral-100)', color: 'var(--neutral-600)', padding: '6px', borderRadius: '8px', cursor: 'pointer' }}
-                    >
-                        <X size={18} />
-                    </button>
                 </div>
 
                 {/* Navigation - Scrollable Area */}
-                <nav style={{
-                    flex: 1,
-                    overflowY: 'auto',
-                    padding: 'var(--spacing-lg) var(--spacing-md)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px'
-                }}>
-                    {filteredNavigation.map((item, index) => {
-                        const Icon = item.icon
-                        const isActive = pathname === item.href
-
-                        // Categories for better hierarchy
+                <nav className="flex-1 overflow-y-auto space-y-0.5 p-4">
+                    {(() => {
                         const principalCategories: any = {
                             '/dashboard': { label: 'Main' },
                             '/dashboard/parents': { label: 'People' },
@@ -208,299 +163,134 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         }
 
                         const categories = userRole === 'SUPER_ADMIN' ? adminCategories : principalCategories
-                        const showCategory = (userRole === 'PRINCIPAL' || userRole === 'SUPER_ADMIN') && categories[item.href]
-                        const isLocked = item.requiresPro && !isPro
 
-                        return (
-                            <div key={item.name}>
-                                {showCategory && (
-                                    <div style={{
-                                        fontSize: '0.65rem',
-                                        fontWeight: 800,
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.1em',
-                                        color: 'var(--neutral-400)',
-                                        margin: 'var(--spacing-md) 0 var(--spacing-xs) var(--spacing-md)',
-                                    }}>
-                                        {categories[item.href].label}
-                                    </div>
-                                )}
-                                {isLocked ? (
-                                    <div
-                                        onClick={() => alert(`💎 Upgrade to a PRO or ENTERPRISE plan to unlock ${item.name} via the Platform Billing settings or by contacting your System Admin.`)}
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 'var(--spacing-md)',
-                                            padding: '10px var(--spacing-md)',
-                                            borderRadius: '12px',
-                                            background: 'transparent',
-                                            color: 'var(--neutral-400)',
-                                            fontWeight: 500,
-                                            fontSize: '0.875rem',
-                                            transition: 'all 0.2s ease',
-                                            cursor: 'pointer',
-                                            border: '1px solid transparent',
-                                        }}
-                                        className="nav-link"
-                                    >
-                                        <Icon size={18} strokeWidth={2} style={{ color: 'inherit' }} />
-                                        <span>{item.name}</span>
-                                        <Lock size={14} style={{ marginLeft: 'auto', color: 'var(--warning-500)' }} />
-                                    </div>
-                                ) : (
+                        return filteredNavigation.map((item) => {
+                            const Icon = item.icon
+                            const isActive = pathname === item.href
+                            const isLocked = item.requiresPro && !isPro
+
+                            return (
+                                <div key={item.href} className="group relative">
+                                    {categories[item.href] && (
+                                        <div className="mb-1 ml-3 mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                            {categories[item.href].label}
+                                        </div>
+                                    )}
                                     <Link
-                                        href={item.href}
-                                        onClick={() => setSidebarOpen(false)}
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 'var(--spacing-md)',
-                                            padding: '12px var(--spacing-md)',
-                                            borderRadius: '14px',
-                                            background: isActive ? 'var(--primary-600)' : 'transparent',
-                                            color: isActive ? 'white' : 'var(--neutral-500)',
-                                            fontWeight: isActive ? 700 : 500,
-                                            fontSize: '0.875rem',
-                                            transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
-                                            textDecoration: 'none',
-                                            boxShadow: isActive ? '0 8px 20px -6px var(--primary-400)' : 'none',
-                                            border: '1px solid transparent',
+                                        href={isLocked ? '#' : item.href}
+                                        onClick={(e) => {
+                                            if (isLocked) {
+                                                e.preventDefault()
+                                                alert(`💎 Upgrade to a PRO or ENTERPRISE plan to unlock ${item.name} via the Platform Billing settings or by contacting your System Admin.`)
+                                            } else {
+                                                setSidebarOpen(false)
+                                            }
                                         }}
-                                        className="nav-link"
+                                        className={`relative flex items-center gap-3 rounded-md px-3 py-2 transition-all duration-200 ${isActive
+                                            ? 'bg-blue-50 text-blue-600 font-medium'
+                                            : isLocked
+                                                ? 'text-muted-foreground/40 cursor-not-allowed opacity-60'
+                                                : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                                            }`}
                                     >
-                                        <Icon size={18} strokeWidth={isActive ? 2.5 : 2} style={{ color: isActive ? 'var(--primary-600)' : 'inherit' }} />
-                                        <span>{item.name}</span>
+                                        <Icon
+                                            size={18}
+                                            strokeWidth={isActive ? 2.5 : 2}
+                                            className={isActive ? 'text-blue-600' : 'inherit'}
+                                        />
+                                        <span className="text-sm">{item.name}</span>
+                                        {isLocked && <Lock size={12} className="ml-auto text-amber-500/50" />}
                                         {isActive && (
-                                            <div style={{
-                                                marginLeft: 'auto',
-                                                width: '5px',
-                                                height: '5px',
-                                                borderRadius: '50%',
-                                                background: 'var(--primary-600)',
-                                                boxShadow: '0 0 8px var(--primary-300)'
-                                            }} />
+                                            <div className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-blue-600" />
                                         )}
                                     </Link>
-                                )}
-                            </div>
-                        )
-                    })}
+                                </div>
+                            )
+                        })
+                    })()}
                 </nav>
 
                 {/* Sidebar Footer */}
-                <div style={{
-                    padding: 'var(--spacing-lg) var(--spacing-xl)',
-                    borderTop: '1px solid var(--border)',
-                    background: 'var(--card-bg)'
-                }}>
-                    <div style={{ marginBottom: 'var(--spacing-lg)', minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', marginBottom: '8px' }}>
-                            <div style={{
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '10px',
-                                background: 'var(--primary-100)',
-                                color: 'var(--primary-700)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: '0.75rem',
-                                fontWeight: 800
-                            }}>
-                                {session?.user?.name?.[0]}
-                            </div>
-                            <div style={{ minWidth: 0, flex: 1 }}>
-                                <p style={{ fontSize: '0.8125rem', fontWeight: 700, margin: 0, color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {session?.user?.name}
-                                </p>
-                                <p style={{ fontSize: '0.7rem', color: 'var(--neutral-500)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {session?.user?.email}
-                                </p>
-                            </div>
+                <div className="border-t border-border p-4 bg-muted/5">
+                    <div className="flex items-center gap-3 px-2 mb-4">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent text-[10px] font-bold text-muted-foreground uppercase">
+                            {session?.user?.name?.[0]}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="truncate text-xs font-semibold text-foreground">
+                                {session?.user?.name}
+                            </p>
+                            <p className="truncate text-[10px] text-muted-foreground">
+                                {session?.user?.email}
+                            </p>
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <div className="grid grid-cols-2 gap-2 px-1">
                         <button
                             onClick={toggleTheme}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: '10px',
-                                background: 'var(--neutral-50)',
-                                border: '1px solid var(--neutral-200)',
-                                borderRadius: '12px',
-                                color: 'var(--neutral-600)',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
-                            title={theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
+                            className="flex h-9 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-all hover:bg-accent hover:text-foreground"
+                            title="Toggle Theme"
                         >
-                            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                         </button>
                         <button
-                            onClick={() => signOut({ callbackUrl: '/login' })}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: '10px',
-                                background: 'var(--neutral-50)',
-                                border: '1px solid var(--neutral-200)',
-                                borderRadius: '12px',
-                                color: 'var(--neutral-600)',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
+                            onClick={() => signOut()}
+                            className="flex h-9 items-center justify-center rounded-md border border-border bg-card text-destructive transition-all hover:bg-destructive hover:text-white"
                             title="Sign Out"
                         >
-                            <LogOut size={18} />
+                            <LogOut size={16} />
                         </button>
                     </div>
                 </div>
             </aside>
 
             {/* Main content */}
-            <div style={{
-                flex: 1,
-                marginLeft: '280px',
-                transition: 'margin-left var(--transition-base)',
-                minWidth: 0
-            }} className="main-wrapper">
-                {/* Top bar */}
-                <header className="top-header" style={{
-                    background: 'var(--card-bg)',
-                    borderBottom: '1px solid var(--border)',
-                    padding: 'var(--spacing-md) var(--spacing-xl)',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 30,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    minHeight: '64px',
-                    width: '100%',
-                    backdropFilter: 'blur(10px)'
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', minWidth: 0 }}>
+            <div className="flex min-w-0 flex-1 flex-col transition-all duration-300 md:ml-64">
+                <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-border bg-card/80 px-4 md:px-6 backdrop-blur-lg">
+                    <div className="flex items-center gap-4">
                         <button
-                            onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="mobile-menu-btn"
-                            style={{
-                                display: 'none',
-                                padding: '8px',
-                                background: 'var(--neutral-100)',
-                                border: 'none',
-                                borderRadius: '10px',
-                                cursor: 'pointer',
-                                color: 'var(--foreground)',
-                                flexShrink: 0
-                            }}
+                            onClick={() => setSidebarOpen(true)}
+                            className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-all hover:bg-accent hover:text-foreground md:hidden"
                         >
-                            <Menu size={22} />
+                            <Menu size={20} />
                         </button>
-
-                        <div className="mobile-only" style={{ display: 'none', minWidth: 0 }}>
-                            <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {session?.user?.schoolName || 'School ERP'}
-                            </h2>
-                        </div>
-
-                        <div className="hide-mobile" style={{ minWidth: 0 }}>
-                            <h1 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {filteredNavigation.find(item => item.href === pathname)?.name || 'Dashboard'}
+                        <div className="min-w-0">
+                            <h1 className="truncate text-lg font-bold tracking-tight text-foreground md:text-xl">
+                                {pathname.split('/').pop()?.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Dashboard'}
                             </h1>
-                            <p className="text-muted-foreground" style={{ fontSize: '0.75rem', fontWeight: 500 }}>
-                                Welcome, {session?.user?.name?.split(' ')[0]}!
+                            <p className="hidden text-xs font-medium text-muted-foreground md:block">
+                                Welcome back, <span className="text-foreground">{session?.user?.name?.split(' ')[0]}</span>!
                             </p>
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexShrink: 0 }}>
-                        <span className="badge badge-primary hide-mobile" style={{ fontSize: '0.7rem', fontWeight: 800 }}>
-                            {userRole.replace('_', ' ')}
-                        </span>
-                        <div style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '12px',
-                            background: 'var(--primary-600)',
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '0.85rem',
-                            fontWeight: 800,
-                            flexShrink: 0,
-                            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                        }}>
+                    <div className="flex items-center gap-3">
+                        <div className="hidden items-center gap-2 md:flex">
+                            <span className="rounded-md bg-blue-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-600 ring-1 ring-blue-600/10">
+                                {userRole.split('_').join(' ')}
+                            </span>
+                        </div>
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-[13px] font-bold text-white shadow-sm ring-2 ring-white/10">
                             {session?.user?.name?.[0]}
                         </div>
                     </div>
                 </header>
 
                 {/* Page content */}
-                <main className="dashboard-main-content" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
-                    {children}
+                <main className="flex-1 p-4 md:p-8 lg:p-10">
+                    <div className="mx-auto max-w-7xl animate-fade-in space-y-8">
+                        {children}
+                    </div>
                 </main>
 
                 {/* Forced Password Change Modal */}
-                {
-                    session?.user?.requiresPasswordChange === true && (
-                        <ChangePasswordModal onSuccess={() => {
-                            window.location.reload()
-                        }} />
-                    )
-                }
+                {session?.user?.requiresPasswordChange === true && (
+                    <ChangePasswordModal onSuccess={() => {
+                        window.location.reload()
+                    }} />
+                )}
             </div>
-
-            <style jsx>{`
-                .sidebar {
-                    transform: translateX(0);
-                }
-                .dashboard-main-content {
-                    padding: var(--spacing-xl);
-                }
-                .mobile-only {
-                    display: none !important;
-                }
-
-                @media (max-width: 768px) {
-                    .main-wrapper {
-                        margin-left: 0 !important;
-                    }
-                    .top-header {
-                        position: fixed !important;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        z-index: 50;
-                    }
-                    .main-wrapper {
-                        padding-top: 64px;
-                    }
-                    .sidebar {
-                        transform: translateX(-100%);
-                    }
-                    .sidebar.sidebar-open {
-                        transform: translateX(0);
-                    }
-                    .dashboard-main-content {
-                        padding: var(--spacing-md);
-                    }
-                    .mobile-menu-btn {
-                        display: flex !important;
-                    }
-                    .hide-mobile {
-                        display: none !important;
-                    }
-                    .mobile-only {
-                        display: flex !important;
-                    }
-                }
-            `}</style>
         </div>
     )
 }

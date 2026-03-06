@@ -60,56 +60,47 @@ export default function ChangePasswordModal({ onSuccess }: ChangePasswordModalPr
 
     if (isSuccess) {
         return (
-            <div className="modal-overlay">
-                <div className="card modal-content text-center animate-slide-up" style={{ maxWidth: '400px' }}>
-                    <div style={{ color: 'var(--success-600)', marginBottom: 'var(--spacing-lg)' }}>
-                        <CheckCircle2 size={64} style={{ margin: '0 auto' }} />
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 p-4 backdrop-blur-sm animate-fade-in">
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-2xl animate-slide-up">
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600 ring-4 ring-green-100/50">
+                        <CheckCircle2 size={32} />
                     </div>
-                    <h3 className="card-title">Password Updated!</h3>
-                    <p className="text-muted-foreground">Your password has been changed successfully. You can now access your dashboard.</p>
+                    <h3 className="mb-2 text-xl font-bold text-foreground">Password Updated!</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                        Your password has been changed successfully. You can now access your dashboard securely.
+                    </p>
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="modal-overlay">
-            <div className="card modal-content animate-slide-up" style={{ maxWidth: '450px', width: '90%' }}>
-                <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-                    <div style={{
-                        width: '60px',
-                        height: '60px',
-                        background: 'var(--warning-50)',
-                        color: 'var(--warning-600)',
-                        borderRadius: 'var(--radius-full)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto var(--spacing-md)'
-                    }}>
-                        <ShieldAlert size={32} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 p-4 backdrop-blur-sm animate-fade-in">
+            <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-2xl animate-slide-up">
+                <div className="mb-8 text-center">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-600 ring-4 ring-amber-100/50">
+                        <ShieldAlert size={28} />
                     </div>
-                    <h3 className="card-title">Security Recommendation</h3>
-                    <p className="text-muted-foreground" style={{ fontSize: '0.875rem' }}>
+                    <h3 className="text-xl font-bold tracking-tight text-foreground">Security Recommendation</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
                         This is your first login or your password was recently reset. Please set a new permanent password to continue.
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="space-y-5">
                     {error && (
-                        <div className="alert alert-error" style={{ marginBottom: 'var(--spacing-md)', fontSize: '0.875rem' }}>
+                        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-600 animate-slide-down">
                             {error}
                         </div>
                     )}
 
-                    <div className="form-group">
-                        <label className="form-label">Current (Default) Password</label>
-                        <div style={{ position: 'relative' }}>
-                            <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Current (Default) Password</label>
+                        <div className="relative">
+                            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
                             <input
                                 type="password"
-                                className="form-input"
-                                style={{ paddingLeft: '40px' }}
+                                className="w-full rounded-md border border-border bg-input py-2.5 pl-10 pr-4 text-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 required
                                 value={currentPassword}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
@@ -117,14 +108,13 @@ export default function ChangePasswordModal({ onSuccess }: ChangePasswordModalPr
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">New Password</label>
-                        <div style={{ position: 'relative' }}>
-                            <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">New Password</label>
+                        <div className="relative">
+                            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
                             <input
                                 type="password"
-                                className="form-input"
-                                style={{ paddingLeft: '40px' }}
+                                className="w-full rounded-md border border-border bg-input py-2.5 pl-10 pr-4 text-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 required
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
@@ -133,14 +123,13 @@ export default function ChangePasswordModal({ onSuccess }: ChangePasswordModalPr
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">Confirm New Password</label>
-                        <div style={{ position: 'relative' }}>
-                            <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-foreground">Confirm New Password</label>
+                        <div className="relative">
+                            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
                             <input
                                 type="password"
-                                className="form-input"
-                                style={{ paddingLeft: '40px' }}
+                                className="w-full rounded-md border border-border bg-input py-2.5 pl-10 pr-4 text-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 required
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -150,14 +139,14 @@ export default function ChangePasswordModal({ onSuccess }: ChangePasswordModalPr
 
                     <button
                         type="submit"
-                        className="btn btn-primary"
-                        style={{ width: '100%', padding: '0.875rem', marginTop: 'var(--spacing-md)' }}
                         disabled={loading}
+                        className="group relative flex w-full items-center justify-center gap-2 rounded-md bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:bg-black/90 active:scale-[0.98] disabled:opacity-70"
                     >
                         {loading ? 'Updating Password...' : (
-                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                Save New Password <ArrowRight size={18} />
-                            </span>
+                            <>
+                                Save New Password
+                                <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                            </>
                         )}
                     </button>
                 </form>
