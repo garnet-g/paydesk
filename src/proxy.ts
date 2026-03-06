@@ -36,7 +36,7 @@ const STRICT_PATHS = ['/api/auth/signin', '/api/users/change-password', '/api/ad
 const STRICT_LIMIT = 50   // Increased from 10 to 50
 const DEFAULT_LIMIT = 500  // Increased from 120 to 500
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl
 
     // ── 1. Skip static files ─────────────────────────────────────────────────
