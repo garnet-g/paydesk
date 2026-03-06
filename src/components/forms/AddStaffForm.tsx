@@ -35,17 +35,8 @@ export default function AddStaffForm({ onClose, onSuccess, initialData }: AddSta
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setLoading(false)
-
-        // Email validation for school domain
-        const publicDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'zoho.com', 'protonmail.com']
-        const domain = formData.email.split('@')[1]?.toLowerCase()
-        if (publicDomains.includes(domain)) {
-            toast.error("Valid Email Required: Please use a professional or school domain email address.")
-            return
-        }
-
         setLoading(true)
+
         try {
             const payload = {
                 ...formData,

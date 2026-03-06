@@ -56,8 +56,9 @@ export default function ClassManager() {
             const res = await fetch('/api/staff')
             if (res.ok) {
                 const data = await res.json()
-                // Only show teachers
-                setStaff(data.filter((s: any) => s.role === 'TEACHER'))
+                // Allow teachers, and admins to be homeroom teachers
+                const eligibleRoles = ['TEACHER', 'PRINCIPAL', 'DEPUTY_PRINCIPAL', 'REGISTRAR']
+                setStaff(data.filter((s: any) => eligibleRoles.includes(s.role)))
             }
         } catch (error) {
             console.error('Failed to fetch staff', error)

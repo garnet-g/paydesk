@@ -80,7 +80,7 @@
 
 @layer base {
     * {
-        @apply border-border outline-ring;
+        @apply border-border;
     }
 
     body {
@@ -133,4 +133,54 @@
 
 .badge {
     @apply text-xs px-2 py-0.5 rounded-md font-medium inline-flex items-center;
+}
+
+@layer components {
+
+    /* Premium Modal System */
+    .modal-overlay {
+        @apply fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/60 transition-all duration-300;
+        backdrop-filter: blur(8px);
+    }
+
+    .modal-content {
+        @apply w-full max-w-xl max-h-[90vh] overflow-hidden bg-white dark:bg-slate-950 rounded-[2.5rem] shadow-2xl border border-border dark:border-slate-800 transition-all duration-300 flex flex-col;
+    }
+
+    .modal-content--wide {
+        @apply max-w-4xl;
+    }
+
+    .modal-header {
+        @apply bg-slate-900 p-8 text-white flex justify-between items-center relative overflow-hidden shrink-0;
+    }
+
+    .modal-title {
+        @apply text-2xl font-black uppercase tracking-tighter italic relative z-10;
+    }
+
+    .modal-body {
+        @apply p-8 overflow-y-auto;
+    }
+
+    .modal-footer {
+        @apply p-8 border-t border-border dark:border-slate-800 flex justify-end gap-4 shrink-0;
+    }
+
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        @apply bg-slate-200 dark:bg-slate-800 rounded-full;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-slate-300 dark:bg-slate-700;
+    }
 }

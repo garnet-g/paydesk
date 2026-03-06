@@ -7,8 +7,9 @@ import { isOfficialEmail } from '@/lib/utils'
 
 export async function GET(req: Request) {
     const session = await getServerSession(authOptions)
+    const allowedRoles = ['PRINCIPAL', 'SUPER_ADMIN', 'REGISTRAR', 'DEPUTY_PRINCIPAL']
 
-    if (!session || session.user.role !== 'PRINCIPAL' || !session.user.schoolId) {
+    if (!session || !session.user.schoolId || !allowedRoles.includes(session.user.role)) {
         return new NextResponse('Unauthorized', { status: 401 })
     }
 
@@ -35,7 +36,7 @@ export async function GET(req: Request) {
                 designation: true,
                 subjects: true,
                 staffId: true
-            }
+            } as any
         })
 
         return NextResponse.json(staffMembers)
@@ -47,9 +48,10 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     const session = await getServerSession(authOptions)
+    const allowedRoles = ['PRINCIPAL', 'SUPER_ADMIN', 'REGISTRAR', 'DEPUTY_PRINCIPAL']
 
-    if (!session || session.user.role !== 'PRINCIPAL' || !session.user.schoolId) {
-        return new NextResponse('Unauthorized', { status: 401 })
+    if (!session || !session.user.schoolId || !allowedRoles.includes(session.user.role)) {
+        return new NextResponse('Unauthorized: Access Restricted', { status: 401 })
     }
 
     try {
@@ -80,14 +82,14 @@ export async function POST(req: Request) {
                 email,
                 phoneNumber,
                 role,
-                salary: salary || 0,
-                designation: designation || null,
-                subjects: subjects || [],
-                staffId: staffId || null,
                 schoolId: session.user.schoolId,
                 password: hashedPassword,
+                salary: salary || 0,
+                designation: designation || '',
+                subjects: Array.isArray(subjects) ? subjects : [],
+                staffId: staffId || '',
                 requiresPasswordChange: true
-            }
+            } as any
         })
 
         await prisma.auditLog.create({

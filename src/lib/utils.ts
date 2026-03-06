@@ -71,12 +71,8 @@ export function validateEmail(email: string): boolean {
 
 export function isOfficialEmail(email: string): boolean {
     if (!email) return false
-    const PUBLIC_DOMAINS = [
-        'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com',
-        'aol.com', 'icloud.com', 'mail.com', 'zoho.com', 'protonmail.com'
-    ]
-    const domain = email.split('@')[1]?.toLowerCase()
-    return domain ? !PUBLIC_DOMAINS.includes(domain) : false
+    // Relaxed: Just validate format, don't block public domains which caused registration issues
+    return validateEmail(email)
 }
 
 export function validatePhoneNumber(phone: string): boolean {

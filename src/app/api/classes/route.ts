@@ -36,21 +36,22 @@ export async function POST(req: Request) {
     try {
         const body = await req.json()
         const { name, stream, homeroomTeacherId } = body
+        console.log('[API/Classes] Registration attempt:', { name, stream, homeroomTeacherId, schoolId: session.user.schoolId })
 
         if (!name) {
             return new NextResponse('Class name is required', { status: 400 })
         }
 
-        // Check if class already exists
         const existingClass = await prisma.class.findFirst({
             where: {
-                schoolId: session.user.schoolId,
-                name: name,
+                schoolId: session.user.schoolId!,
+                name,
                 stream: stream || null
             }
         })
 
         if (existingClass) {
+            console.log('[API/Classes] Registration failed: Class already exists', { name, stream })
             return new NextResponse('Class already exists', { status: 409 })
         }
 
@@ -58,15 +59,23 @@ export async function POST(req: Request) {
             data: {
                 name,
                 stream: stream || null,
-                schoolId: session.user.schoolId,
+                schoolId: session.user.schoolId!,
                 homeroomTeacherId: homeroomTeacherId || null,
-                capacity: 40 // Default capacity
+            },
+            include: {
+                homeroomTeacher: {
+                    select: {
+                        firstName: true,
+                        lastName: true
+                    }
+                }
             }
         })
 
+        console.log('[API/Classes] Registration successful:', newClass.id)
         return NextResponse.json(newClass)
-    } catch (error) {
-        console.error('Failed to create class:', error)
-        return new NextResponse('Internal Server Error', { status: 500 })
+    } catch (error: any) {
+        console.error('[API/Classes] Registration error:', error)
+        return new NextResponse(error.message || 'Internal Server Error', { status: 500 })
     }
 }
