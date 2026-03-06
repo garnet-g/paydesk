@@ -15,70 +15,70 @@
 }
 
 :root {
-  /* Color Palette - Soft Indigo & Slate (Blended & Calming) */
-  --primary-50: #eef2ff;
-  --primary-100: #e0e7ff;
-  --primary-200: #c7d2fe;
-  --primary-300: #a5b4fc;
-  --primary-400: #818cf8;
-  --primary-500: #6366f1;
-  --primary-600: #4f46e5;
-  /* Soft Indigo */
-  --primary-700: #4338ca;
-  --primary-800: #3730a3;
-  --primary-900: #312e81;
+  /* Color Palette - Premium Deep Navy & Teal (Modern & Sophisticated) */
+  --primary-50: #f0f9fc;
+  --primary-100: #e0f2fa;
+  --primary-200: #bae6f5;
+  --primary-300: #7dd3f0;
+  --primary-400: #38bde8;
+  --primary-500: #0ea5e9;
+  /* Vibrant Teal */
+  --primary-600: #0284c7;
+  --primary-700: #0369a1;
+  --primary-800: #075985;
+  --primary-900: #0c4a6e;
 
-  --secondary-50: #f0f9ff;
-  --secondary-100: #e0f2fe;
-  --secondary-200: #bae6fd;
-  --secondary-300: #7dd3fc;
-  --secondary-400: #38bdf8;
-  --secondary-500: #0ea5e9;
-  /* Sky Blue Accent */
-  --secondary-600: #0284c7;
-  --secondary-700: #0369a1;
-  --secondary-800: #075985;
-  --secondary-900: #0c4a6e;
+  --secondary-50: #f5f3ff;
+  --secondary-100: #ede9fe;
+  --secondary-200: #ddd6fe;
+  --secondary-300: #c4b5fd;
+  --secondary-400: #a78bfa;
+  --secondary-500: #8b5cf6;
+  /* Premium Indigo */
+  --secondary-600: #7c3aed;
+  --secondary-700: #6d28d9;
+  --secondary-800: #5b21b6;
+  --secondary-900: #4c1d95;
 
   --success-50: #f0fdf4;
   --success-100: #dcfce7;
-  --success-500: #22c55e;
-  --success-600: #16a34a;
-  --success-700: #15803d;
+  --success-500: #10b981;
+  --success-600: #059669;
+  --success-700: #047857;
 
-  --warning-50: #fdfaf0;
-  --warning-100: #fcf4cf;
-  --warning-500: #d9b816;
-  --warning-600: #b89a10;
+  --warning-50: #fef3c7;
+  --warning-100: #fde68a;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
 
   --error-50: #fef2f2;
   --error-100: #fee2e2;
   --error-500: #ef4444;
   --error-600: #dc2626;
 
-  /* Neutrals - Warm & Earthy balance for a premium feel */
-  --neutral-50: #f9f5eb;
-  --neutral-100: #f4f0e4;
-  --neutral-200: #ebe5d3;
-  --neutral-300: #d9cfba;
-  --neutral-400: #b0a48e;
-  --neutral-500: #8a7d6a;
-  --neutral-600: #665c4d;
-  --neutral-700: #4a4237;
-  --neutral-800: #2d2822;
-  --neutral-900: #1a1815;
+  /* Neutrals - Modern Grays for a sleek premium feel */
+  --neutral-50: #f9fafb;
+  --neutral-100: #f3f4f6;
+  --neutral-200: #e5e7eb;
+  --neutral-300: #d1d5db;
+  --neutral-400: #9ca3af;
+  --neutral-500: #6b7280;
+  --neutral-600: #4b5563;
+  --neutral-700: #374151;
+  --neutral-800: #1f2937;
+  --neutral-900: #111827;
 
   /* Semantic Colors */
-  --background: #f9f5eb;
-  /* Softer Creamy Background */
-  --foreground: #2d2822;
-  /* Deep Charcoal/Stone */
+  --background: #f8fafc;
+  /* Clean White Background */
+  --foreground: #0f172a;
+  /* Deep Navy Foreground */
   --card-bg: #ffffff;
-  --border: #dfd7c5;
-  /* More visible creamy border */
+  --border: #e2e8f0;
+  /* Crisp light border */
   --input-bg: #ffffff;
-  --muted: #f4f0e4;
-  --muted-foreground: #8a7d6a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -96,12 +96,12 @@
   --radius-xl: 2.25rem;
   --radius-full: 9999px;
 
-  /* Shadows - Heavy Diffusion, Soft Velvet feel */
-  --shadow-sm: 0 2px 4px rgba(69, 61, 49, 0.04);
-  --shadow-md: 0 12px 24px -6px rgba(69, 61, 49, 0.08), 0 4px 12px -2px rgba(69, 61, 49, 0.04);
-  --shadow-lg: 0 25px 50px -12px rgba(69, 61, 49, 0.12), 0 8px 24px -8px rgba(69, 61, 49, 0.06);
-  --shadow-xl: 0 40px 80px -20px rgba(69, 61, 49, 0.15);
-  --shadow-2xl: 0 60px 120px -30px rgba(69, 61, 49, 0.2);
+  /* Shadows - Modern Premium Depth */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 30px -5px rgba(15, 23, 42, 0.12), 0 4px 12px -4px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 20px 60px -10px rgba(15, 23, 42, 0.15), 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+  --shadow-2xl: 0 30px 80px -15px rgba(15, 23, 42, 0.2);
 
   /* Transitions */
   --transition-fast: 300ms ease;
@@ -110,25 +110,25 @@
 
   /* ---- shadcn/ui required HSL tokens ---- */
   --radius: 1.125rem;
-  --card: 32 30% 100%;
-  --card-foreground: 32 15% 10%;
-  --popover: 32 30% 100%;
-  --popover-foreground: 32 15% 10%;
-  --primary: 239 84% 58%;
+  --card: 0 0% 100%;
+  --card-foreground: 224 71% 7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 71% 7%;
+  --primary: 190 84% 57%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 32 10% 95%;
-  --secondary-foreground: 32 15% 10%;
-  --muted: 32 10% 96%;
-  --muted-foreground: 32 10% 45%;
-  --accent: 32 10% 96%;
-  --accent-foreground: 32 15% 10%;
+  --secondary: 270 100% 50%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 220 13% 40%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 224 71% 7%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border: 32 10% 88%;
-  --input: 32 10% 88%;
-  --ring: 239 84% 58%;
-  --background: 32 25% 98.5%;
-  --foreground: 32 15% 10%;
+  --border: 217 33% 93%;
+  --input: 217 33% 93%;
+  --ring: 190 84% 57%;
+  --background: 210 40% 98%;
+  --foreground: 224 71% 7%;
 }
 
 /* Dark Mode */
@@ -300,15 +300,18 @@ h6 {
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 2.25rem;
+  letter-spacing: -0.015em;
 }
 
 h3 {
-  font-size: 1.75rem;
+  font-size: 1.875rem;
+  letter-spacing: -0.01em;
 }
 
 h4 {
@@ -371,16 +374,17 @@ a:hover {
 
 .card {
   background-color: var(--card-bg);
-  border-radius: var(--radius-lg);
+  border-radius: 1.25rem;
   padding: var(--spacing-xl);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
   transition: all var(--transition-base);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
   border-color: var(--primary-200);
+  transform: translateY(-2px);
 }
 
 .sidebar {
@@ -456,15 +460,16 @@ a:hover {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-700), var(--primary-600));
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
   color: white;
-  box-shadow: 0 4px 15px 0 rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+  font-weight: 600;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
