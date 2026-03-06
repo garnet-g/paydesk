@@ -1,30 +1,36 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Briefcase, Mail, Phone, User as UserIcon, Save, KeyRound, ShieldCheck, AlertCircle, Info, Lock, Loader2 } from 'lucide-react'
+import { X, Briefcase, Mail, Phone, User as UserIcon, Save, KeyRound, ShieldCheck, AlertCircle, Info, Lock, Loader2, Plus as PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
 interface AddStaffFormProps {
     onClose: () => void
     onSuccess: () => void
+    initialData?: any
 }
 
-export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) {
+export default function AddStaffForm({ onClose, onSuccess, initialData }: AddStaffFormProps) {
     const [loading, setLoading] = useState(false)
+    const [subjectInput, setSubjectInput] = useState('')
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phoneNumber: '',
-        role: 'TEACHER', // default to teacher
-        designation: '', // new field
-        salary: ''
+        firstName: initialData?.firstName || '',
+        lastName: initialData?.lastName || '',
+        email: initialData?.email || '',
+        phoneNumber: initialData?.phoneNumber || '',
+        role: initialData?.role || 'TEACHER', // default to teacher
+        designation: initialData?.designation || '', // new field
+        salary: initialData?.salary ? initialData.salary.toString() : '',
+        subjects: initialData?.subjects || []
     })
+
+    const isEditMode = !!initialData
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -45,14 +51,17 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                 salary: formData.salary ? parseFloat(formData.salary) : 0
             }
 
-            const res = await fetch('/api/staff', {
-                method: 'POST',
+            const url = isEditMode ? `/api/staff/${initialData.id}` : '/api/staff'
+            const method = isEditMode ? 'PATCH' : 'POST'
+
+            const res = await fetch(url, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
 
             if (res.ok) {
-                toast.success("Staff Member Registered: System access has been granted.")
+                toast.success(isEditMode ? "Staff member profile updated successfully." : "Staff Member Registered: System access has been granted.")
                 onSuccess()
                 onClose()
             } else {
@@ -75,7 +84,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                         <ShieldCheck size={28} />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black uppercase tracking-tighter italic">Add Staff Member</h3>
+                        <h3 className="text-2xl font-black uppercase tracking-tighter italic">{isEditMode ? 'Edit Staff Profile' : 'Add Staff Member'}</h3>
                         <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">School Personnel Directory</p>
                     </div>
                 </div>
@@ -144,11 +153,19 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                                 <SelectTrigger className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-2xl">
+                                <SelectContent className="rounded-2xl max-h-64 overflow-y-auto">
+                                    <SelectItem value="PRINCIPAL" className="font-bold text-xs uppercase tracking-widest">PRINCIPAL</SelectItem>
+                                    <SelectItem value="DEPUTY_PRINCIPAL" className="font-bold text-xs uppercase tracking-widest">DEPUTY PRINCIPAL</SelectItem>
                                     <SelectItem value="FINANCE_MANAGER" className="font-bold text-xs uppercase tracking-widest">FINANCE MANAGER</SelectItem>
                                     <SelectItem value="REGISTRAR" className="font-bold text-xs uppercase tracking-widest">REGISTRAR</SelectItem>
                                     <SelectItem value="BURSAR" className="font-bold text-xs uppercase tracking-widest">BURSAR</SelectItem>
                                     <SelectItem value="TEACHER" className="font-bold text-xs uppercase tracking-widest">TEACHER</SelectItem>
+                                    <SelectItem value="LIBRARIAN" className="font-bold text-xs uppercase tracking-widest">LIBRARIAN</SelectItem>
+                                    <SelectItem value="DRIVER" className="font-bold text-xs uppercase tracking-widest">DRIVER</SelectItem>
+                                    <SelectItem value="BUS_CONDUCTOR" className="font-bold text-xs uppercase tracking-widest">BUS CONDUCTOR</SelectItem>
+                                    <SelectItem value="SECURITY" className="font-bold text-xs uppercase tracking-widest">SECURITY</SelectItem>
+                                    <SelectItem value="CLEANER" className="font-bold text-xs uppercase tracking-widest">CLEANER</SelectItem>
+                                    <SelectItem value="SUPPORT_STAFF" className="font-bold text-xs uppercase tracking-widest">SUPPORT STAFF</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -181,17 +198,53 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 p-6 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/30 rounded-[2rem] text-blue-700 dark:text-blue-400">
-                        <div className="h-12 w-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center shadow-sm">
-                            <Lock size={20} />
-                        </div>
-                        <div className="flex-1">
-                            <div className="text-[10px] font-black uppercase tracking-widest mb-1 italic">Access Details</div>
-                            <p className="text-[10px] font-medium leading-relaxed italic uppercase tracking-tighter opacity-80">
-                                Temporary Password: <span className="font-black text-blue-600 dark:text-blue-300">password123</span>. User must change this on first login.
-                            </p>
+                    <div className="space-y-3">
+                        <Label className="uppercase text-[10px] font-black text-slate-400 tracking-widest ml-1">Assigned Subjects (Tags)</Label>
+                        <div className="bg-muted dark:bg-slate-900/50 min-h-[56px] p-2 rounded-2xl border border-border dark:border-slate-800 flex flex-wrap gap-2 items-center">
+                            {formData.subjects.map((subject: string, idx: number) => (
+                                <Badge key={idx} variant="outline" className="h-8 gap-1 bg-white dark:bg-slate-950 font-semibold px-3 border-border dark:border-slate-800 shadow-sm rounded-xl">
+                                    {subject}
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData(prev => ({ ...prev, subjects: prev.subjects.filter((_: string, i: number) => i !== idx) }))}
+                                        className="hover:text-red-500 ml-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 p-0.5"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                </Badge>
+                            ))}
+                            <Input
+                                type="text"
+                                className="flex-1 min-w-[200px] h-8 bg-transparent border-none shadow-none focus-visible:ring-0 px-2 font-semibold text-sm placeholder:font-medium placeholder:italic"
+                                placeholder={formData.subjects.length === 0 ? "e.g. Mathematics, then press Enter..." : "Add another subject..."}
+                                value={subjectInput}
+                                onChange={(e) => setSubjectInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        if (subjectInput.trim() && !formData.subjects.includes(subjectInput.trim())) {
+                                            setFormData(prev => ({ ...prev, subjects: [...prev.subjects, subjectInput.trim()] }));
+                                            setSubjectInput('');
+                                        }
+                                    }
+                                }}
+                            />
                         </div>
                     </div>
+
+                    {!isEditMode && (
+                        <div className="flex items-center gap-4 p-6 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/30 rounded-[2rem] text-blue-700 dark:text-blue-400">
+                            <div className="h-12 w-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center shadow-sm">
+                                <Lock size={20} />
+                            </div>
+                            <div className="flex-1">
+                                <div className="text-[10px] font-black uppercase tracking-widest mb-1 italic">Access Details</div>
+                                <p className="text-[10px] font-medium leading-relaxed italic uppercase tracking-tighter opacity-80">
+                                    Temporary Password: <span className="font-black text-blue-600 dark:text-blue-300">password123</span>. User must change this on first login.
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex justify-end gap-4 pt-4">
@@ -202,7 +255,7 @@ export default function AddStaffForm({ onClose, onSuccess }: AddStaffFormProps) 
                         {loading ? <Loader2 className="animate-spin" size={20} /> : (
                             <>
                                 <Save size={18} className="mr-2" />
-                                Add Staff Member
+                                {isEditMode ? 'Save Changes' : 'Add Staff Member'}
                             </>
                         )}
                     </Button>

@@ -24,6 +24,7 @@ model User {
   lastLogin              DateTime?
   salary                 Decimal?            @db.Decimal(10, 2)
   designation            String?
+  subjects               String[]            @default([])
   schoolId               String?
   homeroomClasses        Class[]             @relation("ClassHomeroom")
   approvedApprovals      ApprovalRequest[]   @relation("ApprovedApprovals")

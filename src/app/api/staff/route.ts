@@ -16,7 +16,7 @@ export async function GET(req: Request) {
         const staffMembers = await prisma.user.findMany({
             where: {
                 schoolId: session.user.schoolId,
-                role: { in: ['PRINCIPAL', 'FINANCE_MANAGER', 'TEACHER', 'REGISTRAR', 'BURSAR'] }
+                role: { notIn: ['STUDENT', 'GUARDIAN'] }
             },
             orderBy: { createdAt: 'desc' },
             select: {
@@ -30,7 +30,8 @@ export async function GET(req: Request) {
                 createdAt: true,
                 lastLogin: true,
                 salary: true,
-                designation: true
+                designation: true,
+                subjects: true
             }
         })
 
@@ -50,13 +51,13 @@ export async function POST(req: Request) {
 
     try {
         const data = await req.json()
-        const { firstName, lastName, email, phoneNumber, role, salary, designation } = data
+        const { firstName, lastName, email, phoneNumber, role, salary, designation, subjects } = data
 
         if (email && !isOfficialEmail(email)) {
             return new NextResponse('Staff email must be an official domain email', { status: 400 })
         }
 
-        const allowedRoles = ['FINANCE_MANAGER', 'TEACHER', 'REGISTRAR', 'BURSAR']
+        const allowedRoles = ['FINANCE_MANAGER', 'TEACHER', 'REGISTRAR', 'BURSAR', 'DEPUTY_PRINCIPAL', 'PRINCIPAL', 'LIBRARIAN', 'DRIVER', 'BUS_CONDUCTOR', 'SECURITY', 'CLEANER', 'SUPPORT_STAFF']
         if (!allowedRoles.includes(role)) {
             return new NextResponse('Invalid Role', { status: 400 })
         }
@@ -78,6 +79,7 @@ export async function POST(req: Request) {
                 role,
                 salary: salary || 0,
                 designation: designation || null,
+                subjects: subjects || [],
                 schoolId: session.user.schoolId,
                 password: hashedPassword,
                 requiresPasswordChange: true

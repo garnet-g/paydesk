@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import DashboardLayout from '@/components/DashboardLayout'
-import { Plus, Search, Trash2, Mail, Phone, Loader2, ShieldAlert } from 'lucide-react'
+import { Plus, Search, Trash2, Mail, Phone, Loader2, ShieldAlert, Edit2 } from 'lucide-react'
 import AddStaffForm from '@/components/forms/AddStaffForm'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -17,6 +17,7 @@ export default function StaffPage() {
     const [staff, setStaff] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [showAddModal, setShowAddModal] = useState(false)
+    const [selectedStaff, setSelectedStaff] = useState<any>(null)
     const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
@@ -97,7 +98,7 @@ export default function StaffPage() {
                     </div>
                     <Button
                         className="h-10 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-none dark:bg-muted dark:text-foreground dark:hover:bg-slate-200 transition-colors"
-                        onClick={() => setShowAddModal(true)}
+                        onClick={() => { setSelectedStaff(null); setShowAddModal(true); }}
                     >
                         <Plus size={16} className="mr-2" />
                         Add Staff
@@ -138,15 +139,26 @@ export default function StaffPage() {
                                                 </p>
                                             </div>
                                         </div>
-                                        {member.id !== session.user.id && member.role !== 'PRINCIPAL' && (
-                                            <button
-                                                onClick={() => handleDelete(member.id, `${member.firstName} ${member.lastName}`)}
-                                                className="text-slate-300 hover:text-red-500 transition-colors p-2 -mr-2 -mt-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10"
-                                                title="Remove Staff"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        )}
+                                        <div className="flex items-center gap-1">
+                                            {member.id !== session.user.id && (
+                                                <button
+                                                    onClick={() => { setSelectedStaff(member); setShowAddModal(true); }}
+                                                    className="text-slate-300 hover:text-blue-500 transition-colors p-2 -mr-1 -mt-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/10"
+                                                    title="Edit Staff"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </button>
+                                            )}
+                                            {member.id !== session.user.id && member.role !== 'PRINCIPAL' && (
+                                                <button
+                                                    onClick={() => handleDelete(member.id, `${member.firstName} ${member.lastName}`)}
+                                                    className="text-slate-300 hover:text-red-500 transition-colors p-2 -mt-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10"
+                                                    title="Remove Staff"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-y-6 mb-6">
@@ -164,15 +176,18 @@ export default function StaffPage() {
                                         </div>
                                     </div>
 
-                                    <div className="mb-6">
-                                        <p className="text-xs text-slate-500 mb-2">Subjects</p>
-                                        <div className="flex gap-2 flex-wrap">
-                                            {/* Example Badges for design replica */}
-                                            <Badge variant="outline" className="font-medium bg-white text-slate-700 dark:bg-slate-900 dark:text-slate-300 border-border dark:border-slate-800 shadow-sm rounded-full px-3 py-0.5">Mathematics</Badge>
-                                            <Badge variant="outline" className="font-medium bg-white text-slate-700 dark:bg-slate-900 dark:text-slate-300 border-border dark:border-slate-800 shadow-sm rounded-full px-3 py-0.5">Physics</Badge>
-                                            {/* For dynamic subjects later */}
+                                    {member.subjects && member.subjects.length > 0 && (
+                                        <div className="mb-6">
+                                            <p className="text-xs text-slate-500 mb-2">Subjects</p>
+                                            <div className="flex gap-2 flex-wrap">
+                                                {member.subjects.map((subject: string, i: number) => (
+                                                    <Badge key={i} variant="outline" className="font-medium bg-white text-slate-700 dark:bg-slate-900 dark:text-slate-300 border-border dark:border-slate-800 shadow-sm rounded-full px-3 py-0.5">
+                                                        {subject}
+                                                    </Badge>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     <div className="pt-4 border-t border-border dark:border-slate-800 flex justify-between items-center">
                                         <div>
@@ -194,8 +209,9 @@ export default function StaffPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-950 rounded-3xl shadow-xl">
                         <AddStaffForm
-                            onClose={() => setShowAddModal(false)}
+                            onClose={() => { setShowAddModal(false); setSelectedStaff(null); }}
                             onSuccess={fetchStaff}
+                            initialData={selectedStaff}
                         />
                     </div>
                 </div>
