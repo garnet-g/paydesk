@@ -36,7 +36,7 @@ const STRICT_PATHS = ['/api/auth/signin', '/api/users/change-password', '/api/ad
 const STRICT_LIMIT = 10   // 10 requests per minute
 const DEFAULT_LIMIT = 120  // 120 requests per minute
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl
 
     // ── 1. Skip static files ─────────────────────────────────────────────────
