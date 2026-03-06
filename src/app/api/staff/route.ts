@@ -16,7 +16,9 @@ export async function GET(req: Request) {
         const staffMembers = await prisma.user.findMany({
             where: {
                 schoolId: session.user.schoolId,
-                role: { notIn: ['STUDENT', 'GUARDIAN'] }
+                role: {
+                    in: ['PRINCIPAL', 'DEPUTY_PRINCIPAL', 'FINANCE_MANAGER', 'REGISTRAR', 'BURSAR', 'TEACHER', 'LIBRARIAN', 'DRIVER', 'BUS_CONDUCTOR', 'SECURITY', 'CLEANER', 'SUPPORT_STAFF']
+                }
             },
             orderBy: { createdAt: 'desc' },
             select: {
@@ -31,7 +33,8 @@ export async function GET(req: Request) {
                 lastLogin: true,
                 salary: true,
                 designation: true,
-                subjects: true
+                subjects: true,
+                staffId: true
             }
         })
 
@@ -51,7 +54,7 @@ export async function POST(req: Request) {
 
     try {
         const data = await req.json()
-        const { firstName, lastName, email, phoneNumber, role, salary, designation, subjects } = data
+        const { firstName, lastName, email, phoneNumber, role, salary, designation, subjects, staffId } = data
 
         if (email && !isOfficialEmail(email)) {
             return new NextResponse('Staff email must be an official domain email', { status: 400 })
@@ -80,6 +83,7 @@ export async function POST(req: Request) {
                 salary: salary || 0,
                 designation: designation || null,
                 subjects: subjects || [],
+                staffId: staffId || null,
                 schoolId: session.user.schoolId,
                 password: hashedPassword,
                 requiresPasswordChange: true

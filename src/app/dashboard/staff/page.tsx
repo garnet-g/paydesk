@@ -165,7 +165,7 @@ export default function StaffPage() {
                                         <div>
                                             <p className="text-xs text-slate-500 mb-1">Employee ID</p>
                                             <p className="text-sm font-semibold text-foreground dark:text-white">
-                                                EMP{member.id.substring(0, 3).toUpperCase()}
+                                                {member.staffId || `EMP${member.id.substring(0, 3).toUpperCase()}`}
                                             </p>
                                         </div>
                                         <div>

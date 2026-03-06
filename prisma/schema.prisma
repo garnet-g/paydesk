@@ -25,6 +25,7 @@ model User {
   salary                 Decimal?            @db.Decimal(10, 2)
   designation            String?
   subjects               String[]            @default([])
+  staffId                String?
   schoolId               String?
   homeroomClasses        Class[]             @relation("ClassHomeroom")
   approvedApprovals      ApprovalRequest[]   @relation("ApprovedApprovals")

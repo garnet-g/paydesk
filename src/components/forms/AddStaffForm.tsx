@@ -27,7 +27,8 @@ export default function AddStaffForm({ onClose, onSuccess, initialData }: AddSta
         role: initialData?.role || 'TEACHER', // default to teacher
         designation: initialData?.designation || '', // new field
         salary: initialData?.salary ? initialData.salary.toString() : '',
-        subjects: initialData?.subjects || []
+        subjects: initialData?.subjects || [],
+        staffId: initialData?.staffId || ''
     })
 
     const isEditMode = !!initialData
@@ -137,6 +138,16 @@ export default function AddStaffForm({ onClose, onSuccess, initialData }: AddSta
 
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Staff ID / Employee Number</Label>
+                            <Input
+                                type="text"
+                                className="h-14 bg-muted dark:bg-slate-900/50 border-border dark:border-slate-800 rounded-2xl font-bold text-foreground dark:text-white uppercase"
+                                placeholder="e.g. EMP001"
+                                value={formData.staffId}
+                                onChange={(e) => setFormData({ ...formData, staffId: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number</Label>
                             <Input
                                 type="tel"
@@ -147,6 +158,9 @@ export default function AddStaffForm({ onClose, onSuccess, initialData }: AddSta
                                 required
                             />
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Staff Role</Label>
                             <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
@@ -169,9 +183,6 @@ export default function AddStaffForm({ onClose, onSuccess, initialData }: AddSta
                                 </SelectContent>
                             </Select>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Designation Tag / Title</Label>
                             <Input
@@ -182,6 +193,9 @@ export default function AddStaffForm({ onClose, onSuccess, initialData }: AddSta
                                 onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
                             />
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Salary Package (Monthly)</Label>
                             <div className="relative">

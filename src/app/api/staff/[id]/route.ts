@@ -21,7 +21,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
         }
 
         const data = await req.json()
-        const { firstName, lastName, email, phoneNumber, role, salary, designation, subjects } = data
+        const { firstName, lastName, email, phoneNumber, role, salary, designation, subjects, staffId } = data
 
         const allowedRoles = ['FINANCE_MANAGER', 'TEACHER', 'REGISTRAR', 'BURSAR', 'DEPUTY_PRINCIPAL', 'PRINCIPAL', 'LIBRARIAN', 'DRIVER', 'BUS_CONDUCTOR', 'SECURITY', 'CLEANER', 'SUPPORT_STAFF']
         if (role && !allowedRoles.includes(role)) {
@@ -39,6 +39,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
                 salary: salary !== undefined ? salary : undefined,
                 designation: designation !== undefined ? designation : undefined,
                 subjects: subjects !== undefined ? subjects : undefined,
+                staffId: staffId !== undefined ? staffId : undefined,
             }
         })
 
