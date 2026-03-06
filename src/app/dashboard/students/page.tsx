@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { GraduationCap, Search, Filter, Edit, Trash2, FileText, Download, Users, UserPlus, AlertTriangle, Loader2, ChevronLeft, Building2, ChevronRight, Eye } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import StudentForm from '@/components/forms/StudentForm'
 import StudentProfileModal from '@/components/modals/StudentProfileModal'
 import Link from 'next/link'
@@ -136,102 +137,108 @@ export default function StudentsPage() {
 
     return (
         <DashboardLayout>
-            <div className="flex-1 space-y-8 p-8 pt-6 animate-in fade-in duration-500">
+            <div className="space-y-10 animate-fade-in pb-12">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
+                <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-2">
                             {selectedClass ? (
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-10 w-10 bg-muted hover:bg-slate-200 text-slate-600 rounded-xl"
+                                <button
                                     onClick={() => { setSelectedClass(null); setStudents([]); }}
+                                    className="flex h-8 w-8 items-center justify-center rounded-full bg-muted/50 text-muted-foreground transition-all hover:bg-muted"
                                 >
-                                    <ChevronLeft size={20} />
-                                </Button>
+                                    <ChevronLeft size={16} />
+                                </button>
                             ) : (
-                                <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                                    <Users size={24} />
-                                </div>
+                                <Users size={20} className="text-blue-600" />
                             )}
-                            <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">
-                                {selectedClass ? `${selectedClass.name} ${selectedClass.stream || ''}` : 'Students'}
-                            </h2>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                {selectedClass ? 'Division Registry' : 'Ecumenical Student Registry'}
+                            </span>
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium ">
-                            {selectedClass ? 'Viewing students in this class' : 'Manage student profiles and class enrollment'} at <span className="text-blue-600 font-semibold  ">{session?.user?.schoolName}</span>
+                        <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+                            {selectedClass ? `${selectedClass.name}` : 'Student Body'}
+                        </h1>
+                        <p className="max-w-xl text-sm font-medium text-muted-foreground">
+                            {selectedClass
+                                ? `Active enrollment for ${selectedClass.name} ${selectedClass.stream || ''}`
+                                : `Comprehensive directory of ${totalStudents} students at ${session?.user?.schoolName || 'the institution'}.`
+                            }
                         </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-4">
+
+                    <div className="flex items-center gap-3">
                         {session?.user?.role !== 'SUPER_ADMIN' && (
-                            <Button asChild variant="outline" className="h-12 px-6 rounded-2xl font-semibold text-xs   border-border bg-white hover:bg-muted dark:bg-slate-900 dark:border-slate-800">
-                                <Link href="/dashboard/settings/import">
+                            <Link href="/dashboard/settings/import">
+                                <Button variant="outline" className="h-12 rounded-2xl border-border bg-white px-6 font-bold text-xs uppercase tracking-widest shadow-sm hover:bg-accent">
                                     <Download size={18} className="mr-2 text-blue-600" />
-                                    Batch Upload
-                                </Link>
-                            </Button>
+                                    Batch Import
+                                </Button>
+                            </Link>
                         )}
-                        <Button
+                        <button
+                            disabled={isLimitReached}
                             className={cn(
-                                "h-12 px-8 rounded-2xl font-semibold text-xs   shadow-xl transition-all",
-                                isLimitReached
-                                    ? "bg-slate-200 text-slate-500 cursor-not-allowed"
-                                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200 dark:shadow-none"
+                                "flex h-12 items-center justify-center gap-2 rounded-2xl px-8 text-xs font-bold uppercase tracking-widest text-white shadow-xl transition-all active:scale-[0.98]",
+                                isLimitReached ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-[#030213] hover:bg-black shadow-gray-200/50"
                             )}
                             onClick={handleAddStudent}
                         >
-                            <UserPlus size={18} className="mr-2" />
-                            {isLimitReached ? 'LIMIT REACHED' : 'Add New Student'}
-                        </Button>
+                            <UserPlus size={18} />
+                            {isLimitReached ? 'Registry Full' : 'Enroll Student'}
+                        </button>
                     </div>
                 </div>
 
                 {loading && !selectedClass && (
-                    <div className="flex justify-center p-20">
-                        <div className="inline-flex items-center gap-3">
-                            <Loader2 className="animate-spin text-blue-600" size={24} />
-                            <span className="text-lg font-semibold text-slate-400   tracking-tight">Syncing Divisions...</span>
+                    <div className="flex h-[400px] items-center justify-center rounded-[2.5rem] border border-border bg-muted/5">
+                        <div className="flex flex-col items-center gap-4">
+                            <Loader2 className="h-10 w-10 animate-spin text-blue-600/40" />
+                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground/40">Synchronizing Rosters...</p>
                         </div>
                     </div>
                 )}
 
                 {!selectedClass && !loading && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {classes.length === 0 ? (
-                            <div className="col-span-full py-20 text-center bg-muted rounded-3xl border border-dashed border-border">
-                                <Building2 size={48} className="mx-auto text-slate-300 mb-4" />
-                                <h3 className="text-xl font-semibold text-slate-800   tracking-tight">No Divisions Configured</h3>
-                                <p className="text-slate-500 font-medium mt-2">Setup classes/divisions first before viewing the registry.</p>
+                            <div className="col-span-full flex flex-col items-center justify-center py-24 text-center rounded-[2.5rem] border border-dashed border-border bg-muted/10">
+                                <Building2 size={48} className="text-muted-foreground/20 mb-6" />
+                                <h3 className="text-xl font-bold text-foreground">No Classes Configured</h3>
+                                <p className="mt-2 text-sm font-medium text-muted-foreground max-w-xs">
+                                    Set up your educational tiers and segments to begin managing the student registry.
+                                </p>
                             </div>
                         ) : (
                             classes.map(c => (
-                                <Card
+                                <motion.div
                                     key={c.id}
-                                    className="cursor-pointer group hover:-translate-y-1 hover:shadow-xl hover:border-blue-200 transition-all border-border rounded-[2rem] overflow-hidden"
+                                    whileHover={{ y: -5 }}
+                                    className="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-sm transition-all hover:border-blue-600/10 hover:shadow-2xl"
                                     onClick={() => setSelectedClass(c)}
                                 >
-                                    <CardHeader className="bg-muted/50 p-6 border-b border-border group-hover:bg-blue-50/50 transition-colors">
-                                        <div className="flex items-start justify-between">
-                                            <div className="h-10 w-10 bg-white rounded-xl shadow-sm border border-border flex items-center justify-center text-blue-600">
-                                                <Users size={20} />
-                                            </div>
-                                            <Badge variant="outline" className="font-semibold text-[10px]   bg-white">
-                                                {c._count?.students || 0} Students
-                                            </Badge>
+                                    <div className="mb-8 flex items-start justify-between">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                                            <GraduationCap size={24} />
                                         </div>
-                                        <CardTitle className="text-xl font-semibold text-foreground  tracking-tight mt-4">
-                                            {c.name} {c.stream && <span className="text-blue-600">{c.stream}</span>}
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-6">
-                                        <p className="text-xs font-semibold text-slate-400 mb-4">Class Overview</p>
-                                        <Button variant="ghost" className="w-full justify-between hover:bg-blue-50 hover:text-blue-700 text-slate-500 font-semibold text-[10px]   rounded-xl transition-colors">
-                                            View Students
-                                            <ChevronRight size={14} />
-                                        </Button>
-                                    </CardContent>
-                                </Card>
+                                        <span className="rounded-full bg-accent px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                            {c._count?.students || 0} Members
+                                        </span>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h3 className="text-2xl font-black tracking-tight text-foreground truncate">
+                                            {c.name}
+                                        </h3>
+                                        <p className="text-xs font-bold uppercase tracking-[0.15em] text-blue-600/60">
+                                            {c.stream || 'Global Segment'}
+                                        </p>
+                                    </div>
+                                    <div className="mt-8 border-t border-border/50 pt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600">
+                                            Open Registry <ChevronRight size={14} />
+                                        </span>
+                                    </div>
+                                </motion.div>
                             ))
                         )}
                     </div>
@@ -239,147 +246,137 @@ export default function StudentsPage() {
 
                 {/* Tracking View For Selected Class */}
                 {selectedClass && (
-                    <Card className="border-none shadow-xl bg-white dark:bg-slate-950 rounded-[2rem] overflow-hidden animate-in slide-in-from-right-4 duration-500">
-                        <CardHeader className="bg-muted dark:bg-slate-900/50 border-b border-border dark:border-slate-900 p-8">
-                            <div className="flex flex-col lg:flex-row gap-6 items-center">
-                                <div className="relative flex-1 group">
-                                    <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
-                                    <Input
-                                        type="text"
-                                        placeholder="Search by name or admission number..."
-                                        className="h-14 pl-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-semibold text-foreground dark:text-white group-focus-within:ring-2 ring-blue-500/20 transition-all shadow-sm"
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                </div>
-                                <div className="flex items-center gap-4 w-full lg:w-auto">
-                                    <Select value={statusFilter} onValueChange={v => setStatusFilter(v)}>
-                                        <SelectTrigger className="h-14 w-full lg:w-[220px] bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-semibold  text-[10px]  text-slate-600 dark:text-white">
-                                            <div className="flex items-center gap-2">
-                                                <Filter size={16} className="text-blue-600" />
-                                                <SelectValue placeholder="Status: All" />
-                                            </div>
-                                        </SelectTrigger>
-                                        <SelectContent className="rounded-2xl border-border dark:border-slate-800">
-                                            <SelectItem value="ALL" className="font-semibold">All Students</SelectItem>
-                                            <SelectItem value="ACTIVE" className="font-semibold text-emerald-600 border-none">Active</SelectItem>
-                                            <SelectItem value="INACTIVE" className="font-semibold text-slate-500 border-none">Inactive</SelectItem>
-                                            <SelectItem value="SUSPENDED" className="font-semibold text-amber-600 border-none">Suspended</SelectItem>
-                                            <SelectItem value="GRADUATED" className="font-semibold text-blue-600 border-none">Graduated</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <div className="hidden lg:flex flex-col items-center justify-center px-6 h-14 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl whitespace-nowrap">
-                                        <span className="text-[10px] font-semibold text-blue-400 dark:text-blue-500 leading-none mb-1">Total Students</span>
-                                        <span className="text-xl font-semibold text-blue-700 dark:text-blue-400 leading-none">{filteredStudents.length}</span>
-                                    </div>
-                                </div>
+                    <div className="space-y-8 animate-in slide-in-from-right-4 duration-500">
+                        {/* Filters & Search */}
+                        <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+                            <div className="relative group flex-1">
+                                <Search size={22} className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 transition-colors group-focus-within:text-blue-600" />
+                                <input
+                                    type="text"
+                                    placeholder="Search by student name or unique ID..."
+                                    className="w-full h-16 rounded-[1.5rem] border border-border bg-card pl-14 pr-6 text-base font-medium transition-all focus:border-blue-600/50 focus:outline-none focus:ring-4 focus:ring-blue-600/5 shadow-sm"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
                             </div>
-                        </CardHeader>
-
-                        <CardContent className="p-0">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-muted/30 dark:bg-slate-900/10">
-                                {loading ? (
-                                    <div className="col-span-full py-32 text-center">
-                                        <div className="inline-flex items-center gap-3">
-                                            <Loader2 className="animate-spin text-blue-600" size={24} />
-                                            <span className="text-lg font-semibold text-slate-400   tracking-tight">Loading students...</span>
+                            <div className="flex items-center gap-4">
+                                <Select value={statusFilter} onValueChange={v => setStatusFilter(v)}>
+                                    <SelectTrigger className="h-16 w-full lg:w-[240px] rounded-2xl border-border bg-card font-bold text-[11px] uppercase tracking-widest text-muted-foreground shadow-sm">
+                                        <div className="flex items-center gap-3">
+                                            <Filter size={18} className="text-blue-600/40" />
+                                            <SelectValue placeholder="Status: All" />
                                         </div>
-                                    </div>
-                                ) : filteredStudents.length === 0 ? (
-                                    <div className="col-span-full py-32 text-center">
-                                        <div className="max-w-xs mx-auto flex flex-col items-center">
-                                            <div className="h-20 w-20 bg-muted dark:bg-slate-900 rounded-[2rem] flex items-center justify-center text-slate-300 dark:text-slate-800 mb-6 shadow-inner">
-                                                <GraduationCap size={48} />
-                                            </div>
-                                            <h3 className="text-xl font-semibold text-foreground dark:text-white   tracking-tight mb-2">No Students Found</h3>
-                                            <p className="text-slate-400 text-sm font-medium ">
-                                                No students matching your search criteria were found in this division.
-                                            </p>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    filteredStudents.map((student) => (
-                                        <Card key={student.id} className="border-border dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-lg transition-all animate-in zoom-in-95 duration-300">
-                                            <CardContent className="p-6">
-                                                <div className="flex justify-between items-start mb-6">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center">
-                                                            {student.firstName[0]}{student.lastName[0]}
-                                                        </div>
-                                                        <div>
-                                                            <h3 className="font-bold text-foreground dark:text-white capitalize">{student.firstName} {student.lastName}</h3>
-                                                            <p className="text-xs text-slate-500  ">{student.admissionNumber}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="bg-slate-950 text-white font-semibold text-[10px] px-3 py-1 rounded-full capitalize">
-                                                        {student.status?.toLowerCase() || 'Active'}
-                                                    </div>
-                                                </div>
-
-                                                <div className="space-y-3 mb-6">
-                                                    <div className="flex justify-between items-center text-sm py-2 border-b border-slate-50 dark:border-slate-800">
-                                                        <span className="text-slate-500">Class:</span>
-                                                        <span className="font-semibold text-foreground dark:text-white text-right">
-                                                            {student.class ? `${student.class.name} ${student.class.stream ? `- ${student.class.stream}` : ''}` : 'Unassigned'}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center text-sm py-2 border-b border-slate-50 dark:border-slate-800">
-                                                        <span className="text-slate-500">Attendance:</span>
-                                                        <span className="font-semibold text-foreground dark:text-white text-right">100.0%</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-start text-sm py-2">
-                                                        <span className="text-slate-500 mt-1">Parent/Guardian:</span>
-                                                        <div className="text-right">
-                                                            {student.guardians && student.guardians.length > 0 ? (
-                                                                <>
-                                                                    <p className="font-semibold text-foreground dark:text-white capitalize">{student.guardians[0].user.firstName} {student.guardians[0].user.lastName}</p>
-                                                                    <p className="text-xs text-slate-500 mt-1">{student.guardians[0].user.phoneNumber}</p>
-                                                                </>
-                                                            ) : (
-                                                                <p className="font-semibold text-foreground dark:text-white text-xs">Unassigned</p>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <Button
-                                                    variant="outline"
-                                                    className="w-full h-11 rounded-xl border-border dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-muted dark:hover:bg-slate-800 transition-colors"
-                                                    onClick={() => {
-                                                        setSelectedProfileStudent(student);
-                                                        setShowProfileModal(true);
-                                                    }}
-                                                >
-                                                    <Eye className="w-4 h-4 mr-2" /> View Details
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                    ))
-                                )}
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border">
+                                        <SelectItem value="ALL" className="font-bold text-xs">ALL ENROLLMENTS</SelectItem>
+                                        <SelectItem value="ACTIVE" className="font-bold text-xs text-green-600">ACTIVE ONLY</SelectItem>
+                                        <SelectItem value="INACTIVE" className="font-bold text-xs text-muted-foreground">INACTIVE</SelectItem>
+                                        <SelectItem value="SUSPENDED" className="font-bold text-xs text-amber-600">SUSPENDED</SelectItem>
+                                        <SelectItem value="GRADUATION" className="font-bold text-xs text-blue-600">ALUMNI</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
-                        </CardContent>
+                        </div>
 
-                        {/* Footer / Pagination Placeholder */}
-                        <div className="bg-muted dark:bg-slate-900/30 border-t border-border dark:border-slate-900 p-6 flex justify-between items-center whitespace-nowrap overflow-x-auto gap-8">
-                            <div className="text-[10px] font-semibold text-slate-400    shrink-0">
-                                Displaying {filteredStudents.length} Students •
+                        {/* Student Cards Grid */}
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {loading ? (
+                                [1, 2, 3, 4, 5, 6].map(i => (
+                                    <div key={i} className="h-[280px] animate-pulse rounded-[2rem] bg-muted/50"></div>
+                                ))
+                            ) : filteredStudents.length === 0 ? (
+                                <div className="col-span-full flex flex-col items-center justify-center py-32 text-center rounded-[2.5rem] border border-dashed border-border bg-muted/10">
+                                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-white text-muted-foreground/10 shadow-sm border border-border">
+                                        <GraduationCap size={40} />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-foreground">Registry Empty</h3>
+                                    <p className="mt-2 text-sm font-medium text-muted-foreground max-w-xs">
+                                        No students in this division match your criteria. Expand your search or enroll a student.
+                                    </p>
+                                </div>
+                            ) : (
+                                filteredStudents.map((student, index) => (
+                                    <motion.div
+                                        key={student.id}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: index * 0.03 }}
+                                        className="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-sm transition-all hover:border-black/10 hover:shadow-xl"
+                                    >
+                                        <div>
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 text-xl font-bold text-white shadow-lg shadow-blue-100">
+                                                    {student.firstName[0]}{student.lastName[0]}
+                                                </div>
+                                                <div className={cn(
+                                                    "rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-widest",
+                                                    student.status === 'ACTIVE' ? "bg-green-50 text-green-600 ring-1 ring-green-600/10" :
+                                                        student.status === 'SUSPENDED' ? "bg-amber-50 text-amber-600 ring-1 ring-amber-600/10" :
+                                                            "bg-muted text-muted-foreground ring-1 ring-border"
+                                                )}>
+                                                    {student.status || 'Active'}
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-1">
+                                                <h3 className="truncate text-lg font-extrabold tracking-tight text-foreground capitalize">
+                                                    {student.firstName} {student.lastName}
+                                                </h3>
+                                                <p className="font-mono text-[10px] font-bold text-muted-foreground/60">{student.admissionNumber}</p>
+                                            </div>
+
+                                            <div className="mt-6 space-y-3 pb-6 border-b border-border/50">
+                                                <div className="flex justify-between items-center text-[11px] font-medium">
+                                                    <span className="text-muted-foreground/60 uppercase tracking-widest">Attendance</span>
+                                                    <span className="font-bold text-foreground">98.5%</span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-[11px] font-medium">
+                                                    <span className="text-muted-foreground/60 uppercase tracking-widest">Performance</span>
+                                                    <span className="font-bold text-blue-600">Top 10%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-all hover:bg-[#030213] hover:text-white"
+                                            onClick={() => {
+                                                setSelectedProfileStudent(student);
+                                                setShowProfileModal(true);
+                                            }}
+                                        >
+                                            <Eye size={16} /> Details
+                                        </button>
+                                    </motion.div>
+                                ))
+                            )}
+                        </div>
+
+                        {/* Footer Status */}
+                        <div className="flex items-center justify-between rounded-2xl bg-muted/20 p-4">
+                            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                                Viewing {filteredStudents.length} Students in {selectedClass.name}
                             </div>
                             {isLimitReached && (
-                                <div className="flex items-center gap-3 px-4 py-2 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/30 rounded-xl shrink-0">
-                                    <AlertTriangle size={14} className="text-red-600" />
-                                    <span className="text-[10px] font-semibold text-red-600  tracking-[0.1em]">Free Tier Limit Reached</span>
-                                    <Button variant="link" className="h-auto p-0 text-[10px] font-semibold  text-blue-600 hover:text-blue-700 underline shadow-none">Upgrade</Button>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-600 ring-1 ring-red-600/10">
+                                        <AlertTriangle size={14} />
+                                        Limit Reached
+                                    </div>
+                                    <button className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:opacity-80 underline">
+                                        Upgrade
+                                    </button>
                                 </div>
                             )}
                         </div>
-                    </Card>
+                    </div>
                 )}
             </div>
 
-            {/* Modals */}
+            {/* Modals & Forms Overlay */}
             {showFormModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-[#030213]/80 backdrop-blur-sm animate-fade-in" onClick={() => setShowFormModal(false)}></div>
+                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slide-up rounded-[2.5rem] bg-white shadow-2xl">
                         <StudentForm
                             student={selectedStudent}
                             onClose={() => {
@@ -390,16 +387,17 @@ export default function StudentsPage() {
                                 setShowFormModal(false)
                                 if (selectedClass) {
                                     fetchStudents(selectedClass.id)
-                                    // also update classes so counts update
                                     fetchClasses()
                                 } else {
                                     fetchClasses()
                                 }
+                                toast.success("Registry updated successfully")
                             }}
                         />
                     </div>
                 </div>
             )}
+
             {showProfileModal && selectedProfileStudent && (
                 <StudentProfileModal
                     student={selectedProfileStudent}
