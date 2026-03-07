@@ -51,7 +51,7 @@ export default function ReportCardsPage() {
                 }
                 if (classRes.ok) setClasses(await classRes.json())
             } catch (error) {
-                toast.error("Failed to load generic data")
+                toast.error("Failed to load initial data")
             }
         }
         fetchInitial()
@@ -113,13 +113,22 @@ export default function ReportCardsPage() {
 
     return (
         <DashboardLayout>
-            <div className="flex-1 space-y-8 p-8 pt-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-                    <div>
-                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white ">Report Cards</h2>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium">
-                            Generate and print terminal report cards for students and classes.
-                        </p>
+            <div className="flex-1 space-y-8 p-8 pt-6 animate-in fade-in duration-500">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <FileText size={28} className="text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
+                                Report Cards
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
+                                <FileText size={12} className="text-blue-500" />
+                                Generate and print student report cards
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -191,15 +200,15 @@ export default function ReportCardsPage() {
                         ) : loadingStudents ? (
                             <div className="p-24 text-center">
                                 <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
-                                <p className="font-semibold text-foreground   text-xs">Accessing Student Records...</p>
+                                <p className="font-semibold text-foreground text-sm">Loading student records...</p>
                             </div>
                         ) : students.length === 0 ? (
                             <div className="p-24 text-center">
                                 <div className="w-24 h-24 bg-amber-50 rounded-3xl flex items-center justify-center mb-8 mx-auto shadow-inner">
                                     <Search className="h-12 w-12 text-amber-300" />
                                 </div>
-                                <h3 className="text-2xl font-semibold text-foreground mb-2  tracking-tight">Zero Results</h3>
-                                <p className="max-w-md text-slate-500 font-medium mx-auto">We couldn't find any active students in this class. Please verify your enrollment records.</p>
+                                <h3 className="text-2xl font-semibold text-foreground mb-2 tracking-tight">No students found</h3>
+                                <p className="max-w-md text-slate-500 font-medium mx-auto">No students assigned to this class. Please verify your enrollment records.</p>
                             </div>
                         ) : (
                             <div className="p-0 animate-in fade-in duration-500">
@@ -214,11 +223,11 @@ export default function ReportCardsPage() {
                                         />
                                     </div>
                                     <Button
-                                        className="h-11 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs   rounded-xl px-8 shadow-lg shadow-blue-100"
-                                        onClick={() => toast.info("Batch processing is undergoing final testing.")}
+                                        className="h-11 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl px-8 shadow-lg shadow-blue-100"
+                                        onClick={() => toast.info("Batch printing feature is coming soon.")}
                                     >
                                         <Printer className="mr-2 h-4 w-4" />
-                                        BATCH PRINT CLASS ({filteredStudents.length})
+                                        BATCH PRINT ({filteredStudents.length})
                                     </Button>
                                 </div>
 
@@ -226,9 +235,9 @@ export default function ReportCardsPage() {
                                     <table className="w-full text-left">
                                         <thead>
                                             <tr className="bg-muted/50">
-                                                <th className="px-8 py-5 text-[10px] font-semibold text-foreground  ">Student Information</th>
-                                                <th className="px-8 py-5 text-[10px] font-semibold text-foreground   text-center">Admission No.</th>
-                                                <th className="px-8 py-5 text-[10px] font-semibold text-foreground   text-right">PDF Generator</th>
+                                                <th className="px-8 py-5 text-[10px] font-semibold text-foreground">Student</th>
+                                                <th className="px-8 py-5 text-[10px] font-semibold text-foreground text-center">Admission No.</th>
+                                                <th className="px-8 py-5 text-[10px] font-semibold text-foreground text-right">Download</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100">

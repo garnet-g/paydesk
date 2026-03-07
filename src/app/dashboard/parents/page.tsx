@@ -68,7 +68,7 @@ export default function ParentsPage() {
             setParents(Array.isArray(data) ? data : [])
         } catch (error) {
             console.error('Failed to fetch parents:', error)
-            toast.error("Resource acquisition failure")
+            toast.error("Failed to load parent accounts")
         } finally {
             setLoading(false)
         }
@@ -82,11 +82,11 @@ export default function ParentsPage() {
                 body: JSON.stringify({ isActive: !parent.isActive })
             })
             if (res.ok) {
-                toast.success(`Access ${parent.isActive ? 'suspended' : 'restored'} successfully`)
+                toast.success(`Access ${!parent.isActive ? 'enabled' : 'disabled'} successfully`)
                 fetchParents()
             }
         } catch (error) {
-            toast.error('System synchronization error')
+            toast.error('Could not update access status')
         }
     }
 
@@ -96,14 +96,14 @@ export default function ParentsPage() {
         try {
             const res = await fetch(`/api/parents/${parent.id}`, { method: 'DELETE' })
             if (res.ok) {
-                toast.success("Account permanently expunged")
+                toast.success("Parent account removed successfully")
                 fetchParents()
             } else {
                 const data = await res.json()
-                toast.error(data.error || 'Deletion rejected')
+                toast.error(data.error || 'Could not remove parent')
             }
         } catch (error) {
-            toast.error('Data destruction process failed')
+            toast.error('Failed to remove parent account')
         }
     }
 
@@ -113,12 +113,12 @@ export default function ParentsPage() {
         try {
             const res = await fetch(`/api/users/${parent.id}/reset-password`, { method: 'POST' })
             if (res.ok) {
-                toast.success('Authentication reset successfully!')
+                toast.success('Password reset successfully! Parent will receive reset instructions.')
             } else {
-                toast.error('Failed to reset security terminal')
+                toast.error('Could not reset password')
             }
         } catch (error) {
-            toast.error('Cryptographic sync failure')
+            toast.error('Password reset failed')
         }
     }
 
@@ -161,13 +161,13 @@ export default function ParentsPage() {
                 setShowFormModal(false)
                 setEditingParent(null)
                 fetchParents()
-                toast.success(editingParent ? "Registry record updated" : "Parent account established")
+                toast.success(editingParent ? "Parent information updated" : "Parent account created successfully")
             } else {
                 const data = await res.json()
-                toast.error(data.error || 'Operation rejected')
+                toast.error(data.error || 'Could not save parent')
             }
         } catch (error) {
-            toast.error('Database connection error during write')
+            toast.error('Failed to save parent information')
         } finally {
             setIsSaving(false)
         }
@@ -193,11 +193,11 @@ export default function ParentsPage() {
                         </div>
                         <div>
                             <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
-                                Guardians
+                                Parents
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
                                 <ShieldCheck size={12} className="text-blue-500" />
-                                Family access & communications hub
+                                Manage parent accounts and communications
                             </p>
                         </div>
                     </div>
@@ -255,14 +255,14 @@ export default function ParentsPage() {
                         <Search size={18} className="text-slate-400" />
                         <input
                             type="text"
-                            placeholder="OPERATIONAL SEARCH: FIND GUARDIANS BY IDENTITY, BIO OR CHANNEL..."
-                            className="flex-1 bg-transparent border-none focus:ring-0 text-xs font-black uppercase tracking-widest placeholder:opacity-30"
+                            placeholder="Search parents by name, email, or phone..."
+                            className="flex-1 bg-transparent border-none focus:ring-0 text-xs font-semibold placeholder:text-slate-400"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900 rounded-xl text-[9px] font-black uppercase italic tracking-widest text-slate-400">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900 rounded-xl text-[9px] font-semibold tracking-wide text-slate-600 dark:text-slate-300">
                             <Loader2 size={12} className={cn("animate-spin", !loading && "hidden")} />
-                            {loading ? "Syncing..." : "Ready"}
+                            {loading ? "Loading..." : "Ready"}
                         </div>
                     </div>
                 </Card>
@@ -273,11 +273,11 @@ export default function ParentsPage() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50 dark:bg-white/5 border-b border-border dark:border-slate-900">
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Identity Platform</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Comm Channels</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Associated Units</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Access Crypt</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic text-right">Operations</th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Name</th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Contact</th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Children Linked</th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
@@ -297,8 +297,8 @@ export default function ParentsPage() {
                                                 <div className="h-24 w-24 bg-slate-50 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                                                     <Users size={40} className="text-slate-200" />
                                                 </div>
-                                                <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-2">Null Data Array</h3>
-                                                <p className="text-slate-500 font-bold text-xs uppercase italic tracking-widest">No guardian records identified within current filter.</p>
+                                                <h3 className="text-2xl font-semibold tracking-tight mb-2 text-foreground dark:text-white">No parents found</h3>
+                                                <p className="text-slate-500 font-medium text-sm">No matches for your current search or filter.</p>
                                             </td>
                                         </tr>
                                     ) : (
@@ -319,22 +319,22 @@ export default function ParentsPage() {
                                                         </div>
                                                         <div>
                                                             <div className="text-sm font-black uppercase tracking-tight text-foreground dark:text-white">{parent.firstName} {parent.lastName}</div>
-                                                            <div className="text-[10px] font-bold text-slate-400 uppercase italic flex items-center gap-2 mt-1">
-                                                                <Calendar size={10} />
-                                                                DEPLOYED: {new Date(parent.createdAt).toLocaleDateString()}
+                                                        <div className="text-[10px] font-medium text-slate-400 flex items-center gap-2 mt-1">
+                                                            <Calendar size={10} />
+                                                            Registered: {new Date(parent.createdAt).toLocaleDateString()}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-6">
                                                     <div className="space-y-2">
-                                                        <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-tight text-slate-600 dark:text-slate-400">
+                                                        <div className="flex items-center gap-2 text-[11px] font-medium text-slate-600 dark:text-slate-400">
                                                             <Mail size={12} className="text-blue-500" />
                                                             {parent.email}
                                                         </div>
-                                                        <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-tight text-slate-600 dark:text-slate-400">
+                                                        <div className="flex items-center gap-2 text-[11px] font-medium text-slate-600 dark:text-slate-400">
                                                             <Phone size={12} className="text-emerald-500" />
-                                                            {parent.phoneNumber || 'NO SIGNAL'}
+                                                            {parent.phoneNumber || 'N/A'}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -342,23 +342,23 @@ export default function ParentsPage() {
                                                     <div className="flex flex-wrap gap-2">
                                                         {parent.guardianships && parent.guardianships.length > 0 ? (
                                                             parent.guardianships.map((g: any) => (
-                                                                <Badge key={g.student.id} variant="outline" className="h-6 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/30 text-blue-600 text-[10px] font-black uppercase tracking-widest px-2">
+                                                                <Badge key={g.student.id} variant="outline" className="h-6 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/30 text-blue-600 text-[10px] font-medium px-2">
                                                                     {g.student.firstName}
                                                                 </Badge>
                                                             ))
                                                         ) : (
-                                                            <span className="text-[10px] font-black uppercase italic text-slate-300">UNLINKED</span>
+                                                            <span className="text-[10px] font-medium text-slate-400">Not linked</span>
                                                         )}
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-6">
                                                     <Badge className={cn(
-                                                        "h-7 rounded-full px-3 text-[9px] font-black uppercase tracking-[0.1em] border-none shadow-sm",
+                                                        "h-7 rounded-full px-3 text-[9px] font-semibold tracking-wide border-none shadow-sm capitalize",
                                                         parent.isActive
                                                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                                                            : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                                                            : "bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400"
                                                     )}>
-                                                        {parent.isActive ? 'OPERATIONAL' : 'OFFLINE'}
+                                                        {parent.isActive ? 'Active' : 'Inactive'}
                                                     </Badge>
                                                 </td>
                                                 <td className="px-8 py-6 text-right">

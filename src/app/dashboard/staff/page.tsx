@@ -98,7 +98,7 @@ export default function StaffPage() {
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
                                 <ShieldAlert size={12} className="text-blue-500" />
-                                Staff directory & payroll governance
+                                Manage staff directory and payroll
                             </p>
                         </div>
                     </div>

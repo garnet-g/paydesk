@@ -24,7 +24,7 @@ export default function GradePromotionPage() {
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
                                 <ShieldCheck size={12} className="text-blue-500" />
-                                Student grade promotion & transitioning hub
+                                Manage student grade transitions
                             </p>
                         </div>
                     </div>
