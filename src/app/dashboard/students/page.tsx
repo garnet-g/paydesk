@@ -180,7 +180,7 @@ export default function StudentsPage() {
                             disabled={isLimitReached}
                             className={cn(
                                 "flex h-12 items-center justify-center gap-2 rounded-2xl px-8 text-xs font-bold uppercase tracking-widest text-white shadow-xl transition-all active:scale-[0.98]",
-                                isLimitReached ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-[#030213] hover:bg-black shadow-gray-200/50"
+                                isLimitReached ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 shadow-blue-200/50"
                             )}
                             onClick={handleAddStudent}
                         >

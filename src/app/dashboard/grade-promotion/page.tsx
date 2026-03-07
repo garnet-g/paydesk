@@ -15,8 +15,8 @@ export default function GradePromotionPage() {
                 {/* Modern Page Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-5">
-                        <div className="h-14 w-14 bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-white shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-800">
-                            <GraduationCap size={28} className="text-blue-400" />
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <GraduationCap size={28} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
@@ -35,19 +35,19 @@ export default function GradePromotionPage() {
                     <CardContent className="p-8 md:p-10">
                         <div className="flex flex-col md:flex-row gap-10">
                             <div className="md:w-1/3">
-                                <div className="p-6 bg-slate-900 rounded-[2rem] text-white relative overflow-hidden h-full flex flex-col justify-between">
+                                <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-[2rem] text-slate-900 dark:text-white relative overflow-hidden h-full flex flex-col justify-between border border-border dark:border-slate-800 shadow-sm">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
                                     <div className="relative z-10">
-                                        <div className="h-12 w-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10 mb-6">
-                                            <Info size={22} className="text-blue-400" />
+                                        <div className="h-12 w-12 bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center border border-border dark:border-slate-800 shadow-sm mb-6">
+                                            <Info size={22} className="text-blue-600 dark:text-blue-400" />
                                         </div>
                                         <h3 className="text-xl font-black uppercase italic tracking-tighter mb-2">Protocol Overview</h3>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
                                             Formalizing student transitions across academic units.
                                         </p>
                                     </div>
-                                    <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
-                                        <div className="text-[10px] font-black text-blue-400 uppercase italic mb-1">Authorization Mode</div>
+                                    <div className="mt-8 pt-6 border-t border-border dark:border-white/10 relative z-10">
+                                        <div className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase italic mb-1">Authorization Mode</div>
                                         <div className="text-sm font-black tracking-widest uppercase italic">PRINCIPAL REQUIRED</div>
                                     </div>
                                 </div>

@@ -171,7 +171,7 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                     </p>
                     <div className="flex justify-center gap-4">
                         <Button
-                            className="h-12 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-widest dark:bg-white dark:text-slate-950"
+                            className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 dark:bg-white dark:text-slate-950 transition-all hover:scale-105 active:scale-95"
                             onClick={() => {
                                 setStep('select-classes')
                                 setFromClassId('')
@@ -207,7 +207,7 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                     return (
                         <div key={s.key} className="flex items-center gap-3 flex-1 h-12 px-4 rounded-[1.5rem] transition-all relative overflow-hidden group">
                             {isActive && (
-                                <motion.div layoutId="active-step" className="absolute inset-0 bg-slate-900 dark:bg-white z-0" />
+                                <motion.div layoutId="active-step" className="absolute inset-0 bg-blue-600 dark:bg-white z-0" />
                             )}
                             <div className={cn(
                                 "h-6 w-6 rounded-lg flex items-center justify-center text-[10px] font-black z-10 transition-colors",
@@ -297,7 +297,7 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
                                     </div>
 
                                     {fromClassId && toClassId && (
-                                        <div className="p-8 rounded-[2rem] bg-slate-900 text-white overflow-hidden relative border border-slate-800 shadow-2xl">
+                                        <div className="p-8 rounded-[2rem] bg-blue-600 dark:bg-slate-900 text-white overflow-hidden relative border border-blue-500 dark:border-slate-800 shadow-2xl">
                                             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent"></div>
                                             <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
                                                 <div className="flex-1 text-center md:text-left">

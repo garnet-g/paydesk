@@ -357,8 +357,8 @@ export default function SettingsPage() {
                 {/* Tactical Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-5">
-                        <div className="h-14 w-14 bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-white shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-800">
-                            <Settings size={28} className="text-blue-400" />
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-blue-600 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-105">
+                            <Settings size={28} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
@@ -385,8 +385,8 @@ export default function SettingsPage() {
                                     className={cn(
                                         "flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all italic text-left",
                                         isActive
-                                            ? "bg-slate-900 text-white shadow-xl shadow-slate-200 dark:shadow-none dark:bg-white dark:text-slate-950 scale-105"
-                                            : "text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-900/50"
+                                            ? "bg-blue-600 text-white shadow-xl shadow-blue-100 dark:shadow-none scale-105"
+                                            : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-900/50"
                                     )}
                                 >
                                     <Icon size={18} className={cn(isActive ? "text-blue-400" : "text-slate-300")} />
@@ -429,7 +429,7 @@ export default function SettingsPage() {
                                                         <Input
                                                             value={form.school_name}
                                                             onChange={(e) => setForm({ ...form, school_name: e.target.value })}
-                                                            className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold uppercase"
+                                                            className="h-14 rounded-2xl border-border bg-white dark:bg-slate-900/50 font-bold uppercase ring-offset-background focus-visible:ring-2 focus-visible:ring-blue-500"
                                                         />
                                                     </div>
                                                     <div className="space-y-2 md:col-span-2">

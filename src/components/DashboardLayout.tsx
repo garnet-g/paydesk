@@ -102,7 +102,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-50 font-sans text-foreground transition-colors duration-300 dark:bg-background">
+        <div className="flex min-h-screen bg-background font-sans text-foreground transition-colors duration-300">
             {/* Mobile sidebar backdrop */}
             {sidebarOpen && (
                 <div

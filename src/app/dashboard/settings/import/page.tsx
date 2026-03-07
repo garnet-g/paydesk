@@ -105,7 +105,7 @@ export default function ImportDataPage() {
                             className={cn(
                                 "cursor-pointer transition-all duration-500 rounded-[2.5rem] border-none overflow-hidden group",
                                 importType === type
-                                    ? "bg-slate-900 text-white shadow-2xl scale-[1.02] ring-4 ring-blue-600/20"
+                                    ? "bg-blue-600 text-white shadow-2xl scale-[1.02] ring-4 ring-blue-600/20"
                                     : "bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-900 shadow-lg hover:border-blue-600/30 shadow-slate-100 dark:shadow-none"
                             )}
                         >
@@ -139,8 +139,8 @@ export default function ImportDataPage() {
                 <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 overflow-hidden ring-1 ring-slate-100 dark:ring-slate-900">
                     <CardHeader className="p-10 border-b border-slate-50 dark:border-slate-900">
                         <div className="flex items-center gap-4">
-                            <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white border border-slate-800">
-                                <Upload size={20} className="text-blue-400" />
+                            <div className="h-10 w-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 border border-border dark:border-slate-800 shadow-sm">
+                                <Upload size={20} />
                             </div>
                             <div>
                                 <CardTitle className="text-xl font-black uppercase tracking-tighter italic">Batch Import Terminal</CardTitle>

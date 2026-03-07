@@ -123,15 +123,15 @@ export default function MpesaTestingPage() {
                         >
                             <ArrowLeft size={20} />
                         </Button>
-                        <div className="h-14 w-14 bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-white shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-800">
-                            <MonitorPlay size={28} className="text-blue-400" />
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <MonitorPlay size={28} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
                                 Recl Simulator
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
-                                <Zap size={12} className="text-blue-500" />
+                                <Zap size={12} className="text-blue-600 dark:text-blue-400" />
                                 M-Pesa Synthetic Reconciliation Node
                             </p>
                         </div>
@@ -171,7 +171,7 @@ export default function MpesaTestingPage() {
                                 <div className="overflow-x-auto">
                                     <table className="w-full">
                                         <thead>
-                                            <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800">
+                                            <tr className="bg-slate-50 dark:bg-slate-900 border-b border-border dark:border-slate-800">
                                                 <th className="px-10 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Request Trace</th>
                                                 <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Quantum</th>
                                                 <th className="px-10 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Override</th>

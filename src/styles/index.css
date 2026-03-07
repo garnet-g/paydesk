@@ -9,26 +9,27 @@
     --font-inter: 'Inter', sans-serif;
     --font-outfit: 'Outfit', sans-serif;
 
-    /* Light Mode Palette */
-    --background: #ffffff;
-    --foreground: #030213;
+    /* Clean Light Mode Palette (Uniform with Dashboard Main) */
+    --background: #f9fafb;
+    --foreground: #0f172a;
     --card: #ffffff;
-    --card-foreground: #030213;
+    --card-foreground: #0f172a;
     --popover: #ffffff;
-    --popover-foreground: #030213;
-    --primary: #030213;
+    --popover-foreground: #0f172a;
+    --primary: #2563eb;
+    /* Use blue as primary for light mode to avoid black blocks */
     --primary-foreground: #ffffff;
-    --secondary: #ececf0;
-    --secondary-foreground: #030213;
-    --muted: #ececf0;
-    --muted-foreground: #717182;
-    --accent: #f3f3f5;
-    --accent-foreground: #030213;
-    --destructive: #d4183d;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #f8fafc;
+    --accent-foreground: #0f172a;
+    --destructive: #ef4444;
     --destructive-foreground: #ffffff;
-    --border: rgba(0, 0, 0, 0.1);
-    --input: #f3f3f5;
-    --ring: rgba(3, 2, 19, 0.5);
+    --border: #e2e8f0;
+    --input: #ffffff;
+    --ring: #2563eb;
 
     /* Semantic Colors */
     --blue-600: #2563eb;

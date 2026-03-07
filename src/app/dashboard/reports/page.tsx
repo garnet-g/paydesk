@@ -110,8 +110,8 @@ export default function ReportsPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div>
                         <div className="flex items-center gap-3 mb-3">
-                            <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                                <TrendingUp size={24} className="text-blue-400" />
+                            <div className="h-10 w-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200 border border-border dark:border-slate-800">
+                                <TrendingUp size={24} className="text-blue-600 dark:text-blue-400" />
                             </div>
                             <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white  ">Reports Overview</h2>
                         </div>
@@ -206,11 +206,11 @@ export default function ReportsPage() {
                     </Card>
 
                     {/* Revenue Forecast Matrix */}
-                    <Card className="border-none shadow-2xl bg-slate-900 text-white rounded-[2.5rem] overflow-hidden relative">
+                    <Card className="border-none shadow-2xl bg-white dark:bg-slate-900 text-foreground dark:text-white rounded-[2.5rem] overflow-hidden relative border border-border dark:border-slate-800">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                         <CardHeader className="p-8 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center text-blue-400 border border-white/10">
+                                <div className="h-8 w-8 bg-blue-100 dark:bg-white/10 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-white/10">
                                     <Zap size={18} />
                                 </div>
                                 <CardTitle className="text-xl font-semibold  tracking-tight ">Growth Trends</CardTitle>
@@ -223,8 +223,8 @@ export default function ReportsPage() {
                                         <span className="text-[10px] font-semibold text-slate-400   ">Inbound Focus (T+30)</span>
                                         <span className="text-lg font-semibold text-blue-400 tracking-tight">{formatCurrency(execStats?.forecast?.next30 || 0)}</span>
                                     </div>
-                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-blue-500 w-[65%] shadow-[0_0_12px_rgba(59,130,246,0.6)]"></div>
+                                    <div className="h-1.5 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden shadow-inner">
+                                        <div className="h-full bg-blue-600 w-[65%] shadow-blue-200/50"></div>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
@@ -232,12 +232,12 @@ export default function ReportsPage() {
                                         <span className="text-[10px] font-semibold text-slate-400   ">Secondary Wave (T+60)</span>
                                         <span className="text-lg font-semibold text-emerald-400 tracking-tight">{formatCurrency(execStats?.forecast?.next60 || 0)}</span>
                                     </div>
-                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-emerald-500 w-[35%] shadow-[0_0_12px_rgba(16,185,129,0.6)]"></div>
+                                    <div className="h-1.5 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden shadow-inner">
+                                        <div className="h-full bg-emerald-500 w-[35%] shadow-emerald-200/50"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center gap-4">
+                            <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-4 border border-border dark:border-white/5 flex items-center gap-4">
                                 <Activity size={20} className="text-blue-400 animate-pulse" />
                                 <p className="text-[9px] font-bold text-slate-400  tracking-tight leading-relaxed ">Algorithmically projected based on historical payment velocity and structural terms.</p>
                             </div>

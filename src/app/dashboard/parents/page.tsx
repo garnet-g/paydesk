@@ -203,7 +203,7 @@ export default function ParentsPage() {
                     </div>
                     <Button
                         onClick={handleAddClick}
-                        className="h-12 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-slate-200 dark:bg-white dark:text-slate-950 transition-all hover:scale-105 active:scale-95"
+                        className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100 dark:bg-white dark:text-slate-950 transition-all hover:scale-105 active:scale-95"
                     >
                         <Plus size={18} className="mr-2" />
                         Register Parent
@@ -272,7 +272,7 @@ export default function ParentsPage() {
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-900/5 dark:bg-white/5 border-b border-slate-100 dark:border-slate-900">
+                                <tr className="bg-slate-50 dark:bg-white/5 border-b border-border dark:border-slate-900">
                                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Identity Platform</th>
                                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Comm Channels</th>
                                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Associated Units</th>

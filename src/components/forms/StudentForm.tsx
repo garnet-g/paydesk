@@ -127,17 +127,17 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
     return (
         <div className="bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl border border-border dark:border-slate-800 animate-in zoom-in-95 duration-300">
             {/* Tactical Header */}
-            <div className="bg-slate-900 p-10 text-white flex justify-between items-center relative overflow-hidden">
+            <div className="bg-slate-50 dark:bg-slate-900 p-10 text-slate-900 dark:text-white flex justify-between items-center relative overflow-hidden border-b border-border dark:border-slate-800">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/15 rounded-full blur-3xl -mr-20 -mt-20"></div>
                 <div className="flex items-center gap-6 relative z-10">
-                    <div className="h-14 w-14 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center text-blue-400 border border-white/10 shadow-2xl">
+                    <div className="h-14 w-14 bg-white dark:bg-slate-950 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 border border-border dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all hover:scale-110">
                         <GraduationCap size={32} />
                     </div>
                     <div>
                         <h2 className="text-3xl font-black uppercase tracking-tighter italic">
                             {isEditing ? 'Profile Re-calibration' : 'New Registration'}
                         </h2>
-                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
+                        <p className="text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
                             {isEditing ? `Refining Entry: ${student.admissionNumber}` : 'Deploying Selective Admission Protocol'}
                         </p>
                     </div>
@@ -145,7 +145,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="h-12 w-12 text-white/40 hover:text-white hover:bg-white/10 rounded-2xl transition-all active:scale-90"
+                    className="h-12 w-12 text-slate-400 hover:text-slate-900 hover:bg-slate-200 dark:hover:bg-white/10 rounded-2xl transition-all active:scale-90"
                     onClick={onClose}
                 >
                     <X size={24} />
@@ -168,7 +168,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                                 value={formData.admissionNumber}
                                 onChange={(e) => setFormData({ ...formData, admissionNumber: e.target.value })}
                                 disabled={isEditing}
-                                className="h-14 rounded-2xl border-border dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 font-black tracking-tight focus:ring-4 focus:ring-blue-600/5 transition-all"
+                                className="h-14 rounded-2xl border-border dark:border-slate-800 bg-white dark:bg-slate-900/50 font-black tracking-tight focus:ring-4 focus:ring-blue-600/5 transition-all text-foreground"
                                 placeholder="STU-XXXX-2024"
                             />
                         </div>
@@ -179,7 +179,7 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
                                 onValueChange={(v) => setFormData({ ...formData, classId: v })}
                                 required
                             >
-                                <SelectTrigger className="h-14 rounded-2xl border-border dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 font-black transition-all">
+                                <SelectTrigger className="h-14 rounded-2xl border-border dark:border-slate-800 bg-white dark:bg-slate-900/50 font-black transition-all text-foreground">
                                     <SelectValue placeholder="LOCATE WING" />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-slate-100 dark:border-slate-800 shadow-2xl">
