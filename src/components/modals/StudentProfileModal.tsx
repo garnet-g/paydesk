@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Calendar, MapPin, Phone, Mail, FileText, CheckCircle, GraduationCap, Loader2, CreditCard, Activity } from 'lucide-react'
+import { X, Calendar, MapPin, Phone, Mail, FileText, CheckCircle, GraduationCap, Loader2, CreditCard, Activity, Edit } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -193,7 +193,7 @@ export default function StudentProfileModal({ student, onClose }: StudentProfile
                                             <h3 className="text-sm font-semibold text-muted-foreground">Guardian Information</h3>
                                         </div>
                                         <button className="text-xs font-medium px-3 py-1.5 border border-border dark:border-slate-800 rounded-lg flex items-center gap-2 hover:bg-muted dark:hover:bg-slate-900 transition-all">
-                                            <EditIcon size={14} /> Edit
+                                            <Edit size={14} /> Edit
                                         </button>
                                     </div>
 
