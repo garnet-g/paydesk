@@ -88,16 +88,22 @@ export default function StaffPage() {
             <div className="flex-1 space-y-8 p-8 pt-6 animate-in fade-in duration-500">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-1">
-                            <h2 className="text-2xl font-semibold tracking-tight text-foreground dark:text-white">Staff Management</h2>
+                    <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <Plus size={28} className="text-blue-600 dark:text-blue-400" />
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                            Manage staff directory and payroll
-                        </p>
+                        <div>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
+                                Personnel
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
+                                <ShieldAlert size={12} className="text-blue-500" />
+                                Staff directory & payroll governance
+                            </p>
+                        </div>
                     </div>
                     <Button
-                        className="h-10 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-none dark:bg-muted dark:text-foreground dark:hover:bg-slate-200 transition-colors"
+                        className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100 dark:bg-white dark:text-slate-950 transition-all hover:scale-105 active:scale-95"
                         onClick={() => { setSelectedStaff(null); setShowAddModal(true); }}
                     >
                         <Plus size={16} className="mr-2" />
@@ -194,9 +200,9 @@ export default function StaffPage() {
                                             <p className="text-xs text-slate-500 mb-0.5">Latest Payroll</p>
                                             <p className="text-sm font-medium text-foreground dark:text-white">February 2026</p>
                                         </div>
-                                        <div className="bg-slate-950 text-white font-semibold text-[10px] px-3 py-1 rounded-full  tracking-wider dark:bg-muted dark:text-foreground">
-                                            Paid
-                                        </div>
+                                        <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-widest border-none shadow-sm">
+                                            AUTHORIZED
+                                        </Badge>
                                     </div>
                                 </CardContent>
                             </Card>

@@ -273,16 +273,28 @@ export default function TransportManagementPage() {
     return (
         <DashboardLayout>
             <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-700">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-white italic uppercase">Transport</h1>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium">Coordinate school transport and driver schedules</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <Bus size={28} className="text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
+                                Logistics
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
+                                <ShieldCheck size={12} className="text-blue-500" />
+                                Fleet operations & route governance
+                            </p>
+                        </div>
                     </div>
                     {(session?.user?.role === 'SUPER_ADMIN' || session?.user?.role === 'PRINCIPAL') && (
-                        <Button onClick={openCreateModal} className="h-11 bg-slate-900 hover:bg-slate-800 text-slate-50 dark:bg-white dark:text-foreground dark:hover:bg-muted rounded-xl px-6 font-semibold shadow-lg">
+                        <Button
+                            onClick={openCreateModal}
+                            className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100 dark:bg-white dark:text-slate-950 transition-all hover:scale-105 active:scale-95"
+                        >
                             <Plus size={18} className="mr-2" />
-                            New Route
+                            Establish Route
                         </Button>
                     )}
                 </div>
@@ -349,8 +361,8 @@ export default function TransportManagementPage() {
                                                 <span className="text-foreground dark:text-white font-medium">{route.driver || 'Unassigned'}</span>
                                             </CardDescription>
                                         </div>
-                                        <Badge variant="outline" className="bg-slate-900 text-white dark:bg-white dark:text-foreground border-none font-bold px-3 py-1 rounded-lg">
-                                            {route.students.length} / {route.capacity}
+                                        <Badge className="bg-blue-600 text-white dark:bg-white dark:text-slate-950 border-none font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-blue-100 dark:shadow-none">
+                                            {route.students.length} / {route.capacity} LOAD
                                         </Badge>
                                     </div>
                                 </CardHeader>
@@ -649,7 +661,7 @@ export default function TransportManagementPage() {
                                 <span className="text-xs text-slate-400 font-bold italic hidden sm:block">Marking 'Drop Off' instantly notifies parent via SMS/Email.</span>
                                 <div>
                                     <Button type="button" variant="outline" className="rounded-xl border-slate-200 mr-2" onClick={() => setShowActiveRunModal(false)}>Minimize</Button>
-                                    <Button type="button" onClick={handleEndRun} className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white">End Trip</Button>
+                                    <Button type="button" onClick={handleEndRun} className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100">End Trip</Button>
                                 </div>
                             </div>
                         </div>

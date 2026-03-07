@@ -41,9 +41,9 @@ export default function GradePromotionPage() {
                                         <div className="h-12 w-12 bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center border border-border dark:border-slate-800 shadow-sm mb-6">
                                             <Info size={22} className="text-blue-600 dark:text-blue-400" />
                                         </div>
-                                        <h3 className="text-xl font-black uppercase italic tracking-tighter mb-2">Protocol Overview</h3>
+                                        <h3 className="text-xl font-black uppercase italic tracking-tighter mb-2">Process Overview</h3>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
-                                            Formalizing student transitions across academic units.
+                                            Managing student transitions across grades.
                                         </p>
                                     </div>
                                     <div className="mt-8 pt-6 border-t border-border dark:border-white/10 relative z-10">
@@ -56,10 +56,10 @@ export default function GradePromotionPage() {
                             <div className="md:w-2/3 space-y-6">
                                 <div className="grid grid-cols-1 gap-4">
                                     {[
-                                        { step: "Selection Phase", desc: "Define source and target academic units, then prioritize students for progression." },
-                                        { step: "Verification State", desc: "A pending approval request is established. No data is modified during this phase." },
-                                        { step: "Principal Audit", desc: "Final authorization occurs within the Payments Terminal pending section." },
-                                        { step: "Cycle Completion", desc: "Upon approval, unit migration is finalized and invoices are auto-generated for the next cycle." }
+                                        { step: "Student Selection", desc: "Choose source and target classes, then identify students for promotion." },
+                                        { step: "Verification", desc: "A pending request is created for review. No data is changed at this stage." },
+                                        { step: "Administrative Review", desc: "Final authorization is performed by the Principal or Finance Manager." },
+                                        { step: "Completion", desc: "Once approved, student records are updated and next-term invoices are generated." }
                                     ].map((item, idx) => (
                                         <div key={idx} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
                                             <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-[10px] font-black transition-all group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950">

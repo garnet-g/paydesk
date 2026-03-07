@@ -43,17 +43,17 @@ export default function ImportDataPage() {
             const data = await res.json()
             setResult({
                 success: res.ok,
-                message: data.message || (res.ok ? 'Batch migration finalized successfully' : 'Migration protocol failure'),
+                message: data.message || (res.ok ? 'Data import finalized successfully' : 'Import process encountered an issue'),
                 details: data.details
             })
-            if (res.ok) toast.success("Data synchronization complete")
-            else toast.error("Data synchronization failed")
+            if (res.ok) toast.success("Data imported successfully")
+            else toast.error("Import failed")
         } catch (error) {
             setResult({
                 success: false,
-                message: 'A tactical connection error occurred during verification.'
+                message: 'A connection error occurred during the update.'
             })
-            toast.error("Transmission signal failure")
+            toast.error("Network connection failure")
         } finally {
             setIsUploading(false)
         }
@@ -76,11 +76,11 @@ export default function ImportDataPage() {
                         </Link>
                         <div>
                             <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
-                                Data Management Hub
+                                Data Import Hub
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
                                 <Database size={12} className="text-blue-500" />
-                                Enterprise-grade batch synchronization terminal
+                                Automated data import & registry synchronization
                             </p>
                         </div>
                     </div>
@@ -197,11 +197,11 @@ export default function ImportDataPage() {
                                                     <Upload size={48} />
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-2xl font-black uppercase tracking-tight italic text-slate-900 dark:text-white mb-2">Initialize Payload</h4>
-                                                    <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">Drop CSV file or click to transmit protocol</p>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tight italic text-slate-900 dark:text-white mb-2">Upload Data</h4>
+                                                    <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">Drop CSV file or click to choose from computer</p>
                                                 </div>
-                                                <div className="inline-flex items-center gap-2 px-6 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-full text-[9px] font-black uppercase tracking-[0.3em]">
-                                                    MAX PAYLOAD: 10MB
+                                                <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 dark:bg-white text-white dark:text-slate-950 rounded-full text-[9px] font-black uppercase tracking-[0.3em]">
+                                                    MAX SIZE: 10MB
                                                 </div>
                                             </motion.div>
                                         )}
@@ -239,15 +239,15 @@ export default function ImportDataPage() {
                                             "w-full h-16 rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] italic gap-3 shadow-2xl transition-all active:scale-95",
                                             !file || isUploading
                                                 ? "bg-slate-100 dark:bg-slate-900 text-slate-400 cursor-not-allowed shadow-none"
-                                                : "bg-slate-900 hover:bg-black text-white dark:bg-white dark:text-slate-950 shadow-slate-200 dark:shadow-none"
+                                                : "bg-blue-600 hover:bg-blue-700 text-white dark:bg-white dark:text-slate-950 shadow-blue-100 dark:shadow-none"
                                         )}
                                         disabled={!file || isUploading}
                                         onClick={handleUpload}
                                     >
                                         {isUploading ? (
-                                            <><Loader2 className="animate-spin" size={18} /> PROCESSING PROTOCOL...</>
+                                            <><Loader2 className="animate-spin" size={18} /> IMPORTING DATA...</>
                                         ) : (
-                                            <><ShieldCheck size={18} /> INITIALIZE MIGRATION</>
+                                            <><ShieldCheck size={18} /> START DATA IMPORT</>
                                         )}
                                     </Button>
 

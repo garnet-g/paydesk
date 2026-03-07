@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
-import { Calendar as CalendarIcon, Save, Mail, AlertCircle, CheckCircle, Users } from "lucide-react"
+import { Calendar as CalendarIcon, Save, Mail, AlertCircle, CheckCircle, Users, ShieldCheck } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -148,16 +148,24 @@ export default function AttendancePage() {
     return (
         <DashboardLayout>
             <div className="flex-1 space-y-6 p-8 pt-6">
-                <div className="flex items-center justify-between space-y-2">
-                    <div>
-                        <h2 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white ">Attendance</h2>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium">
-                            Mark daily student attendance and notify parents of absences.
-                        </p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <Users size={28} className="text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
+                                Roll Call
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
+                                <ShieldCheck size={12} className="text-blue-500" />
+                                Attendance logs & parent notification protocol
+                            </p>
+                        </div>
                     </div>
                     {activePeriod && (
-                        <Badge variant="outline" className="text-sm bg-blue-50 text-blue-700 border-blue-200">
-                            Current Term: {activePeriod.name}
+                        <Badge className="bg-blue-600 text-white dark:bg-white dark:text-slate-950 border-none font-black text-[9px] px-4 py-2 rounded-full uppercase tracking-widest shadow-xl shadow-blue-100 dark:shadow-none">
+                            Term: {activePeriod.name}
                         </Badge>
                     )}
                 </div>

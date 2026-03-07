@@ -68,8 +68,8 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
             setClasses(data.classes || [])
             setActivePeriod(data.activePeriod)
         } catch (err) {
-            setError('Failed to load academic units')
-            toast.error("Unit discovery synchronization failure")
+            setError('Failed to load classes')
+            toast.error("Failed to load academic data")
         } finally {
             setLoading(false)
         }
@@ -84,7 +84,7 @@ export default function GradePromotionPanel({ onComplete }: GradePromotionPanelP
             setStudents(studentList)
             setSelectedStudentIds(new Set(studentList.map((s: any) => s.id)))
         } catch (err) {
-            setError('Failed to load student array')
+            setError('Failed to load students')
         } finally {
             setLoading(false)
         }

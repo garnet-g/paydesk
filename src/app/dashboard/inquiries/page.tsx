@@ -135,17 +135,23 @@ export default function InquiriesPage() {
             <div className="max-w-[1200px] mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-700">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="space-y-1">
-                        <h1 className="text-3xl font-semibold tracking-tight text-foreground dark:text-white">
-                            {session?.user.role === 'PARENT' ? 'Support' : 'Inquiries'}
-                        </h1>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium">
-                            {isPrincipal ? 'Review and respond to parent concerns' : 'Reach out to the school administration'}
-                        </p>
+                    <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <MessageSquare size={28} className="text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
+                                {session?.user.role === 'PARENT' ? 'Support' : 'Communications'}
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
+                                <ShieldCheck size={12} className="text-blue-500" />
+                                {isPrincipal ? 'Registry oversight & parent correspondence' : 'Secure administrative channel established'}
+                            </p>
+                        </div>
                     </div>
                     {session?.user.role === 'PARENT' && (
                         <Button
-                            className="h-11 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-foreground dark:hover:bg-muted rounded-xl px-6 font-semibold shadow-lg"
+                            className="h-12 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100 dark:bg-white dark:text-slate-950 transition-all hover:scale-105 active:scale-95"
                             onClick={() => setShowNewModal(true)}
                         >
                             <Plus size={18} className="mr-2" />
@@ -204,10 +210,10 @@ export default function InquiriesPage() {
                                                 </div>
                                             </div>
                                             <Badge className={cn(
-                                                "rounded-lg px-3 py-1 font-bold text-[10px]  border-none",
+                                                "rounded-lg px-3 py-1 font-black text-[9px] uppercase tracking-widest border-none",
                                                 inquiry.status === 'RESOLVED'
-                                                    ? "bg-emerald-600 text-white dark:bg-emerald-500"
-                                                    : "bg-slate-900 text-white dark:bg-slate-800"
+                                                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+                                                    : "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400"
                                             )}>
                                                 {inquiry.status}
                                             </Badge>
@@ -228,10 +234,10 @@ export default function InquiriesPage() {
                                             {/* Response Area */}
                                             {inquiry.response ? (
                                                 <div className="flex flex-row-reverse gap-4">
-                                                    <div className="h-10 w-10 bg-slate-900 dark:bg-muted rounded-full flex items-center justify-center shrink-0 shadow-lg text-white dark:text-foreground font-bold text-xs">
-                                                        S
+                                                    <div className="h-10 w-10 bg-blue-600 dark:bg-slate-800 rounded-full flex items-center justify-center shrink-0 shadow-lg text-white font-black text-xs italic">
+                                                        ADM
                                                     </div>
-                                                    <div className="bg-slate-900 dark:bg-white p-6 rounded-2xl rounded-tr-none text-sm text-white dark:text-foreground leading-relaxed max-w-[90%] shadow-xl shadow-slate-200/50 dark:shadow-none relative">
+                                                    <div className="bg-blue-600 dark:bg-white p-6 rounded-2xl rounded-tr-none text-sm text-white dark:text-foreground leading-relaxed max-w-[90%] shadow-xl shadow-blue-100 dark:shadow-none relative">
                                                         <div className="text-[10px] font-bold   opacity-60 mb-2">School Response</div>
                                                         {inquiry.response}
                                                     </div>
@@ -295,20 +301,20 @@ export default function InquiriesPage() {
 
                 {/* Legend / Stats Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
-                    <div className="p-8 bg-slate-900 text-white rounded-[2.5rem] relative overflow-hidden flex items-center justify-between border-t-4 border-blue-600 shadow-xl">
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                    <div className="p-8 bg-blue-600 dark:bg-slate-900 text-white rounded-[2.5rem] relative overflow-hidden flex items-center justify-between border-none shadow-2xl shadow-blue-100 dark:shadow-none">
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                         <div className="relative z-10 flex items-center gap-6">
-                            <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10 text-blue-400">
+                            <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10 text-white shadow-lg">
                                 <ShieldCheck size={28} />
                             </div>
                             <div>
-                                <h4 className="text-xs font-bold   text-slate-400 mb-1 leading-none">Response Rate</h4>
-                                <p className="text-3xl font-bold tracking-tight">96.4%</p>
+                                <h4 className="text-[10px] font-black uppercase tracking-widest text-blue-100/60 mb-1 leading-none italic">Response Rate</h4>
+                                <p className="text-3xl font-black italic tracking-tighter uppercase">96.4% Accuracy</p>
                             </div>
                         </div>
                         <div className="relative z-10 text-right">
-                            <h4 className="text-[10px] font-bold   text-slate-500 mb-1 leading-none ">Response Time</h4>
-                            <p className="text-xl font-bold text-blue-400 tracking-tight leading-none ">~2.4 Hrs</p>
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-blue-100/60 mb-1 leading-none italic">Response Time</h4>
+                            <p className="text-xl font-black text-white italic tracking-widest leading-none uppercase mt-1">~2.4 Hrs</p>
                         </div>
                     </div>
                     <div className="p-8 bg-blue-50/50 dark:bg-blue-900/10 border-2 border-dashed border-blue-600/20 rounded-[2.5rem] flex items-center gap-6">

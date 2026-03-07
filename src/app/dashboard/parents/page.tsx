@@ -188,8 +188,8 @@ export default function ParentsPage() {
                 {/* Modern Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-5">
-                        <div className="h-14 w-14 bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-white shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-800">
-                            <Users size={28} className="text-blue-400" />
+                        <div className="h-14 w-14 bg-white dark:bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl shadow-slate-200/50 dark:shadow-none border border-border dark:border-slate-800 transition-all hover:scale-110">
+                            <Users size={28} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
@@ -250,7 +250,7 @@ export default function ParentsPage() {
                 </div>
 
                 {/* Filtering Hub */}
-                <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 p-2 overflow-hidden ring-1 ring-slate-100 dark:ring-slate-900">
+                <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-slate-950 p-2 overflow-hidden ring-1 ring-slate-100 dark:ring-slate-900">
                     <div className="flex items-center gap-4 px-6 h-16">
                         <Search size={18} className="text-slate-400" />
                         <input
@@ -260,7 +260,7 @@ export default function ParentsPage() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-900 rounded-xl text-[9px] font-black uppercase italic tracking-widest text-slate-500">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900 rounded-xl text-[9px] font-black uppercase italic tracking-widest text-slate-400">
                             <Loader2 size={12} className={cn("animate-spin", !loading && "hidden")} />
                             {loading ? "Syncing..." : "Ready"}
                         </div>
@@ -314,7 +314,7 @@ export default function ParentsPage() {
                                             >
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="h-12 w-12 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-sm uppercase italic shadow-lg">
+                                                        <div className="h-12 w-12 rounded-xl bg-blue-600 dark:bg-slate-800 flex items-center justify-center text-white font-black text-sm uppercase italic shadow-lg shadow-blue-100 dark:shadow-none">
                                                             {parent.firstName[0]}{parent.lastName[0]}
                                                         </div>
                                                         <div>
@@ -412,15 +412,15 @@ export default function ParentsPage() {
                 </Card>
 
                 {/* Integration Info Bar */}
-                <div className="p-6 bg-slate-900 rounded-[2.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative border border-slate-800 shadow-2xl">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <div className="p-8 bg-blue-100 dark:bg-slate-900 rounded-[2.5rem] text-blue-900 dark:text-white flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative border border-blue-200 dark:border-slate-800 shadow-xl shadow-blue-50 dark:shadow-none transition-all hover:bg-blue-50">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
                     <div className="flex items-center gap-6 relative z-10">
-                        <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10 shadow-2xl">
-                            <Mail size={24} className="text-blue-400" />
+                        <div className="h-14 w-14 bg-white dark:bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-blue-200 dark:border-white/10 shadow-sm">
+                            <Mail size={24} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <div className="font-black uppercase tracking-tighter italic text-xl">Guardian Portal Security</div>
-                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 italic flex items-center gap-2">
+                            <div className="font-black uppercase tracking-tighter italic text-xl text-blue-900 dark:text-white">Guardian Portal Security</div>
+                            <div className="text-[10px] text-blue-600/60 dark:text-slate-400 font-bold uppercase tracking-widest mt-1 italic flex items-center gap-2">
                                 <ShieldCheck size={12} className="text-blue-500" />
                                 256-bit AES encryption active on all communication channels
                             </div>
@@ -428,8 +428,8 @@ export default function ParentsPage() {
                     </div>
                     <div className="flex items-center gap-8 relative z-10 pr-4">
                         <div className="text-right">
-                            <div className="text-xs font-black text-blue-400 uppercase italic">Network Load</div>
-                            <div className="text-xl font-black tracking-widest uppercase italic leading-none mt-1">OPTIMIZED</div>
+                            <div className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase italic">Network Load</div>
+                            <div className="text-xl font-black tracking-widest uppercase italic leading-none mt-1 text-blue-900 dark:text-white">OPTIMIZED</div>
                         </div>
                     </div>
                 </div>

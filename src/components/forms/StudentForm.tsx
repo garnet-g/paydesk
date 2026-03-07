@@ -127,18 +127,18 @@ export default function StudentForm({ student, onClose, onSuccess }: StudentForm
     return (
         <div className="bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl border border-border dark:border-slate-800 animate-in zoom-in-95 duration-300">
             {/* Tactical Header */}
-            <div className="bg-slate-50 dark:bg-slate-900 p-10 text-slate-900 dark:text-white flex justify-between items-center relative overflow-hidden border-b border-border dark:border-slate-800">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/15 rounded-full blur-3xl -mr-20 -mt-20"></div>
+            <div className="bg-blue-600 dark:bg-slate-900 p-10 text-white flex justify-between items-center relative overflow-hidden border-none translate-y-[1px]">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                 <div className="flex items-center gap-6 relative z-10">
-                    <div className="h-14 w-14 bg-white dark:bg-slate-950 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 border border-border dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all hover:scale-110">
+                    <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/10 shadow-xl transition-all hover:scale-110">
                         <GraduationCap size={32} />
                     </div>
                     <div>
                         <h2 className="text-3xl font-black uppercase tracking-tighter italic">
-                            {isEditing ? 'Profile Re-calibration' : 'New Registration'}
+                            {isEditing ? 'Update Student' : 'New Enrollment'}
                         </h2>
-                        <p className="text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
-                            {isEditing ? `Refining Entry: ${student.admissionNumber}` : 'Deploying Selective Admission Protocol'}
+                        <p className="text-blue-100 font-black text-[10px] uppercase tracking-[0.2em] mt-1 italic">
+                            {isEditing ? `Registry: ${student.admissionNumber}` : 'Establishing new student registry record'}
                         </p>
                     </div>
                 </div>

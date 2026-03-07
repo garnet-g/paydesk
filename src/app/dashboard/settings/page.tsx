@@ -549,10 +549,10 @@ export default function SettingsPage() {
                                                     <Button
                                                         type="submit"
                                                         disabled={saving}
-                                                        className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black uppercase tracking-widest text-[11px] italic shadow-xl shadow-slate-200 dark:bg-white dark:text-slate-950 transition-all"
+                                                        className="h-14 px-10 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[11px] italic shadow-xl shadow-blue-100 dark:bg-white dark:text-slate-950 transition-all"
                                                     >
                                                         {saving ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" size={18} />}
-                                                        Synchronize Changes
+                                                        Save School Profile
                                                     </Button>
                                                 </div>
                                             </form>
@@ -571,15 +571,15 @@ export default function SettingsPage() {
                                                 <CardDescription className="text-xs font-bold uppercase tracking-widest text-emerald-600/60 italic">Automated payment reconciliation system</CardDescription>
                                             </CardHeader>
                                             <CardContent className="p-10">
-                                                <div className="bg-slate-950 rounded-[2rem] p-8 mb-10 border border-slate-800 relative overflow-hidden group">
-                                                    <Zap className="absolute right-[-10px] top-[-10px] text-blue-600/10 h-32 w-32 transition-transform group-hover:scale-110" />
+                                                <div className="bg-blue-600 dark:bg-slate-900 rounded-[2rem] p-8 mb-10 border border-blue-500 dark:border-slate-800 relative overflow-hidden group shadow-2xl shadow-blue-100 dark:shadow-none">
+                                                    <Zap className="absolute right-[-10px] top-[-10px] text-white/10 h-32 w-32 transition-transform group-hover:scale-110" />
                                                     <div className="relative z-10 flex gap-6">
-                                                        <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-900">
+                                                        <div className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white shrink-0 shadow-lg border border-white/10">
                                                             <ShieldCheck size={24} />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <h4 className="text-white font-black uppercase tracking-tight italic">Secure Transmission Protocol</h4>
-                                                            <p className="text-slate-400 text-xs leading-relaxed font-bold italic">
+                                                            <h4 className="text-white font-black uppercase tracking-tight italic">Secure Payment Connection</h4>
+                                                            <p className="text-blue-50 text-xs leading-relaxed font-bold italic">
                                                                 PayDesk utilizes direct Daraja TLS handshake. Transmissions bypass intermediary servers and settle directly in your shortcode.
                                                             </p>
                                                             <a href="https://developer.safaricom.co.ke" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-colors pt-2">
@@ -668,21 +668,22 @@ export default function SettingsPage() {
                                                 </form>
                                             </CardContent>
                                         </Card>
-                                        <Card className="rounded-[2.5rem] border-none shadow-xl bg-slate-900 text-white overflow-hidden">
-                                            <CardContent className="p-8 flex items-center justify-between">
+                                        <Card className="rounded-[2.5rem] border-none shadow-xl bg-blue-600 dark:bg-slate-900 text-white overflow-hidden relative group transition-all hover:shadow-2xl hover:shadow-blue-200">
+                                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                                            <CardContent className="p-8 flex items-center justify-between relative z-10">
                                                 <div className="flex items-center gap-6">
-                                                    <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center text-blue-400">
+                                                    <div className="h-14 w-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white border border-white/10 shadow-lg">
                                                         <Zap size={28} />
                                                     </div>
                                                     <div>
                                                         <h4 className="text-xl font-black uppercase tracking-tighter italic">Reconciliation Testing</h4>
-                                                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 italic">Verify your automation rules without live funds</p>
+                                                        <p className="text-[10px] font-bold uppercase tracking-widest text-blue-50 italic opacity-80">Verify your automation rules without live funds</p>
                                                     </div>
                                                 </div>
                                                 <Button
                                                     onClick={() => router.push('/dashboard/settings/mpesa')}
                                                     variant="secondary"
-                                                    className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[10px] italic"
+                                                    className="h-12 px-8 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black uppercase tracking-widest text-[10px] italic shadow-lg shadow-blue-900/20"
                                                 >
                                                     Open Simulator
                                                 </Button>
@@ -702,14 +703,14 @@ export default function SettingsPage() {
                                         </CardHeader>
                                         <CardContent className="p-10 relative">
                                             {!isPro && (
-                                                <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 dark:bg-slate-950/60 backdrop-blur-md">
-                                                    <div className="bg-slate-900 text-white p-10 rounded-[3rem] shadow-2xl max-w-sm text-center border border-slate-800 animate-in zoom-in-95 duration-500">
-                                                        <Lock size={40} className="mx-auto mb-6 text-blue-400" />
+                                                <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
+                                                    <div className="bg-blue-600 text-white p-10 rounded-[3rem] shadow-2xl max-w-sm text-center border border-blue-500 animate-in zoom-in-95 duration-500">
+                                                        <Lock size={40} className="mx-auto mb-6 text-white" />
                                                         <h4 className="text-2xl font-black uppercase tracking-tighter italic mb-2">PRO Identity Hub</h4>
-                                                        <p className="text-slate-400 text-xs font-bold italic mb-8 leading-relaxed">
+                                                        <p className="text-blue-50 text-xs font-bold italic mb-8 leading-relaxed uppercase tracking-tight">
                                                             Unlock logo uploads, primary color calibration, and custom mottos in the platform footer.
                                                         </p>
-                                                        <Button className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[11px] italic">
+                                                        <Button className="w-full h-14 rounded-2xl bg-white text-blue-600 hover:bg-blue-50 font-black uppercase tracking-widest text-[11px] italic shadow-xl shadow-blue-900/20">
                                                             Upgrade Terminal
                                                         </Button>
                                                     </div>
