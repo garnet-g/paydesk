@@ -152,11 +152,11 @@
     }
 
     .modal-header {
-        @apply bg-slate-900 p-8 text-white flex justify-between items-center relative overflow-hidden shrink-0;
+        @apply bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 p-8 flex justify-between items-center relative overflow-hidden shrink-0 border-b border-border dark:border-slate-700;
     }
 
     .modal-title {
-        @apply text-2xl font-black uppercase tracking-tighter italic relative z-10;
+        @apply text-2xl font-semibold text-foreground dark:text-white relative z-10;
     }
 
     .modal-body {

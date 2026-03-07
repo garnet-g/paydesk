@@ -348,54 +348,54 @@ export default function ClassManager() {
 
             {/* Fee Management Modal (using Dialog) */}
             <Dialog open={showFeeModal} onOpenChange={setShowFeeModal}>
-                <DialogContent className="max-w-2xl rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-white dark:bg-slate-950">
-                    <div className="bg-slate-900 p-8 text-white relative">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <DialogContent className="max-w-2xl rounded-2xl border-none shadow-2xl p-0 overflow-hidden bg-white dark:bg-slate-950">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 p-8 relative border-b border-border dark:border-slate-700">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                         <div className="relative z-10 flex justify-between items-center">
                             <div className="space-y-1">
-                                <p className="text-blue-400 font-black text-[10px] uppercase tracking-widest">Financial Configuration</p>
-                                <h3 className="text-3xl font-black uppercase tracking-tighter italic">{selectedClass?.name} Fees</h3>
+                                <p className="text-blue-600 dark:text-blue-400 font-medium text-xs">Financial Configuration</p>
+                                <h3 className="text-2xl font-semibold text-foreground dark:text-white">{selectedClass?.name} Fees</h3>
                             </div>
-                            <Button variant="ghost" className="text-white/40 hover:text-white h-12 w-12 p-0 rounded-2xl" onClick={() => setShowFeeModal(false)}>
-                                <X size={24} />
+                            <Button variant="ghost" className="text-foreground/40 dark:text-white/40 hover:text-foreground dark:hover:text-white h-12 w-12 p-0 rounded-lg" onClick={() => setShowFeeModal(false)}>
+                                <X size={20} />
                             </Button>
                         </div>
                     </div>
 
-                    <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+                    <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
                         {/* Current Fee Items */}
                         <div className="space-y-4">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                <div className="h-1 w-8 bg-blue-600 rounded-full"></div>
+                            <h4 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                                <div className="h-1 w-6 bg-blue-600 rounded-full"></div>
                                 Current Fee Ledger
                             </h4>
                             {feeLoading ? (
-                                <div className="py-12 text-center text-slate-400 font-bold italic text-xs animate-pulse">Syncing transactions...</div>
+                                <div className="py-8 text-center text-muted-foreground font-normal text-xs">Syncing transactions...</div>
                             ) : classFees.length === 0 ? (
-                                <div className="p-12 border-2 border-dashed border-border dark:border-slate-800 rounded-3xl text-center">
-                                    <p className="text-slate-400 font-medium italic">No fee structures initialized for this class unit.</p>
+                                <div className="p-8 border-2 border-dashed border-border dark:border-slate-800 rounded-2xl text-center">
+                                    <p className="text-muted-foreground font-normal text-sm">No fee structures initialized for this class unit.</p>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
                                     {classFees.map(fee => (
-                                        <div key={fee.id} className="flex justify-between items-center p-5 bg-muted dark:bg-slate-900 rounded-[1.5rem] border border-border dark:border-slate-800 group/fee animate-in slide-in-from-bottom duration-300">
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-10 w-10 bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center text-blue-600 shadow-sm">
-                                                    <Coins size={18} />
+                                        <div key={fee.id} className="flex justify-between items-center p-4 bg-muted/50 dark:bg-slate-900/30 rounded-xl border border-border dark:border-slate-800 group/fee animate-in slide-in-from-bottom duration-300">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-9 w-9 bg-white dark:bg-slate-950 rounded-lg flex items-center justify-center text-blue-600 shadow-sm">
+                                                    <Coins size={16} />
                                                 </div>
                                                 <div>
-                                                    <div className="font-bold text-foreground dark:text-white uppercase text-sm leading-tight">{fee.name}</div>
-                                                    <Badge className="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-none font-black text-[8px] h-4 uppercase tracking-tighter px-2">
+                                                    <div className="font-semibold text-foreground dark:text-white text-sm">{fee.name}</div>
+                                                    <Badge className="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-none font-normal text-xs h-5 px-2 mt-0.5">
                                                         {fee.category}
                                                     </Badge>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-6">
+                                            <div className="flex items-center gap-4">
                                                 <div className="text-right">
-                                                    <div className="font-black text-lg text-foreground dark:text-white tracking-tighter">
+                                                    <div className="font-bold text-base text-foreground dark:text-white">
                                                         {formatCurrency(fee.amount)}
                                                     </div>
-                                                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">PER TERM CYCLE</div>
+                                                    <div className="text-xs font-normal text-muted-foreground">Per term</div>
                                                 </div>
                                                 <button
                                                     onClick={() => {
@@ -403,7 +403,7 @@ export default function ClassManager() {
                                                             handleRemoveFee(fee.id);
                                                         }
                                                     }}
-                                                    className="h-10 w-10 p-0 rounded-xl hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 text-slate-300 dark:text-slate-700 transition-colors flex items-center justify-center border-none bg-transparent"
+                                                    className="h-9 w-9 p-0 rounded-lg hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 text-slate-300 dark:text-slate-700 transition-colors flex items-center justify-center border-none bg-transparent"
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>
@@ -415,14 +415,14 @@ export default function ClassManager() {
                         </div>
 
                         {/* Add New Fee Form */}
-                        <div className="bg-muted dark:bg-slate-900/50 p-6 rounded-[2rem] border border-border dark:border-slate-800">
-                            <h4 className="text-[10px] font-black text-foreground dark:text-white uppercase tracking-widest mb-6 block">Manual Fee Addition</h4>
-                            <form onSubmit={handleAddFee} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-muted/50 dark:bg-slate-900/30 p-6 rounded-2xl border border-border dark:border-slate-800">
+                            <h4 className="text-sm font-semibold text-foreground dark:text-white mb-4 block">Add New Fee</h4>
+                            <form onSubmit={handleAddFee} className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label className="uppercase text-[9px] font-black text-slate-400 tracking-widest ml-1">Fee Descriptor</Label>
+                                        <Label className="text-sm font-medium text-muted-foreground ml-1">Fee Type</Label>
                                         <Input
-                                            className="h-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-xl font-medium"
+                                            className="h-10 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-lg font-normal text-sm"
                                             placeholder="e.g. Science Laboratory Fee"
                                             value={feeData.name}
                                             onChange={e => setFeeData({ ...feeData, name: e.target.value })}

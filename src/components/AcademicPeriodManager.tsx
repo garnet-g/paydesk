@@ -107,21 +107,21 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
     return (
         <Card className="border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden">
             {/* Header */}
-            <div className="bg-slate-900 p-8 text-white flex justify-between items-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 p-8 flex justify-between items-center relative overflow-hidden border-b border-border dark:border-slate-700">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                 <div className="relative z-10 flex items-center gap-6">
-                    <div className="h-14 w-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-blue-400 border border-white/10 shadow-xl">
+                    <div className="h-14 w-14 bg-blue-100 dark:bg-blue-900/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50 shadow-xl">
                         <CalendarDays size={28} />
                     </div>
                     <div>
-                        <h3 className="text-3xl font-semibold tracking-tight uppercase">Academic Terms</h3>
-                        <p className="text-blue-400 font-semibold text-[10px] uppercase tracking-wide mt-1">School Academic Calendar</p>
+                        <h3 className="text-2xl font-semibold tracking-tight text-foreground dark:text-white">Academic Terms</h3>
+                        <p className="text-blue-600/70 dark:text-blue-400/70 font-medium text-xs mt-1">School Academic Calendar</p>
                     </div>
                 </div>
                 <div className="relative z-10 flex items-center gap-4">
                     {!showForm && (
                         <Button
-                            className="h-12 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-900/40 border-none"
+                            className="h-12 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 border-none transition-all"
                             onClick={() => setShowForm(true)}
                         >
                             <Plus size={18} className="mr-2" />
@@ -129,7 +129,7 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                         </Button>
                     )}
                     {onClose && (
-                        <Button variant="ghost" className="text-white/40 hover:text-white h-12 w-12 p-0 rounded-xl" onClick={onClose}>
+                        <Button variant="ghost" className="text-foreground/40 dark:text-white/40 hover:text-foreground dark:hover:text-white h-12 w-12 p-0 rounded-xl" onClick={onClose}>
                             <X size={24} />
                         </Button>
                     )}
@@ -145,9 +145,9 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                 )}
 
                 {showForm && (
-                    <div className="mb-12 p-8 bg-muted dark:bg-slate-900/50 border border-border dark:border-slate-800 rounded-[2rem] animate-in zoom-in-95 duration-300">
+                    <div className="mb-12 p-8 bg-muted/50 dark:bg-slate-900/30 border border-border dark:border-slate-800 rounded-[2rem] animate-in zoom-in-95 duration-300">
                         <div className="flex justify-between items-center mb-8">
-                            <h4 className="text-sm font-black text-foreground dark:text-white uppercase tracking-widest flex items-center gap-2">
+                            <h4 className="text-lg font-semibold text-foreground dark:text-white flex items-center gap-2">
                                 <span className="h-1 w-8 bg-blue-600 rounded-full"></span>
                                 New Academic Term
                             </h4>
@@ -160,27 +160,27 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                 <X size={16} />
                             </Button>
                         </div>
-                        <form onSubmit={handleCreate} className="space-y-8">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <form onSubmit={handleCreate} className="space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Term Name</Label>
+                                    <Label className="text-sm font-medium text-muted-foreground ml-1">Term Name</Label>
                                     <Select value={form.term} onValueChange={v => setForm({ ...form, term: v })}>
-                                        <SelectTrigger className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black uppercase text-xs tracking-widest text-foreground dark:text-white">
+                                        <SelectTrigger className="h-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-xl font-medium text-sm text-foreground dark:text-white">
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent className="rounded-2xl border-border dark:border-slate-800">
-                                            <SelectItem value="TERM_1" className="font-bold">TERM 1</SelectItem>
-                                            <SelectItem value="TERM_2" className="font-bold">TERM 2</SelectItem>
-                                            <SelectItem value="TERM_3" className="font-bold">TERM 3</SelectItem>
-                                            <SelectItem value="SUMMER" className="font-bold">SUMMER / SPECIAL</SelectItem>
+                                        <SelectContent className="rounded-xl border-border dark:border-slate-800">
+                                            <SelectItem value="TERM_1">Term 1</SelectItem>
+                                            <SelectItem value="TERM_2">Term 2</SelectItem>
+                                            <SelectItem value="TERM_3">Term 3</SelectItem>
+                                            <SelectItem value="SUMMER">Summer / Special</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Academic Year</Label>
+                                    <Label className="text-sm font-medium text-muted-foreground ml-1">Academic Year</Label>
                                     <Input
                                         type="number"
-                                        className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black text-lg text-foreground dark:text-white"
+                                        className="h-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-xl font-normal text-base text-foreground dark:text-white"
                                         placeholder="2026"
                                         required
                                         value={form.academicYear}
@@ -188,20 +188,20 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Start Date</Label>
+                                    <Label className="text-sm font-medium text-muted-foreground ml-1">Start Date</Label>
                                     <Input
                                         type="date"
-                                        className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black text-foreground dark:text-white"
+                                        className="h-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-xl font-normal text-base text-foreground dark:text-white"
                                         required
                                         value={form.startDate}
                                         onChange={e => setForm({ ...form, startDate: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest ml-1">End Date</Label>
+                                    <Label className="text-sm font-medium text-muted-foreground ml-1">End Date</Label>
                                     <Input
                                         type="date"
-                                        className="h-14 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-2xl font-black text-foreground dark:text-white"
+                                        className="h-12 bg-white dark:bg-slate-950 border-border dark:border-slate-800 rounded-xl font-normal text-base text-foreground dark:text-white"
                                         required
                                         value={form.endDate}
                                         onChange={e => setForm({ ...form, endDate: e.target.value })}
@@ -209,10 +209,10 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between p-6 bg-white dark:bg-slate-950 border border-border dark:border-slate-800 rounded-[1.5rem] shadow-sm">
+                            <div className="flex items-center justify-between p-6 bg-white dark:bg-slate-950 border border-border dark:border-slate-800 rounded-2xl shadow-sm">
                                 <div className="flex items-center gap-4">
                                     <div className={cn(
-                                        "h-8 w-8 rounded-xl border-2 flex items-center justify-center transition-all cursor-pointer",
+                                        "h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all cursor-pointer",
                                         form.isActive ? "bg-emerald-500 border-emerald-500" : "border-border dark:border-slate-800"
                                     )} onClick={() => setForm({ ...form, isActive: !form.isActive })}>
                                         <input
@@ -221,30 +221,30 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                                             checked={form.isActive}
                                             onChange={() => { }}
                                         />
-                                        {form.isActive && <Check size={18} className="text-white" />}
+                                        {form.isActive && <Check size={14} className="text-white" />}
                                     </div>
                                     <div className="cursor-pointer" onClick={() => setForm({ ...form, isActive: !form.isActive })}>
-                                        <div className="text-[10px] font-semibold text-foreground dark:text-white uppercase tracking-wide">Set as current active term</div>
-                                        <div className="text-[9px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">This will be the default term for new invoices</div>
+                                        <div className="text-sm font-medium text-foreground dark:text-white">Set as current active term</div>
+                                        <div className="text-xs font-normal text-muted-foreground mt-0.5">This will be the default term for new invoices</div>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
                                     <Button
                                         type="button"
                                         variant="ghost"
-                                        className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 hover:text-foreground dark:hover:text-white"
+                                        className="h-10 px-4 rounded-lg font-medium text-sm text-muted-foreground hover:text-foreground dark:hover:text-white"
                                         onClick={() => setShowForm(false)}
                                     >
                                         Cancel
                                     </Button>
                                     <Button
                                         type="submit"
-                                        className="h-12 px-8 rounded-xl bg-blue-600 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-200"
+                                        className="h-10 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm shadow-md shadow-blue-600/20 transition-all"
                                         disabled={loading}
                                     >
-                                        {loading ? <Loader2 className="animate-spin" size={18} /> : (
+                                        {loading ? <Loader2 className="animate-spin" size={16} /> : (
                                             <>
-                                                <Check size={18} className="mr-2" />
+                                                <Check size={16} className="mr-2" />
                                                 Create Term
                                             </>
                                         )}
@@ -258,61 +258,61 @@ export default function AcademicPeriodManager({ onClose, onSuccess }: { onClose?
                 {/* Periods Table */}
                 {periods.length === 0 ? (
                     <div className="py-24 text-center">
-                        <div className="h-24 w-24 bg-muted dark:bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
-                            <Calendar size={48} className="text-slate-200 dark:text-slate-800" />
+                        <div className="h-20 w-20 bg-muted dark:bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+                            <Calendar size={40} className="text-slate-300 dark:text-slate-700" />
                         </div>
-                        <h3 className="text-2xl font-semibold text-foreground dark:text-white mb-2 uppercase tracking-tight">No Terms Defined</h3>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto">
+                        <h3 className="text-xl font-semibold text-foreground dark:text-white mb-2">No Terms Defined</h3>
+                        <p className="text-muted-foreground font-normal max-w-sm mx-auto">
                             No academic periods have been defined yet. Add a term to get started.
                         </p>
                     </div>
                 ) : (
-                    <div className="border border-border dark:border-slate-900 rounded-[2rem] overflow-hidden bg-white dark:bg-slate-950 shadow-inner">
+                    <div className="border border-border dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-950 shadow-sm">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-muted dark:bg-slate-900/50 border-b border-border dark:border-slate-900">
-                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Term</th>
-                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Year</th>
-                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Dates</th>
-                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Status</th>
-                                    <th className="px-6 py-4 text-[10px] font-semibold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                <tr className="bg-muted/60 dark:bg-slate-900/30 border-b border-border dark:border-slate-800">
+                                    <th className="px-6 py-4 text-xs font-semibold text-muted-foreground">Term</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-muted-foreground">Year</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-muted-foreground">Dates</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-muted-foreground">Status</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-muted-foreground text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50 dark:divide-slate-900">
                                 {periods.map((p) => (
-                                    <tr key={p.id} className="group hover:bg-muted/50 dark:hover:bg-slate-900/20 transition-colors">
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center gap-3">
+                                    <tr key={p.id} className="group hover:bg-muted/30 dark:hover:bg-slate-900/20 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-2">
                                                 <div className="h-2 w-2 bg-blue-600 rounded-full"></div>
-                                                <span className="font-semibold text-foreground dark:text-white uppercase tracking-tight text-sm">{p.term.replace('_', ' ')}</span>
+                                                <span className="font-medium text-foreground dark:text-white text-sm">{p.term.replace('_', ' ')}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <span className="font-bold text-slate-600 dark:text-slate-400">{p.academicYear}</span>
+                                        <td className="px-6 py-4">
+                                            <span className="font-medium text-slate-600 dark:text-slate-400 text-sm">{p.academicYear}</span>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center gap-2 text-xs font-black text-slate-500 dark:text-slate-500 uppercase tracking-tighter">
-                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-border dark:border-slate-900 rounded-lg">{formatDate(p.startDate)}</div>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-2 text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                <div className="px-2 py-1 bg-white dark:bg-slate-950 border border-border dark:border-slate-800 rounded-md text-xs">{formatDate(p.startDate)}</div>
                                                 <ChevronRightIcon />
-                                                <div className="px-3 py-1 bg-white dark:bg-slate-950 border border-border dark:border-slate-900 rounded-lg">{formatDate(p.endDate)}</div>
+                                                <div className="px-2 py-1 bg-white dark:bg-slate-950 border border-border dark:border-slate-800 rounded-md text-xs">{formatDate(p.endDate)}</div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5">
+                                        <td className="px-6 py-4">
                                             <Badge className={cn(
-                                                "font-black text-[9px] px-3 h-6 uppercase tracking-widest border-none",
+                                                "font-medium text-xs px-3 h-6 border-none",
                                                 p.isActive
                                                     ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                                                    : "bg-muted text-slate-500 dark:bg-slate-900 dark:text-slate-500"
+                                                    : "bg-muted text-muted-foreground dark:bg-slate-900 dark:text-slate-500"
                                             )}>
                                                 {p.isActive ? (
-                                                    <span className="flex items-center gap-1.5 leading-none">
+                                                    <span className="flex items-center gap-1.5">
                                                         <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                                        CURRENT ACTIVE
+                                                        Active
                                                     </span>
-                                                ) : 'INACTIVE'}
+                                                ) : 'Inactive'}
                                             </Badge>
                                         </td>
-                                        <td className="px-6 py-5 text-right">
+                                        <td className="px-6 py-4 text-right">
                                             <div className="flex gap-2 justify-end">
                                                 {!p.isActive && (
                                                     <Button
