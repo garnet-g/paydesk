@@ -1,12 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, ArrowLeft, Download, Loader2 } from 'lucide-react'
+import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, ArrowLeft, Download, Loader2, ShieldCheck, Database, FileText, GraduationCap, Users } from 'lucide-react'
 import DashboardLayout from '@/components/DashboardLayout'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'sonner'
 
 export default function ImportDataPage() {
     const [importType, setImportType] = useState<'STUDENTS' | 'PARENTS' | 'BALANCES'>('STUDENTS')
@@ -40,14 +43,17 @@ export default function ImportDataPage() {
             const data = await res.json()
             setResult({
                 success: res.ok,
-                message: data.message || (res.ok ? 'Import completed successfully' : 'Import failed'),
+                message: data.message || (res.ok ? 'Batch migration finalized successfully' : 'Migration protocol failure'),
                 details: data.details
             })
+            if (res.ok) toast.success("Data synchronization complete")
+            else toast.error("Data synchronization failed")
         } catch (error) {
             setResult({
                 success: false,
-                message: 'A connection error occurred during upload.'
+                message: 'A tactical connection error occurred during verification.'
             })
+            toast.error("Transmission signal failure")
         } finally {
             setIsUploading(false)
         }
@@ -61,186 +67,224 @@ export default function ImportDataPage() {
 
     return (
         <DashboardLayout>
-            <div className="animate-fade-in max-w-5xl mx-auto">
-                <div className="mb-2xl flex items-center justify-between">
-                    <div className="flex items-center gap-lg">
-                        <Link href="/dashboard" className="p-sm bg-white shadow-sm border border-neutral-100 rounded-xl text-neutral-400 hover:text-primary-600 hover:border-primary-200 transition-all">
-                            <ArrowLeft size={20} />
+            <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                {/* Modern Page Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div className="flex items-center gap-6">
+                        <Link href="/dashboard" className="h-14 w-14 bg-white dark:bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-200 border border-slate-100 dark:border-slate-800 shadow-sm transition-all active:scale-95 group">
+                            <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
                         </Link>
                         <div>
-                            <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 'var(--spacing-xs)', color: 'var(--primary-900)' }}>Data Management Hub</h2>
-                            <p className="text-muted-foreground font-medium">Bulk import your school data with precision</p>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
+                                Data Management Hub
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
+                                <Database size={12} className="text-blue-500" />
+                                Enterprise-grade batch synchronization terminal
+                            </p>
                         </div>
                     </div>
-                    <div className="hidden md:flex items-center gap-md px-lg py-md bg-primary-50 rounded-2xl border border-primary-100/50">
-                        <div className="p-sm bg-primary-100 text-primary-600 rounded-xl">
-                            <FileSpreadsheet size={20} />
+
+                    <div className="flex items-center gap-4 px-6 py-3 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+                        <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200 dark:shadow-none">
+                            <ShieldCheck size={20} />
                         </div>
-                        <div className="text-xs">
-                            <div className="font-semibold text-primary-900  tracking-tight">System Health</div>
-                            <div className="text-primary-600 font-bold ">Ready for processing</div>
+                        <div>
+                            <div className="text-[9px] font-black text-blue-900 dark:text-blue-400 uppercase tracking-widest leading-none mb-1">System Health</div>
+                            <div className="text-xs font-black text-blue-600">OPERATIONAL READY</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-xl mb-2xl">
+                {/* Import Type Selection */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {(['STUDENTS', 'PARENTS', 'BALANCES'] as const).map(type => (
-                        <button
+                        <Card
                             key={type}
                             onClick={() => { setImportType(type); setFile(null); setResult(null); }}
                             className={cn(
-                                "group relative overflow-hidden p-xl text-center transition-all duration-500 rounded-[2rem] border-2",
+                                "cursor-pointer transition-all duration-500 rounded-[2.5rem] border-none overflow-hidden group",
                                 importType === type
-                                    ? "bg-white border-primary-500 shadow-2xl shadow-primary-200/50 scale-[1.02]"
-                                    : "bg-white/50 border-transparent hover:border-neutral-200 hover:bg-white shadow-sm"
+                                    ? "bg-slate-900 text-white shadow-2xl scale-[1.02] ring-4 ring-blue-600/20"
+                                    : "bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-900 shadow-lg hover:border-blue-600/30 shadow-slate-100 dark:shadow-none"
                             )}
                         >
-                            <div className={cn(
-                                "w-16 h-16 rounded-2xl mx-auto mb-lg flex items-center justify-center transition-all duration-500",
-                                importType === type
-                                    ? "bg-primary-600 text-white shadow-lg shadow-primary-200 scale-110"
-                                    : "bg-neutral-100 text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-600"
-                            )}>
-                                <FileSpreadsheet size={32} />
-                            </div>
-                            <div className={cn(
-                                "font-bold text-lg tracking-tight transition-colors",
-                                importType === type ? "text-primary-900" : "text-neutral-500"
-                            )}>{type}</div>
-                            <div className={cn(
-                                "text-[10px] font-black uppercase tracking-widest mt-sm transition-colors",
-                                importType === type ? "text-primary-600" : "text-neutral-400"
-                            )}>
-                                {type === 'STUDENTS' && 'Student Records'}
-                                {type === 'PARENTS' && 'Guardian Links'}
-                                {type === 'BALANCES' && 'Fee Balances'}
-                            </div>
-
-                            {importType === type && (
-                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary-600 rounded-t-full" />
-                            )}
-                        </button>
+                            <CardContent className="p-8 text-center flex flex-col items-center">
+                                <div className={cn(
+                                    "h-16 w-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500",
+                                    importType === type ? "bg-blue-600 text-white shadow-xl shadow-blue-500/40" : "bg-slate-50 dark:bg-slate-900 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600"
+                                )}>
+                                    {type === 'STUDENTS' && <GraduationCap size={32} />}
+                                    {type === 'PARENTS' && <Users size={32} />}
+                                    {type === 'BALANCES' && <FileSpreadsheet size={32} />}
+                                </div>
+                                <h3 className="text-xl font-black uppercase italic tracking-tighter mb-1">{type}</h3>
+                                <p className={cn(
+                                    "text-[9px] font-black uppercase tracking-[0.2em] transition-colors",
+                                    importType === type ? "text-blue-400" : "text-slate-400"
+                                )}>
+                                    {type === 'STUDENTS' && 'Primary Registry'}
+                                    {type === 'PARENTS' && 'Guardian Mapping'}
+                                    {type === 'BALANCES' && 'Financial States'}
+                                </p>
+                                {importType === type && (
+                                    <motion.div layoutId="active-indicator" className="mt-6 h-1 w-10 bg-blue-500 rounded-full" />
+                                )}
+                            </CardContent>
+                        </Card>
                     ))}
                 </div>
 
-                <div className="card shadow-2xl border-neutral-100 p-2xl relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 via-primary-600 to-primary-400" />
-
-                    <div className="flex flex-col lg:flex-row gap-2xl">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-semibold text-primary-900 mb-lg flex items-center gap-sm">
-                                <Upload size={20} className="text-primary-600" />
-                                Select your {importType.toLowerCase()} file
-                            </h3>
-
-                            <div
-                                className={cn(
-                                    "relative border-2 border-dashed rounded-[2.5rem] p-3xl text-center transition-all duration-500 min-h-[350px] flex flex-col items-center justify-center cursor-pointer group/drop",
-                                    file
-                                        ? "border-success-500 bg-success-50/20 shadow-xl shadow-success-100/50"
-                                        : "border-neutral-200 bg-neutral-50/50 hover:border-primary-400 hover:bg-white hover:shadow-2xl hover:shadow-primary-100/50"
-                                )}
-                                onDragOver={(e) => e.preventDefault()}
-                                onDrop={(e) => {
-                                    e.preventDefault();
-                                    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
-                                }}
-                                onClick={() => document.getElementById('file-upload')?.click()}
-                            >
-                                {file ? (
-                                    <div className="animate-in zoom-in-95 duration-500 text-center">
-                                        <div className="w-24 h-24 bg-success-600 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-lg shadow-2xl shadow-success-200 scale-110">
-                                            <CheckCircle size={48} />
-                                        </div>
-                                        <div className="font-bold text-2xl text-neutral-900 mb-xs">{file.name}</div>
-                                        <div className="flex items-center justify-center gap-md">
-                                            <Badge variant="outline" className="bg-success-50 text-success-700 border-success-200 px-4 py-1.5 rounded-full font-bold uppercase text-[10px] tracking-widest">
-                                                {(file.size / 1024).toFixed(1)} KB
-                                            </Badge>
-                                            <Badge variant="outline" className="bg-success-50 text-success-700 border-success-200 px-4 py-1.5 rounded-full font-bold uppercase text-[10px] tracking-widest">
-                                                Ready for upload
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-6">
-                                        <div className="w-24 h-24 bg-white text-neutral-300 rounded-[2rem] flex items-center justify-center mx-auto shadow-sm ring-1 ring-neutral-100 group-hover/drop:text-primary-600 group-hover/drop:scale-110 group-hover/drop:shadow-2xl group-hover/drop:shadow-primary-200 transition-all duration-700">
-                                            <Upload size={48} />
-                                        </div>
-                                        <div>
-                                            <div className="font-bold text-2xl text-neutral-900 mb-xs">Drop your CSV file here</div>
-                                            <div className="text-neutral-500 font-medium">Click to browse or drag and drop your file</div>
-                                        </div>
-                                        <div className="inline-flex items-center gap-sm px-4 py-2 bg-neutral-100 text-neutral-500 rounded-full text-[10px] font-black uppercase tracking-widest">
-                                            Maximum file size: 10MB
-                                        </div>
-                                    </div>
-                                )}
-                                <input
-                                    id="file-upload"
-                                    type="file"
-                                    className="hidden"
-                                    accept=".csv,.xlsx,.xls"
-                                    onChange={handleFileChange}
-                                />
+                {/* Main Action Area */}
+                <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 overflow-hidden ring-1 ring-slate-100 dark:ring-slate-900">
+                    <CardHeader className="p-10 border-b border-slate-50 dark:border-slate-900">
+                        <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white border border-slate-800">
+                                <Upload size={20} className="text-blue-400" />
+                            </div>
+                            <div>
+                                <CardTitle className="text-xl font-black uppercase tracking-tighter italic">Batch Import Terminal</CardTitle>
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Select source file for {importType.toLowerCase()} processing</p>
                             </div>
                         </div>
-
-                        <div className="w-full lg:w-80 flex flex-col gap-lg">
-                            <div className="p-lg bg-warning-50 rounded-2xl border border-warning-100 relative overflow-hidden">
-                                <div className="relative z-10">
-                                    <h4 className="font-semibold text-warning-900 text-xs   mb-md flex items-center gap-sm">
-                                        <Download size={14} />
-                                        Template Tool
-                                    </h4>
-                                    <p className="text-xs text-warning-800 font-medium leading-relaxed">
-                                        Use our official schema to prevent mapping errors during the migration process.
-                                        <a href={templates[importType]} download className="ml-1 text-warning-900 underline font-semibold">Download here.</a>
-                                    </p>
+                    </CardHeader>
+                    <CardContent className="p-10">
+                        <div className="flex flex-col lg:flex-row gap-12">
+                            <div className="flex-1">
+                                <div
+                                    className={cn(
+                                        "relative border-4 border-dashed rounded-[3rem] p-12 text-center transition-all duration-500 min-h-[400px] flex flex-col items-center justify-center cursor-pointer group/drop",
+                                        file
+                                            ? "border-emerald-500 bg-emerald-50/20 dark:bg-emerald-900/10 shadow-xl shadow-emerald-100 dark:shadow-none"
+                                            : "border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-900/30 hover:border-blue-400 hover:bg-white dark:hover:bg-slate-900/50"
+                                    )}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+                                    }}
+                                    onClick={() => document.getElementById('file-upload')?.click()}
+                                >
+                                    <AnimatePresence mode="wait">
+                                        {file ? (
+                                            <motion.div
+                                                key="file-ready"
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                className="text-center"
+                                            >
+                                                <div className="h-24 w-24 bg-emerald-600 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-200 dark:shadow-none scale-110">
+                                                    <CheckCircle size={48} />
+                                                </div>
+                                                <h4 className="text-2xl font-black uppercase tracking-tight text-slate-900 dark:text-white mb-4 italic truncate max-w-sm">{file.name}</h4>
+                                                <div className="flex items-center justify-center gap-3">
+                                                    <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-none px-4 py-1.5 rounded-xl font-black uppercase text-[10px] tracking-widest">
+                                                        {(file.size / 1024).toFixed(1)} KB
+                                                    </Badge>
+                                                    <Badge className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-none px-4 py-1.5 rounded-xl font-black uppercase text-[10px] tracking-widest">
+                                                        READY FOR SYNC
+                                                    </Badge>
+                                                </div>
+                                            </motion.div>
+                                        ) : (
+                                            <motion.div
+                                                key="empty-drop"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                className="space-y-8"
+                                            >
+                                                <div className="h-24 w-24 bg-white dark:bg-slate-800 text-slate-200 dark:text-slate-700 rounded-[2rem] flex items-center justify-center mx-auto shadow-sm ring-1 ring-slate-100 dark:ring-slate-700 group-hover/drop:text-blue-600 group-hover/drop:scale-110 group-hover/drop:shadow-2xl transition-all duration-700">
+                                                    <Upload size={48} />
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tight italic text-slate-900 dark:text-white mb-2">Initialize Payload</h4>
+                                                    <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">Drop CSV file or click to transmit protocol</p>
+                                                </div>
+                                                <div className="inline-flex items-center gap-2 px-6 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-full text-[9px] font-black uppercase tracking-[0.3em]">
+                                                    MAX PAYLOAD: 10MB
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                    <input id="file-upload" type="file" className="hidden" accept=".csv" onChange={handleFileChange} />
                                 </div>
                             </div>
 
-                            <Button
-                                className={`btn w-full py-4 rounded-2xl font-semibold   text-xs transition-all duration-300 flex items-center justify-center gap-md ${!file || isUploading
-                                    ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
-                                    : 'bg-primary-600 text-white shadow-xl shadow-primary-200 hover:scale-105 active:scale-95'
-                                    }`}
-                                disabled={!file || isUploading}
-                                onClick={handleUpload}
-                            >
-                                {isUploading ? (
-                                    <><Loader2 className="animate-spin" size={18} /> Processing...</>
-                                ) : (
-                                    <>Start Data Import</>
-                                )}
-                            </Button>
-
-                            {result && (
-                                <div className={`p-lg rounded-2xl border animate-slide-up ${result.success
-                                    ? 'bg-success-50 border-success-100 text-success-800 shadow-lg shadow-success-50'
-                                    : 'bg-error-50 border-error-100 text-error-800 shadow-lg shadow-error-50'
-                                    }`}>
-                                    <div className="flex items-center gap-md mb-sm">
-                                        {result.success ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
-                                        <div className="font-semibold text-xs  tracking-tight">{result.message}</div>
-                                    </div>
-                                    {result.details && (
-                                        <div className="grid grid-cols-2 gap-sm mt-md">
-                                            <div className="bg-white/50 p-xs rounded-lg text-center">
-                                                <div className="text-[10px] font-semibold  opacity-60">Success</div>
-                                                <div className="font-semibold text-lg">{result.details.created}</div>
-                                            </div>
-                                            <div className="bg-white/50 p-xs rounded-lg text-center">
-                                                <div className="text-[10px] font-semibold  opacity-60">Errors</div>
-                                                <div className="font-semibold text-lg text-error-600 tabular-nums">{result.details.errors}</div>
-                                            </div>
+                            <div className="w-full lg:w-96 space-y-8">
+                                {/* Template Card */}
+                                <div className="p-8 bg-blue-900 rounded-[2.5rem] text-white relative overflow-hidden group border border-blue-800 shadow-2xl">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-blue-600/40 transition-colors" />
+                                    <div className="relative z-10">
+                                        <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center mb-6 border border-white/5">
+                                            <FileText size={20} className="text-blue-300" />
                                         </div>
+                                        <h4 className="text-lg font-black uppercase italic tracking-tighter mb-3">Protocol Schema</h4>
+                                        <p className="text-[10px] font-bold text-blue-300 uppercase tracking-widest leading-relaxed mb-6">
+                                            Adhere to designated mapping standards to ensure data integrity during migration.
+                                        </p>
+                                        <Button
+                                            asChild
+                                            className="h-10 px-6 rounded-xl bg-white text-slate-950 hover:bg-slate-100 font-black text-[10px] uppercase tracking-[0.2em] w-full shadow-lg"
+                                        >
+                                            <a href={templates[importType]} download>
+                                                Download Template
+                                            </a>
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-4">
+                                    <Button
+                                        className={cn(
+                                            "w-full h-16 rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] italic gap-3 shadow-2xl transition-all active:scale-95",
+                                            !file || isUploading
+                                                ? "bg-slate-100 dark:bg-slate-900 text-slate-400 cursor-not-allowed shadow-none"
+                                                : "bg-slate-900 hover:bg-black text-white dark:bg-white dark:text-slate-950 shadow-slate-200 dark:shadow-none"
+                                        )}
+                                        disabled={!file || isUploading}
+                                        onClick={handleUpload}
+                                    >
+                                        {isUploading ? (
+                                            <><Loader2 className="animate-spin" size={18} /> PROCESSING PROTOCOL...</>
+                                        ) : (
+                                            <><ShieldCheck size={18} /> INITIALIZE MIGRATION</>
+                                        )}
+                                    </Button>
+
+                                    {result && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className={cn(
+                                                "p-6 rounded-[2rem] border-2",
+                                                result.success
+                                                    ? "bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-400"
+                                                    : "bg-red-50/50 dark:bg-red-900/10 border-red-500/20 text-red-800 dark:text-red-400"
+                                            )}
+                                        >
+                                            <div className="flex items-center gap-3 mb-4">
+                                                {result.success ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+                                                <div className="text-[10px] font-black uppercase tracking-widest leading-tight">{result.message}</div>
+                                            </div>
+                                            {result.details && (
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="bg-white/40 dark:bg-white/5 p-4 rounded-2xl border border-emerald-500/20 text-center">
+                                                        <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-1">Created</div>
+                                                        <div className="text-xl font-black italic">{result.details.created}</div>
+                                                    </div>
+                                                    <div className="bg-white/40 dark:bg-white/5 p-4 rounded-2xl border border-red-500/20 text-center">
+                                                        <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-1">Errors</div>
+                                                        <div className={cn("text-xl font-black italic", result.details.errors > 0 && "text-red-600")}>{result.details.errors}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </motion.div>
                                     )}
                                 </div>
-                            )}
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
             </div>
         </DashboardLayout>
     )

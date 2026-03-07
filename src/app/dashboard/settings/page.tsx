@@ -18,11 +18,31 @@ import {
     Trash2,
     Palette,
     ArrowRight,
-    Zap
+    Zap,
+    Loader2,
+    Building,
+    Mail,
+    Phone,
+    MapPin,
+    Calendar,
+    KeyRound,
+    ShieldCheck,
+    Globe,
+    Smartphone,
+    CreditCard as BankIcon,
+    ArrowUpRight
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 export default function SettingsPage() {
     const { data: session, update } = useSession()
@@ -30,8 +50,6 @@ export default function SettingsPage() {
 
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
-    const [success, setSuccess] = useState('')
-    const [error, setError] = useState('')
     const [activeTab, setActiveTab] = useState<'general' | 'payments' | 'branding' | 'security' | 'admin'>('general')
 
     // Form Stats
@@ -134,9 +152,6 @@ export default function SettingsPage() {
         if (!session?.user?.schoolId) return
 
         setSaving(true)
-        setError('')
-        setSuccess('')
-
         try {
             const res = await fetch(`/api/schools/${session.user.schoolId}/settings`, {
                 method: 'PATCH',
@@ -164,14 +179,13 @@ export default function SettingsPage() {
             })
 
             if (res.ok) {
-                setSuccess('Settings saved successfully!')
-                setTimeout(() => setSuccess(''), 5000)
+                toast.success('System configuration synchronized successfully.')
             } else {
                 const data = await res.json()
-                setError(data.error || 'Failed to save settings')
+                toast.error(data.error || 'Failed to authorize settings change')
             }
         } catch (err) {
-            setError('An error occurred. Please try again.')
+            toast.error('Network synchronization failure')
         } finally {
             setSaving(false)
         }
@@ -180,11 +194,9 @@ export default function SettingsPage() {
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault()
         setPasswordLoading(true)
-        setError('')
-        setSuccess('')
 
         if (newPassword !== confirmPassword) {
-            setError('New passwords do not match')
+            toast.error('Cryptographic mismatch: New passwords do not match')
             setPasswordLoading(false)
             return
         }
@@ -199,16 +211,15 @@ export default function SettingsPage() {
             const data = await res.json()
 
             if (res.ok) {
-                setSuccess('Password updated successfully!')
+                toast.success('Security credentials updated successfully.')
                 setCurrentPassword('')
                 setNewPassword('')
                 setConfirmPassword('')
-                setTimeout(() => setSuccess(''), 5000)
             } else {
-                setError(data.error || 'Failed to update password')
+                toast.error(data.error || 'Authentication credential update rejected')
             }
         } catch (err) {
-            setError('An error occurred. Please try again.')
+            toast.error('Security terminal connection failure')
         } finally {
             setPasswordLoading(false)
         }
@@ -219,7 +230,7 @@ export default function SettingsPage() {
         if (!file) return
 
         if (file.size > 2 * 1024 * 1024) {
-            alert('File too large. Max 2MB.')
+            toast.error('Payload size exceeded. Max 2MB.')
             return
         }
 
@@ -243,7 +254,7 @@ export default function SettingsPage() {
             .upload(filePath, file, { cacheControl: '3600', upsert: true })
 
         if (error) {
-            setError('Logo upload failed: ' + error.message)
+            toast.error('Asset upload terminal failure: ' + error.message)
             throw new Error('Failed to upload logo')
         }
 
@@ -258,9 +269,6 @@ export default function SettingsPage() {
         if (!session?.user?.schoolId) return
 
         setBrandingLoading(true)
-        setError('')
-        setSuccess('')
-
         try {
             let finalLogoUrl = logoPreview
 
@@ -278,18 +286,18 @@ export default function SettingsPage() {
             if (res.ok) {
                 const saved = await res.json()
                 const confirmedLogoUrl = saved.logoUrl || finalLogoUrl
-                setSuccess('Branding updated!')
+                toast.success('Visual identity re-indexed successfully.')
                 await update({
                     user: { ...session?.user, logoUrl: confirmedLogoUrl }
                 })
                 setTimeout(() => window.location.reload(), 1500)
             } else {
                 const data = await res.json()
-                setError(data.error || 'Failed to update branding')
+                toast.error(data.error || 'Visual identity update rejected')
             }
         } catch (err: any) {
             if (!err.message.includes('upload')) {
-                setError('Branding update error: ' + (err.message || 'Unknown error'))
+                toast.error('Branding synchronization error')
             }
         } finally {
             setBrandingLoading(false)
@@ -297,7 +305,7 @@ export default function SettingsPage() {
     }
 
     const handleToggleMaintenance = async () => {
-        if (!confirm('Toggle global maintenance mode?')) return
+        if (!confirm('Confirm: Execute global maintenance override?')) return
 
         setMaintenanceLoading(true)
         try {
@@ -309,16 +317,22 @@ export default function SettingsPage() {
             if (res.ok) {
                 const data = await res.json()
                 setMaintenanceMode(data.active)
-                setSuccess(`Maintenance Mode ${data.active ? 'Enabled' : 'Disabled'}`)
+                toast.info(`System State: ${data.active ? 'MAINTENANCE_ACTIVE' : 'OPERATIONAL'}`)
             }
-        } catch (err) { }
-        finally { setMaintenanceLoading(false) }
+        } catch (err) {
+            toast.error('System control link failure')
+        } finally {
+            setMaintenanceLoading(false)
+        }
     }
 
     if (loading) return (
         <DashboardLayout>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-                <div className="spinner"></div>
+            <div className="flex h-[60vh] items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <Loader2 className="h-10 w-10 animate-spin text-blue-600/40" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 italic">Decrypting Settings Registry...</p>
+                </div>
             </div>
         </DashboardLayout>
     )
@@ -328,30 +342,38 @@ export default function SettingsPage() {
 
     const tabs = [
         ...(session?.user?.role !== 'PARENT' ? [
-            { id: 'general', label: 'General', icon: Building2 },
-            { id: 'payments', label: 'Payments', icon: CreditCard }
+            { id: 'general', label: 'Institutional', icon: Building2 },
+            { id: 'payments', label: 'Financial Hub', icon: CreditCard }
         ] : []),
-        ...(isPrincipalOrAdmin ? [{ id: 'branding', label: 'Branding', icon: Palette }] : []),
-        { id: 'security', label: 'Security', icon: Shield },
-        ...(session?.user?.role === 'SUPER_ADMIN' ? [{ id: 'admin', label: 'Admin', icon: AlertCircle }] : [])
+        ...(isPrincipalOrAdmin ? [{ id: 'branding', label: 'Visual Identity', icon: Palette }] : []),
+        { id: 'security', label: 'Security Node', icon: Shield },
+        ...(session?.user?.role === 'SUPER_ADMIN' ? [{ id: 'admin', label: 'System Admin', icon: AlertCircle }] : [])
     ]
 
     return (
         <DashboardLayout>
-            <div className="animate-fade-in" style={{ maxWidth: '1100px', margin: '0 auto', paddingBottom: 'var(--spacing-3xl)' }}>
-                {/* Header Section */}
-                <div style={{ marginBottom: 'var(--spacing-2xl)' }}>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--neutral-900)', letterSpacing: '-0.02em', margin: 0 }}>Account Settings</h1>
-                    <p style={{ color: 'var(--neutral-500)', marginTop: '4px' }}>Manage your school configuration, billing, and platform preferences</p>
+            <div className="max-w-[1200px] mx-auto space-y-8 animate-in fade-in duration-700 pb-20">
+                {/* Tactical Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-white shadow-2xl shadow-slate-200 dark:shadow-none border border-slate-800">
+                            <Settings size={28} className="text-blue-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter italic text-foreground dark:text-white leading-none">
+                                Configuration
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 flex items-center gap-2">
+                                <ShieldCheck size={12} className="text-blue-500" />
+                                Institutional Control & Platform Preferences
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                {success && <div className="alert alert-success mt-md mb-md animate-slide-up"><CheckCircle2 size={18} /> {success}</div>}
-                {error && <div className="alert alert-error mt-md mb-md animate-slide-up"><AlertCircle size={18} /> {error}</div>}
-
-                <div className="settings-grid" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 'var(--spacing-2xl)', alignItems: 'start' }}>
-
-                    {/* Mini Menu (Side Tabs) */}
-                    <div className="scroll-x-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Navigation Sidebar */}
+                    <aside className="lg:w-64 shrink-0 flex flex-col gap-1">
                         {tabs.map((tab) => {
                             const Icon = tab.icon
                             const isActive = activeTab === tab.id
@@ -359,355 +381,564 @@ export default function SettingsPage() {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as any)}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '12px',
-                                        padding: '12px 16px',
-                                        borderRadius: '12px',
-                                        border: 'none',
-                                        background: isActive ? 'var(--primary-600)' : 'transparent',
-                                        color: isActive ? 'white' : 'var(--neutral-600)',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease',
-                                        textAlign: 'left',
-                                        fontWeight: isActive ? 700 : 500,
-                                        fontSize: '0.9rem',
-                                        flexShrink: 0
-                                    }}
+                                    className={cn(
+                                        "flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all italic text-left",
+                                        isActive
+                                            ? "bg-slate-900 text-white shadow-xl shadow-slate-200 dark:shadow-none dark:bg-white dark:text-slate-950 scale-105"
+                                            : "text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-900/50"
+                                    )}
                                 >
-                                    <Icon size={18} />
+                                    <Icon size={18} className={cn(isActive ? "text-blue-400" : "text-slate-300")} />
                                     {tab.label}
-                                    {isActive && <motion.div layoutId="activeTabIndicator" className="hide-mobile" style={{ marginLeft: 'auto', width: '4px', height: '16px', background: 'white', borderRadius: '2px' }} />}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeTab"
+                                            className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400"
+                                        />
+                                    )}
                                 </button>
                             )
                         })}
-                    </div>
+                    </aside>
 
-                    {/* Content Area */}
-                    <div className="animate-fade-in" style={{ minWidth: 0 }}>
-                        {/* GENERAL TAB */}
-                        {activeTab === 'general' && (
-                            <div className="card shadow-md">
-                                <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
-                                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>School Information</h3>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px' }}>Configure the basic public details for your institution.</p>
-                                </div>
-                                <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
-                                    <form onSubmit={handleSaveSettings} className="grid grid-cols-1 sm:grid-cols-2 gap-xl">
-                                        <div className="sm:col-span-2 form-group">
-                                            <label className="form-label">Official School Name</label>
-                                            <input type="text" className="form-input" value={form.school_name} onChange={(e) => setForm({ ...form, school_name: e.target.value })} />
-                                        </div>
-                                        <div className="sm:col-span-2 form-group">
-                                            <label className="form-label">School Motto / Tagline</label>
-                                            <input type="text" className="form-input" value={form.school_motto} onChange={(e) => setForm({ ...form, school_motto: e.target.value })} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Primary Contact Phone</label>
-                                            <input type="text" className="form-input" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Institutional Email</label>
-                                            <input type="email" className="form-input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                                        </div>
-                                        <div className="sm:col-span-2 form-group">
-                                            <label className="form-label">Physical Address</label>
-                                            <input type="text" className="form-input" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Active Academic Term</label>
-                                            <select className="form-input" value={form.current_term} onChange={(e) => setForm({ ...form, current_term: e.target.value })}>
-                                                <option value="Term 1">Term 1</option>
-                                                <option value="Term 2">Term 2</option>
-                                                <option value="Term 3">Term 3</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Current Academic Year</label>
-                                            <input type="text" className="form-input" value={form.current_year} onChange={(e) => setForm({ ...form, current_year: e.target.value })} />
-                                        </div>
-                                        <div className="sm:col-span-2" style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-md)' }}>
-                                            <button type="submit" className="btn btn-primary" disabled={saving}>
-                                                {saving ? <div className="spinner spinner-xs"></div> : <><Save size={18} /> Save General Changes</>}
-                                            </button>
-                                        </div>
-
-                                        {/* Banking Details Section */}
-                                        <div className="sm:col-span-2" style={{ borderTop: '1px solid var(--neutral-100)', paddingTop: 'var(--spacing-xl)', marginTop: 'var(--spacing-sm)' }}>
-                                            <h4 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '4px' }}>Banking Details</h4>
-                                            <p style={{ fontSize: '0.8rem', color: 'var(--neutral-500)', marginBottom: 'var(--spacing-lg)' }}>Used to generate bank transfer payment instructions for parents.</p>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-xl">
-                                                <div className="form-group">
-                                                    <label className="form-label">Bank Name</label>
-                                                    <input type="text" className="form-input" placeholder="e.g. KCB, Equity, Co-op" value={form.bank_name} onChange={(e) => setForm({ ...form, bank_name: e.target.value })} />
+                    {/* Main Content Area */}
+                    <div className="flex-1 min-w-0 space-y-8">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeTab}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                {activeTab === 'general' && (
+                                    <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 overflow-hidden">
+                                        <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-900/20">
+                                            <div className="flex items-center gap-4 mb-2">
+                                                <Building className="text-blue-600" size={24} />
+                                                <CardTitle className="text-2xl font-black uppercase tracking-tighter italic">Institutional Details</CardTitle>
+                                            </div>
+                                            <CardDescription className="text-xs font-bold uppercase tracking-widest text-slate-400 italic">Configure the core profile of your educational facility</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="p-10">
+                                            <form onSubmit={handleSaveSettings} className="space-y-8">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                    <div className="space-y-2 md:col-span-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Official Institution Name</Label>
+                                                        <Input
+                                                            value={form.school_name}
+                                                            onChange={(e) => setForm({ ...form, school_name: e.target.value })}
+                                                            className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold uppercase"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2 md:col-span-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Motto / Tagline</Label>
+                                                        <Input
+                                                            value={form.school_motto}
+                                                            onChange={(e) => setForm({ ...form, school_motto: e.target.value })}
+                                                            className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold italic"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Contact Phone</Label>
+                                                        <div className="relative group">
+                                                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600" size={18} />
+                                                            <Input
+                                                                value={form.phone}
+                                                                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                                                                className="h-14 pl-12 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Institutional Email</Label>
+                                                        <div className="relative group">
+                                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600" size={18} />
+                                                            <Input
+                                                                type="email"
+                                                                value={form.email}
+                                                                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                                                className="h-14 pl-12 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2 md:col-span-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Physical Address</Label>
+                                                        <div className="relative group">
+                                                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600" size={18} />
+                                                            <Input
+                                                                value={form.address}
+                                                                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                                                                className="h-14 pl-12 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Current Academic Term</Label>
+                                                        <Select value={form.current_term} onValueChange={(v) => setForm({ ...form, current_term: v })}>
+                                                            <SelectTrigger className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="rounded-2xl">
+                                                                <SelectItem value="Term 1" className="font-bold italic">Term 1</SelectItem>
+                                                                <SelectItem value="Term 2" className="font-bold italic">Term 2</SelectItem>
+                                                                <SelectItem value="Term 3" className="font-bold italic">Term 3</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Academic Year</Label>
+                                                        <div className="relative group">
+                                                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600" size={18} />
+                                                            <Input
+                                                                value={form.current_year}
+                                                                onChange={(e) => setForm({ ...form, current_year: e.target.value })}
+                                                                className="h-14 pl-12 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold"
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label className="form-label">Account Number</label>
-                                                    <input type="text" className="form-input" placeholder="e.g. 1234567890" value={form.bank_account} onChange={(e) => setForm({ ...form, bank_account: e.target.value })} />
+
+                                                <div className="pt-8 border-t border-slate-100 dark:border-slate-900">
+                                                    <div className="flex items-center gap-4 mb-8">
+                                                        <BankIcon className="text-emerald-600" size={24} />
+                                                        <div>
+                                                            <h3 className="text-lg font-black uppercase tracking-tighter italic">Banking Protocols</h3>
+                                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">For direct bank transfer instructions</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Bank Name</Label>
+                                                            <Input
+                                                                placeholder="e.g. KCB, EQUITY, CO-OP"
+                                                                value={form.bank_name}
+                                                                onChange={(e) => setForm({ ...form, bank_name: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold uppercase"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Account Number</Label>
+                                                            <Input
+                                                                value={form.bank_account}
+                                                                onChange={(e) => setForm({ ...form, bank_account: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold uppercase"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Account Holder Name</Label>
+                                                            <Input
+                                                                value={form.bank_account_name}
+                                                                onChange={(e) => setForm({ ...form, bank_account_name: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold uppercase"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Branch Name</Label>
+                                                            <Input
+                                                                value={form.bank_branch}
+                                                                onChange={(e) => setForm({ ...form, bank_branch: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold uppercase"
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label className="form-label">Account Name</label>
-                                                    <input type="text" className="form-input" placeholder="e.g. St. Mary's School" value={form.bank_account_name} onChange={(e) => setForm({ ...form, bank_account_name: e.target.value })} />
+
+                                                <div className="flex justify-end pt-4">
+                                                    <Button
+                                                        type="submit"
+                                                        disabled={saving}
+                                                        className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black uppercase tracking-widest text-[11px] italic shadow-xl shadow-slate-200 dark:bg-white dark:text-slate-950 transition-all"
+                                                    >
+                                                        {saving ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" size={18} />}
+                                                        Synchronize Changes
+                                                    </Button>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label className="form-label">Branch</label>
-                                                    <input type="text" className="form-input" placeholder="e.g. Westlands" value={form.bank_branch} onChange={(e) => setForm({ ...form, bank_branch: e.target.value })} />
+                                            </form>
+                                        </CardContent>
+                                    </Card>
+                                )}
+
+                                {activeTab === 'payments' && (
+                                    <div className="space-y-8">
+                                        <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 overflow-hidden">
+                                            <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-900 bg-emerald-50/50 dark:bg-emerald-900/10">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <Smartphone className="text-emerald-600" size={24} />
+                                                    <CardTitle className="text-2xl font-black uppercase tracking-tighter italic">M-Pesa / Daraja Node</CardTitle>
+                                                </div>
+                                                <CardDescription className="text-xs font-bold uppercase tracking-widest text-emerald-600/60 italic">Automated payment reconciliation system</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="p-10">
+                                                <div className="bg-slate-950 rounded-[2rem] p-8 mb-10 border border-slate-800 relative overflow-hidden group">
+                                                    <Zap className="absolute right-[-10px] top-[-10px] text-blue-600/10 h-32 w-32 transition-transform group-hover:scale-110" />
+                                                    <div className="relative z-10 flex gap-6">
+                                                        <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-900">
+                                                            <ShieldCheck size={24} />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <h4 className="text-white font-black uppercase tracking-tight italic">Secure Transmission Protocol</h4>
+                                                            <p className="text-slate-400 text-xs leading-relaxed font-bold italic">
+                                                                PayDesk utilizes direct Daraja TLS handshake. Transmissions bypass intermediary servers and settle directly in your shortcode.
+                                                            </p>
+                                                            <a href="https://developer.safaricom.co.ke" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-colors pt-2">
+                                                                Access Safaricom Developer Hub <ArrowUpRight size={14} />
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <form onSubmit={handleSaveSettings} className="space-y-8">
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Service Shortcode / Paybill</Label>
+                                                            <Input
+                                                                value={form.mpesa_paybill}
+                                                                onChange={e => setForm({ ...form, mpesa_paybill: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-mono font-bold"
+                                                                placeholder="e.g. 247247"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">STK Push Shortcode</Label>
+                                                            <Input
+                                                                value={form.mpesa_shortcode}
+                                                                onChange={e => setForm({ ...form, mpesa_shortcode: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-mono font-bold"
+                                                                placeholder="e.g. 247247"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2 md:col-span-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Consumer Key</Label>
+                                                            <Input
+                                                                type="password"
+                                                                value={form.mpesa_consumer_key}
+                                                                onChange={e => setForm({ ...form, mpesa_consumer_key: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-mono"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2 md:col-span-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Consumer Secret</Label>
+                                                            <Input
+                                                                type="password"
+                                                                value={form.mpesa_consumer_secret}
+                                                                onChange={e => setForm({ ...form, mpesa_consumer_secret: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-mono"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2 md:col-span-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Lipa Na M-Pesa Passkey</Label>
+                                                            <Input
+                                                                type="password"
+                                                                value={form.mpesa_passkey}
+                                                                onChange={e => setForm({ ...form, mpesa_passkey: e.target.value })}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-mono"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Environment Stage</Label>
+                                                            <Select value={form.mpesa_env} onValueChange={e => setForm({ ...form, mpesa_env: e })}>
+                                                                <SelectTrigger className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold">
+                                                                    <SelectValue />
+                                                                </SelectTrigger>
+                                                                <SelectContent className="rounded-2xl">
+                                                                    <SelectItem value="sandbox" className="font-bold uppercase tracking-widest text-[10px] italic">Development / Sandbox</SelectItem>
+                                                                    <SelectItem value="production" className="font-bold uppercase tracking-widest text-[10px] italic text-red-600">Live / Production</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                            {form.mpesa_env === 'production' && (
+                                                                <p className="text-[9px] font-black text-red-500 uppercase tracking-widest mt-2 italic flex items-center gap-1">
+                                                                    <AlertCircle size={10} /> CRITICAL: Real-world transactions enabled.
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex justify-end pt-4">
+                                                        <Button
+                                                            type="submit"
+                                                            disabled={saving}
+                                                            className="h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest text-[11px] italic shadow-xl shadow-emerald-100 dark:shadow-none transition-all"
+                                                        >
+                                                            {saving ? <Loader2 className="animate-spin mr-2" /> : <ShieldCheck className="mr-2" size={18} />}
+                                                            Authorize Payments
+                                                        </Button>
+                                                    </div>
+                                                </form>
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="rounded-[2.5rem] border-none shadow-xl bg-slate-900 text-white overflow-hidden">
+                                            <CardContent className="p-8 flex items-center justify-between">
+                                                <div className="flex items-center gap-6">
+                                                    <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center text-blue-400">
+                                                        <Zap size={28} />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-xl font-black uppercase tracking-tighter italic">Reconciliation Testing</h4>
+                                                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 italic">Verify your automation rules without live funds</p>
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    onClick={() => router.push('/dashboard/settings/mpesa')}
+                                                    variant="secondary"
+                                                    className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[10px] italic"
+                                                >
+                                                    Open Simulator
+                                                </Button>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                )}
+
+                                {activeTab === 'branding' && isPrincipalOrAdmin && (
+                                    <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 overflow-hidden">
+                                        <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-900 bg-indigo-50/50 dark:bg-indigo-900/10">
+                                            <div className="flex items-center gap-4 mb-2">
+                                                <Palette className="text-indigo-600" size={24} />
+                                                <CardTitle className="text-2xl font-black uppercase tracking-tighter italic">Visual Identity</CardTitle>
+                                            </div>
+                                            <CardDescription className="text-xs font-bold uppercase tracking-widest text-indigo-600/60 italic">Standardize your institutional branding across the platform</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="p-10 relative">
+                                            {!isPro && (
+                                                <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 dark:bg-slate-950/60 backdrop-blur-md">
+                                                    <div className="bg-slate-900 text-white p-10 rounded-[3rem] shadow-2xl max-w-sm text-center border border-slate-800 animate-in zoom-in-95 duration-500">
+                                                        <Lock size={40} className="mx-auto mb-6 text-blue-400" />
+                                                        <h4 className="text-2xl font-black uppercase tracking-tighter italic mb-2">PRO Identity Hub</h4>
+                                                        <p className="text-slate-400 text-xs font-bold italic mb-8 leading-relaxed">
+                                                            Unlock logo uploads, primary color calibration, and custom mottos in the platform footer.
+                                                        </p>
+                                                        <Button className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[11px] italic">
+                                                            Upgrade Terminal
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="space-y-10">
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
+                                                    <div className="space-y-4">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Institutional Logo</Label>
+                                                        <div className="aspect-square rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex flex-col items-center justify-center overflow-hidden relative group">
+                                                            {logoPreview ? (
+                                                                <>
+                                                                    <img src={logoPreview} alt="Logo" className="w-[80%] h-[80%] object-contain" />
+                                                                    <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                        <label className="cursor-pointer p-4 bg-white text-slate-900 rounded-full shadow-xl">
+                                                                            <Camera size={20} />
+                                                                            <input type="file" hidden onChange={handleLogoUpload} />
+                                                                        </label>
+                                                                    </div>
+                                                                </>
+                                                            ) : (
+                                                                <div className="text-center p-8 space-y-4">
+                                                                    <div className="h-16 w-16 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-slate-200 mx-auto shadow-sm">
+                                                                        <Camera size={32} />
+                                                                    </div>
+                                                                    <label className="block cursor-pointer">
+                                                                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">Select Vector File</span>
+                                                                        <input type="file" hidden onChange={handleLogoUpload} />
+                                                                    </label>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {logoPreview && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                onClick={() => { setLogoPreview(''); setLogoFile(null); }}
+                                                                className="w-full text-[9px] font-black uppercase tracking-widest text-red-500 italic"
+                                                            >
+                                                                <Trash2 size={12} className="mr-2" /> Expunge Logo
+                                                            </Button>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="md:col-span-2 space-y-8">
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Platform Tagline (Footer)</Label>
+                                                            <Input
+                                                                value={tagline}
+                                                                onChange={(e) => setTagline(e.target.value)}
+                                                                placeholder="e.g. EMPOWERING TOMORROW'S LEADERS"
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50 font-bold uppercase tracking-tight"
+                                                            />
+                                                        </div>
+
+                                                        <div className="space-y-4">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">UI Accent Protocol (Primary Color)</Label>
+                                                            <div className="flex items-center gap-6">
+                                                                <div className="h-20 w-32 rounded-2xl shadow-xl shadow-slate-200 dark:shadow-none border border-border p-1.5 bg-white dark:bg-slate-900">
+                                                                    <input
+                                                                        type="color"
+                                                                        value={primaryColor}
+                                                                        onChange={(e) => setPrimaryColor(e.target.value)}
+                                                                        className="w-full h-full rounded-xl cursor-pointer border-none bg-transparent"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-sm font-black mono text-slate-900 dark:text-white uppercase">{primaryColor}</div>
+                                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Identity Hex Code</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex justify-end pt-4">
+                                                    <Button
+                                                        onClick={handleUpdateBranding}
+                                                        disabled={brandingLoading}
+                                                        className="h-14 px-10 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[11px] italic shadow-xl shadow-indigo-100 dark:shadow-none transition-all"
+                                                    >
+                                                        {brandingLoading ? <Loader2 className="animate-spin mr-2" /> : <ShieldCheck className="mr-2" size={18} />}
+                                                        Deploy Visual Changes
+                                                    </Button>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        )}
+                                        </CardContent>
+                                    </Card>
+                                )}
 
-                        {activeTab === 'payments' && (
-                            <div className="card shadow-md">
-                                <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
-                                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>M-Pesa / Daraja Setup</h3>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px' }}>Connect your school's Daraja API so parents pay directly into your M-Pesa account.</p>
-                                </div>
-                                <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
-
-                                    {/* Info Banner */}
-                                    <div style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-100)', borderRadius: '14px', padding: 'var(--spacing-lg)', display: 'flex', gap: '14px', marginBottom: 'var(--spacing-xl)' }}>
-                                        <Zap size={22} style={{ color: 'var(--primary-600)', flexShrink: 0, marginTop: '2px' }} />
-                                        <div>
-                                            <p style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '4px' }}>How this works</p>
-                                            <p style={{ fontSize: '0.82rem', color: 'var(--neutral-600)', margin: 0, lineHeight: 1.6 }}>
-                                                When a parent clicks <strong>Pay</strong>, PayDesk uses <em>your school's</em> Daraja credentials to trigger the STK push. The money goes
-                                                directly to <strong>your paybill</strong> — PayDesk never touches it. Get your keys from{' '}
-                                                <a href="https://developer.safaricom.co.ke" target="_blank" rel="noreferrer" style={{ color: 'var(--primary-600)', fontWeight: 700 }}>developer.safaricom.co.ke</a>.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <form onSubmit={handleSaveSettings}>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 'var(--spacing-lg)' }}>
-
-                                            <div className="form-group">
-                                                <label className="form-label">Paybill Number <span style={{ color: 'var(--neutral-400)', fontSize: '0.75rem' }}>(shown on invoices)</span></label>
-                                                <input type="text" className="form-input" placeholder="e.g. 247247" value={form.mpesa_paybill} onChange={e => setForm({ ...form, mpesa_paybill: e.target.value })} />
-                                            </div>
-
-                                            <div className="form-group">
-                                                <label className="form-label">Shortcode <span style={{ color: 'var(--neutral-400)', fontSize: '0.75rem' }}>(same as paybill for C2B)</span></label>
-                                                <input type="text" className="form-input" placeholder="e.g. 247247" value={form.mpesa_shortcode} onChange={e => setForm({ ...form, mpesa_shortcode: e.target.value })} />
-                                            </div>
-
-                                            <div className="form-group sm:col-span-2">
-                                                <label className="form-label">Consumer Key</label>
-                                                <input type="password" className="form-input" placeholder="Paste from Daraja dashboard" value={form.mpesa_consumer_key} onChange={e => setForm({ ...form, mpesa_consumer_key: e.target.value })} style={{ fontFamily: 'monospace' }} />
-                                            </div>
-
-                                            <div className="form-group sm:col-span-2">
-                                                <label className="form-label">Consumer Secret</label>
-                                                <input type="password" className="form-input" placeholder="Paste from Daraja dashboard" value={form.mpesa_consumer_secret} onChange={e => setForm({ ...form, mpesa_consumer_secret: e.target.value })} style={{ fontFamily: 'monospace' }} />
-                                            </div>
-
-                                            <div className="form-group sm:col-span-2">
-                                                <label className="form-label">Lipa Na M-Pesa Passkey</label>
-                                                <input type="password" className="form-input" placeholder="Paste from Daraja STK Push section" value={form.mpesa_passkey} onChange={e => setForm({ ...form, mpesa_passkey: e.target.value })} style={{ fontFamily: 'monospace' }} />
-                                            </div>
-
-                                            <div className="form-group">
-                                                <label className="form-label">Environment</label>
-                                                <select className="form-input" value={form.mpesa_env} onChange={e => setForm({ ...form, mpesa_env: e.target.value })}>
-                                                    <option value="sandbox">Sandbox (Testing)</option>
-                                                    <option value="production">Production (Live)</option>
-                                                </select>
-                                                {form.mpesa_env === 'production' && (
-                                                    <p style={{ fontSize: '0.75rem', color: 'var(--warning-600)', fontWeight: 600, marginTop: '6px' }}>
-                                                        ⚠ Live mode — real money will be charged to parents.
-                                                    </p>
-                                                )}
-                                            </div>
-
-                                            <div className="sm:col-span-2" style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-md)', borderTop: '1px solid var(--neutral-100)', marginTop: 'var(--spacing-sm)' }}>
-                                                <button type="submit" className="btn btn-primary" disabled={saving} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    {saving ? <div className="spinner spinner-xs" /> : <><Save size={18} /> Save M-Pesa Settings</>}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* BRANDING TAB */}
-                        {activeTab === 'branding' && isPrincipalOrAdmin && (
-                            <div className="card shadow-md">
-                                <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
-                                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Visual Identity</h3>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px' }}>Customize how your school appears to parents and students.</p>
-                                </div>
-                                <div className="card-content" style={{ padding: 'var(--spacing-xl)', opacity: isPro ? 1 : 0.4, pointerEvents: isPro ? 'auto' : 'none', position: 'relative' }}>
-                                    {!isPro && (
-                                        <div style={{ position: 'absolute', inset: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(3px)' }}>
-                                            <div style={{ background: 'white', padding: '2rem', borderRadius: '24px', boxShadow: 'var(--shadow-xl)', textAlign: 'center', maxWidth: '340px' }}>
-                                                <Lock size={40} style={{ margin: '0 auto 16px', color: 'var(--warning-500)' }} />
-                                                <h4 style={{ fontWeight: 900, fontSize: '1.25rem' }}>PRO Branding</h4>
-                                                <p style={{ fontSize: '0.9rem', color: 'var(--neutral-500)', marginBottom: '1.5rem', lineHeight: 1.5 }}>Upload your logo and change dashboard colors to match your school's brand.</p>
-                                                <button className="btn btn-primary w-full" style={{ height: '48px' }} onClick={() => alert('Please contact the PayDesk team to unlock PRO features.')}>Upgrade to Pro</button>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-2xl">
-                                        <div style={{ textAlign: 'center' }}>
-                                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, textTransform: '', marginBottom: '12px', color: 'var(--neutral-500)' }}>Institutional Logo</label>
-                                            <div style={{ width: '140px', height: '140px', margin: '0 auto', borderRadius: '24px', border: '2px dashed var(--neutral-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#fff' }}>
-                                                {logoPreview ? <img src={logoPreview} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <Building2 size={48} className="text-neutral-200" />}
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '16px' }}>
-                                                <label className="btn btn-ghost btn-xs" style={{ cursor: 'pointer' }}>
-                                                    <Camera size={14} /> Change Logo
-                                                    <input type="file" hidden onChange={handleLogoUpload} />
-                                                </label>
-                                                {logoPreview && <button className="btn btn-ghost btn-xs text-error" onClick={() => setLogoPreview('')}><Trash2 size={14} /> Remove</button>}
-                                            </div>
-                                        </div>
-                                        <div className="md:col-span-3 space-y-xl">
-                                            <div className="form-group">
-                                                <label className="form-label">Brand Motto (Statement Footer)</label>
-                                                <input type="text" className="form-input" value={tagline} placeholder="e.g. Empowering Tomorrow's Leaders" onChange={(e) => setTagline(e.target.value)} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label className="form-label">Primary UI Accent Color</label>
-                                                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                                    <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} style={{ width: '80px', height: '48px', padding: '4px', borderRadius: '12px', border: '1px solid var(--neutral-200)', cursor: 'pointer' }} />
-                                                    <p style={{ fontSize: '0.9rem', color: 'var(--neutral-600)', margin: 0 }}>HEX: <strong>{primaryColor}</strong></p>
+                                {activeTab === 'security' && (
+                                    <div className="space-y-8">
+                                        <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 overflow-hidden group">
+                                            <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-900/20">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <User className="text-slate-900 dark:text-white" size={24} />
+                                                    <CardTitle className="text-2xl font-black uppercase tracking-tighter italic">Personal Matrix</CardTitle>
                                                 </div>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '12px' }}>
-                                                <button className="btn btn-primary" onClick={handleUpdateBranding} disabled={brandingLoading}>
-                                                    {brandingLoading ? <div className="spinner spinner-xs"></div> : <><Check size={18} /> Apply Branding</>}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* SECURITY TAB */}
-                        {activeTab === 'security' && (
-                            <div className="space-y-xl">
-                                <div className="card shadow-md">
-                                    <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Account Information</h3>
-                                    </div>
-                                    <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
-                                            <div className="form-group">
-                                                <label className="form-label">Full Name</label>
-                                                <input type="text" className="form-input" style={{ background: 'var(--neutral-50)' }} value={session?.user?.name || ''} disabled />
-                                            </div>
-                                            <div className="form-group">
-                                                <label className="form-label">Email Address</label>
-                                                <input type="email" className="form-input" style={{ background: 'var(--neutral-50)' }} value={session?.user?.email || ''} disabled />
-                                            </div>
-                                            <div className="form-group">
-                                                <label className="form-label">Account Role</label>
-                                                <div className="badge badge-outline" style={{ display: 'inline-flex', padding: '8px 12px' }}>{session?.user?.role}</div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label className="form-label">Assigned School</label>
-                                                <p style={{ fontWeight: 600, margin: 0 }}>{session?.user?.schoolName || 'System Admin'}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="card shadow-md">
-                                    <div className="card-header" style={{ borderBottom: '1px solid var(--neutral-100)', padding: 'var(--spacing-lg)' }}>
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Update Password</h3>
-                                        <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', marginTop: '4px' }}>Ensure your account stays secure with a strong password.</p>
-                                    </div>
-                                    <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
-                                        <form onSubmit={handlePasswordChange} className="space-y-xl">
-                                            <div className="form-group">
-                                                <label className="form-label">Current Password</label>
-                                                <input type="password" required className="form-input" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
-                                            </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                                                <div className="form-group">
-                                                    <label className="form-label">New Password</label>
-                                                    <input type="password" required className="form-input" value={newPassword} onChange={e => setNewPassword(e.target.value)} minLength={6} />
+                                                <CardDescription className="text-xs font-bold uppercase tracking-widest text-slate-400 italic">User identity & permission settings</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="p-10">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                                    <div className="space-y-1.5 p-6 rounded-[1.5rem] bg-slate-50 dark:bg-slate-900/50 border border-border">
+                                                        <Label className="text-[9px] font-black uppercase tracking-widest text-slate-400 italic">Verified Full Name</Label>
+                                                        <div className="text-lg font-black uppercase italic tracking-tight">{session?.user?.name || 'N/A'}</div>
+                                                    </div>
+                                                    <div className="space-y-1.5 p-6 rounded-[1.5rem] bg-slate-50 dark:bg-slate-900/50 border border-border">
+                                                        <Label className="text-[9px] font-black uppercase tracking-widest text-slate-400 italic">Authorized Email</Label>
+                                                        <div className="text-lg font-black italic tracking-tight">{session?.user?.email || 'N/A'}</div>
+                                                    </div>
+                                                    <div className="space-y-1.5 p-6 rounded-[1.5rem] bg-slate-50 dark:bg-slate-900/50 border border-border">
+                                                        <Label className="text-[9px] font-black uppercase tracking-widest text-slate-400 italic">Security clearance Role</Label>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="text-lg font-black uppercase italic tracking-tight">{session?.user?.role}</div>
+                                                            <Badge className="bg-blue-600 text-white text-[9px] font-black uppercase tracking-[0.2em] italic rounded-lg">TRUSTED</Badge>
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-1.5 p-6 rounded-[1.5rem] bg-slate-50 dark:bg-slate-900/50 border border-border">
+                                                        <Label className="text-[9px] font-black uppercase tracking-widest text-slate-400 italic">Institutional Anchor</Label>
+                                                        <div className="text-lg font-black uppercase italic tracking-tight">{session?.user?.schoolName || 'Global Services'}</div>
+                                                    </div>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label className="form-label">Confirm New Password</label>
-                                                    <input type="password" required className="form-input" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
-                                                </div>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '12px' }}>
-                                                <button type="submit" className="btn btn-primary" disabled={passwordLoading}>
-                                                    {passwordLoading ? <div className="spinner spinner-xs"></div> : "Update Password"}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                                            </CardContent>
+                                        </Card>
 
-                        {/* ADMIN TAB */}
-                        {activeTab === 'admin' && session?.user?.role === 'SUPER_ADMIN' && (
-                            <div className="card" style={{ border: '2px solid var(--error-200)', background: 'var(--error-50)' }}>
-                                <div className="card-header" style={{ padding: 'var(--spacing-lg)' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <AlertCircle size={28} className="text-error-600" />
-                                        <div>
-                                            <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--error-700)', margin: 0 }}>Emergency Controls</h3>
-                                            <p style={{ fontSize: '0.85rem', color: 'var(--error-600)', margin: 0 }}>Global platform operations. Use with caution.</p>
-                                        </div>
+                                        <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-slate-950 overflow-hidden">
+                                            <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-900 bg-red-50/50 dark:bg-red-900/10">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <KeyRound className="text-red-600" size={24} />
+                                                    <CardTitle className="text-2xl font-black uppercase tracking-tighter italic">Credential Override</CardTitle>
+                                                </div>
+                                                <CardDescription className="text-xs font-bold uppercase tracking-widest text-red-600/60 italic">Rotate security keys for account access</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="p-10">
+                                                <form onSubmit={handlePasswordChange} className="space-y-8">
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Current Password Artifact</Label>
+                                                        <Input
+                                                            type="password"
+                                                            value={currentPassword}
+                                                            onChange={e => setCurrentPassword(e.target.value)}
+                                                            className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">New Terminal Password</Label>
+                                                            <Input
+                                                                type="password"
+                                                                value={newPassword}
+                                                                onChange={e => setNewPassword(e.target.value)}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50"
+                                                                required
+                                                                minLength={6}
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic ml-1">Verification Code</Label>
+                                                            <Input
+                                                                type="password"
+                                                                value={confirmPassword}
+                                                                onChange={e => setConfirmPassword(e.target.value)}
+                                                                className="h-14 rounded-2xl border-border bg-slate-50 dark:bg-slate-900/50"
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex justify-end pt-4">
+                                                        <Button
+                                                            type="submit"
+                                                            disabled={passwordLoading}
+                                                            className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black uppercase tracking-widest text-[11px] italic shadow-xl shadow-slate-200 dark:bg-white dark:text-slate-950 transition-all"
+                                                        >
+                                                            {passwordLoading ? <Loader2 className="animate-spin mr-2" /> : <Lock className="mr-2" size={18} />}
+                                                            Rotate Credentials
+                                                        </Button>
+                                                    </div>
+                                                </form>
+                                            </CardContent>
+                                        </Card>
                                     </div>
-                                </div>
-                                <div className="card-content" style={{ padding: 'var(--spacing-xl)' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white', padding: '24px', borderRadius: '16px', border: '1px solid var(--error-100)' }}>
-                                        <div>
-                                            <h4 style={{ fontWeight: 800, margin: '0 0 4px', color: 'var(--error-700)' }}>Global Maintenance Mode</h4>
-                                            <p style={{ fontSize: '0.85rem', color: 'var(--neutral-500)', margin: 0, maxWidth: '400px' }}>
-                                                Immediately disconnects all users and schools. Only Super Admins can authenticate.
-                                            </p>
-                                        </div>
-                                        <button
-                                            className={`btn ${maintenanceMode ? 'btn-error' : 'btn-outline'}`}
-                                            onClick={handleToggleMaintenance}
-                                            disabled={maintenanceLoading}
-                                            style={{ height: '48px', padding: '0 24px', fontWeight: 800 }}
-                                        >
-                                            {maintenanceMode ? "Disable Maintenance Mode" : "Activate Maintenance"}
-                                        </button>
+                                )}
+
+                                {activeTab === 'admin' && session?.user?.role === 'SUPER_ADMIN' && (
+                                    <div className="space-y-8">
+                                        <Card className="rounded-[2.5rem] border-2 border-red-500/20 shadow-2xl bg-red-50/50 dark:bg-red-950/20 overflow-hidden">
+                                            <CardHeader className="p-10 border-b border-red-200 dark:border-red-900/50">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <AlertCircle className="text-red-600" size={24} />
+                                                    <CardTitle className="text-2xl font-black uppercase tracking-tighter italic text-red-700 dark:text-red-400">Strategic Overrides</CardTitle>
+                                                </div>
+                                                <CardDescription className="text-xs font-bold uppercase tracking-widest text-red-600/60 italic">Critical platform-wide systemic controls</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="p-10">
+                                                <div className="flex flex-col md:flex-row items-center justify-between gap-10 bg-white dark:bg-slate-950 p-10 rounded-[2.5rem] border border-red-100 dark:border-red-900/30 shadow-lg">
+                                                    <div className="space-y-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <Shield className="text-red-600" size={20} />
+                                                            <h4 className="text-xl font-black uppercase tracking-tighter italic">Global Maintenance Protocol</h4>
+                                                        </div>
+                                                        <p className="text-slate-500 dark:text-slate-400 text-sm font-bold italic leading-relaxed max-w-md">
+                                                            Severing all non-admin sessions. This procedure places the platform in read-only state for standard accounts during critical infrastructure updates.
+                                                        </p>
+                                                    </div>
+                                                    <Button
+                                                        onClick={handleToggleMaintenance}
+                                                        disabled={maintenanceLoading}
+                                                        variant={maintenanceMode ? "destructive" : "outline"}
+                                                        className={cn(
+                                                            "h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-[11px] italic shadow-xl group transition-all",
+                                                            maintenanceMode ? "bg-red-600 hover:bg-red-700 shadow-red-200" : "border-slate-200 hover:bg-slate-50"
+                                                        )}
+                                                    >
+                                                        {maintenanceLoading ? (
+                                                            <Loader2 className="animate-spin" />
+                                                        ) : (
+                                                            maintenanceMode ? "DEACTIVATE PROTOCOL" : "INITIALIZE OVERRIDE"
+                                                        )}
+                                                    </Button>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
                                     </div>
-                                </div>
-                            </div>
-                        )}
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>
-            <style jsx>{`
-                @media (max-width: 768px) {
-                    .settings-grid {
-                        grid-template-columns: 1fr !important;
-                        gap: var(--spacing-lg) !important;
-                    }
-                    .scroll-x-mobile {
-                        flex-direction: row !important;
-                        overflow-x: auto !important;
-                        -webkit-overflow-scrolling: touch;
-                        margin-bottom: var(--spacing-md);
-                        padding: 4px 4px 8px;
-                        border-bottom: 1px solid var(--neutral-100);
-                        gap: 4px !important;
-                    }
-                    .scroll-x-mobile button {
-                        white-space: nowrap;
-                        flex-shrink: 0;
-                        font-size: 0.8rem !important;
-                        padding: 10px 14px !important;
-                    }
-                }
-            `}</style>
         </DashboardLayout>
     )
 }
