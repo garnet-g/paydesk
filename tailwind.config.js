@@ -11,6 +11,8 @@ module.exports = {
       colors: {
         // Primary Colors - Soft Indigo
         primary: {
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
           50: 'var(--primary-50)',
           100: 'var(--primary-100)',
           200: 'var(--primary-200)',
@@ -24,6 +26,8 @@ module.exports = {
         },
         // Secondary Colors - Sky Blue Accent
         secondary: {
+          DEFAULT: 'var(--secondary)',
+          foreground: 'var(--secondary-foreground)',
           50: 'var(--secondary-50)',
           100: 'var(--secondary-100)',
           200: 'var(--secondary-200)',
@@ -74,11 +78,11 @@ module.exports = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         card: {
-          DEFAULT: 'var(--card-bg)',
+          DEFAULT: 'var(--card)',
           foreground: 'var(--card-foreground)',
         },
         border: 'var(--border)',
-        input: 'var(--input-bg)',
+        input: 'var(--input)',
         muted: {
           DEFAULT: 'var(--muted)',
           foreground: 'var(--muted-foreground)',

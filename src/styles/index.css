@@ -122,20 +122,18 @@
     }
 }
 
-/* Custom Components */
-.card {
-    @apply bg-card rounded-xl shadow-sm border border-border p-6 transition-all duration-300;
-}
-
-.btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-black/90 px-4 py-2 rounded-md font-medium transition-all;
-}
-
-.badge {
-    @apply text-xs px-2 py-0.5 rounded-md font-medium inline-flex items-center;
-}
-
 @layer components {
+    .card {
+        @apply bg-card rounded-xl shadow-sm border border-border p-6 transition-all duration-300;
+    }
+
+    .btn-primary {
+        @apply bg-primary text-primary-foreground hover:bg-black/90 px-4 py-2 rounded-md font-medium transition-all;
+    }
+
+    .badge {
+        @apply text-xs px-2 py-0.5 rounded-md font-medium inline-flex items-center;
+    }
 
     /* Premium Modal System */
     .modal-overlay {
